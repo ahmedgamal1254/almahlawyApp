@@ -223,17 +223,6 @@
             <div class="container">
                 <div class="why-choose-options wow fadeInUp">
                     <div class="row">
-                        <!-- single item -->
-                        <div class="col-lg-4 col-md-6">
-                            <div class="single-choose">
-                                <div class="single-choose-left ">
-                                    <img src="{{ asset("assets/landing_assets/img/icons/logo-top-1.png")}}" alt="">
-                                </div>
-                                {{--  <div class="single-choose-right">
-                                    <h3>Trending Courses & <br> Certified Courses</h3>
-                                </div>  --}}
-                            </div>
-                        </div>
                         <!-- End single item -->
                         <div class="col-lg-4 col-md-6">
                             <div class="single-choose">
@@ -241,7 +230,9 @@
                                     <img src="{{ asset("assets/landing_assets/img/icons/logo-top-2.png")}}" alt="">
                                 </div>
                                 <div class="single-choose-right">
-                                    <h3>Books Liberary & <br> Online E-Books</h3>
+                                    <h3>
+                                        مكتبة كتب <br> وفيديوهات تفاعلية
+                                    </h3>
                                 </div>
                             </div>
                         </div>
@@ -251,7 +242,7 @@
                                     <img src="{{ asset("assets/landing_assets/img/icons/logo-top-3.png")}}" alt="">
                                 </div>
                                 <div class="single-choose-right">
-                                    <h3>Certified Teachers & <br>Guaranteed Career</h3>
+                                    <h3>خبرة 10 سنوات<br>فى مادة الفيزياء </h3>
                                 </div>
                             </div>
                         </div>
@@ -262,7 +253,7 @@
                                     <img src="{{ asset("assets/landing_assets/img/icons/logo-top-1.png")}}" alt="">
                                 </div>
                                 <div class="single-choose-right">
-                                    <h3>Trending Courses & <br> Certified Courses</h3>
+                                    <h3>مراجعات شاملة <br> لليالى الامتحان</h3>
                                 </div>
                             </div>
                         </div>
@@ -272,7 +263,7 @@
                                     <img src="{{ asset("assets/landing_assets/img/icons/logo-top-2.png")}}" alt="">
                                 </div>
                                 <div class="single-choose-right">
-                                    <h3>Books Liberary & <br> Online E-Books</h3>
+                                    <h3>اختبارات الكترونية <br> على كل جزء فى المنهج</h3>
                                 </div>
                             </div>
                         </div>
@@ -282,42 +273,11 @@
                                     <img src="{{ asset("assets/landing_assets/img/icons/logo-top-3.png")}}" alt="">
                                 </div>
                                 <div class="single-choose-right">
-                                    <h3>Certified Teachers & <br>Guaranteed Career</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6">
-                            <div class="single-choose">
-                                <div class="single-choose-left ">
-                                    <img src="{{ asset("assets/landing_assets/img/icons/logo-top-1.png")}}" alt="">
-                                </div>
-                                <div class="single-choose-right">
-                                    <h3>Trending Courses & <br> Certified Courses</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6">
-                            <div class="single-choose">
-                                <div class="single-choose-left ">
-                                    <img src="{{ asset("assets/landing_assets/img/icons/logo-top-2.png")}}" alt="">
-                                </div>
-                                <div class="single-choose-right">
-                                    <h3>Books Liberary & <br> Online E-Books</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 offset-lg-0 offset-md-3">
-                            <div class="single-choose">
-                                <div class="single-choose-left ">
-                                    <img src="{{ asset("assets/landing_assets/img/icons/logo-top-3.png")}}" alt="">
-                                </div>
-                                <div class="single-choose-right">
-                                    <h3>Certified Teachers & <br>Guaranteed Career</h3>
+                                    <h3>حصص تفاعلية <br>مع مستر أحمد </h3>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -330,35 +290,33 @@
     <section id="eduservices-fun-facts" class="fun-facts-area ptb-100">
         <div class="container">
             <div class="row">
-                <div class="col-lg-3 col-md-6 col-6 wow fadeInUp" data-wow-delay=".2s">
+                <div class="col-lg-4 col-md-6 col-6 wow fadeInUp" data-wow-delay=".2s">
+                    <div class="funFact">
+                        <i class="icofont-users-alt-2"></i>
+                        <div>
+                            <h3 class="count">+1500</h3>
+                            <span>طلاب</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-6 wow fadeInUp" data-wow-delay=".4s">
                     <div class="funFact">
                         <i class="icofont-teacher"></i>
-                        <h3 class="count">+1500</h3>
-                        <span>طلاب</span>
+                        <div>
+                            <h3 class="count">+10</h3>
+                            <span>خبرة</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-md-6 col-6 wow fadeInUp" data-wow-delay=".4s">
+                <div class="col-lg-4 col-md-6 col-6 wow fadeInUp" data-wow-delay=".s">
                     <div class="funFact">
-                        <i class="icofont-document-folder"></i>
-                        <h3 class="count">+10</h3>
-                        <span>خبرة</span>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-md-6 col-6 wow fadeInUp" data-wow-delay=".6s">
-                    <div class="funFact">
-                        <i class="icofont-users-alt-2"></i>
-                        <h3 class="count">+150</h3>
-                        <span>حصص تفاعلية</span>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-md-6 col-6 wow fadeInUp" data-wow-delay=".s">
-                    <div class="funFact">
-                        <i class="icofont-users-alt-2"></i>
-                        <h3 class="count">+150</h3>
-                        <span>حصص تفاعلية</span>
+                        <i class="icofont-live-support"></i>
+                        <div>
+                            <h3 class="count">+150</h3>
+                            <span>حصص تفاعلية</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -374,7 +332,7 @@
         <div class="container">
             <div class="section-title">
                 <h2>تواصل معنا</h2>
-                <span>هل لديك أى أسئلة ؟</span>
+                <span style="text-align: right;">هل لديك أى أسئلة ؟</span>
             </div>
 
             <div class="row">
@@ -446,6 +404,35 @@
         </div>
     </section>
     <!-- End Contact Area -->
+
+    <!-- download app -->
+    <div id="download_app" class="pt-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-sm-12 d-flex flex-column justify-content-center">
+                    <p class="mb-5">
+                        حمل الابليكيشن وكنا من الاوائل مع مستر أحمد المحلاوى
+                    </p>
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <a href="#">
+                                <img src="{{ asset("assets/landing_assets/img/playmarket.png") }}" alt="">
+                            </a>
+                        </div>
+                        <div class="col-lg-6 col-sm-12">
+                            <a href="#">
+                                <img src="{{ asset("assets/landing_assets/img/appstore.png") }}" alt="">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-sm-12">
+                    <img src="{{ asset("assets/landing_assets/img/journalist_online_3.webp") }}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!--=================================================================================
          START FOOTER
