@@ -67,9 +67,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get("/",function (){
-    return response()->json([
-        "Teacher Api v1"
-    ],200);
+    return view("welcome");
 })->name("home");
 
 require __DIR__.'/auth.php';
