@@ -234,6 +234,24 @@
                             </a>
                         </div>
                     </div>
+
+                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6">
+                        <div class="card text-center">
+                            <a href="{{ route("posts") }}">
+                                <div class="card-body">
+                                    <div class="avatar bg-light-info p-50 mb-1">
+                                        <div class="avatar-content">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                                        </div>
+                                    </div>
+                                    <h2 class="font-weight-bolder">
+                                        {{ \App\Models\Payment::whereNull("status")->count() }}
+                                        </h2>
+                                    <p class="card-text">طلبات اضافة الرصيد</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
 

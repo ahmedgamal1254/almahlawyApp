@@ -69,10 +69,10 @@ class User extends Authenticatable implements JWTSubject,MustVerifyEmail{
     }
 
     public function schoolgrade(){
-        return $this->belongsTo(SchoolGrade::class);
+        return $this->belongsTo(SchoolGrade::class,"school_grade_id");
     }
     public function group(){
-        return $this->belongsTo(Group::class);
+        return $this->belongsTo(Group::class,"group_id");
     }
 
     public function months(){

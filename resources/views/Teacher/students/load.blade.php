@@ -7,7 +7,6 @@
         <td>{{ $diff = Carbon\Carbon::parse($student->created_at)->diffForHumans(Carbon\Carbon::now()) }}</td>
         <td>{{ $student->all_points }}</td>
         <td>{{ $student->active_points }}</td>
-        <td>{{ $student->points }}</td>
         <td>
             <div class="row">
                 <a href="{{ route('students.edit',['id'=>$student->id]) }}" class="btn btn-primary"><i class="fa fa-edit"></i></a>

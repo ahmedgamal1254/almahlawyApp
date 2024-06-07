@@ -39,8 +39,7 @@ class SchoolGradeController extends Controller
     public function students($school_grade_id){
         try {
 
-            $students=User::with('group','schoolgrade')->where("teacher_id","=",Auth::guard("teacher")->user()->id)
-            ->where("school_grade_id","=",);
+            $students=User::with('group','schoolgrade')->where("school_grade_id","=",$school_grade_id)->get();
 
             return view("Teacher.school_grade.students",compact("students"));
         } catch (\Throwable $th) {
@@ -50,7 +49,8 @@ class SchoolGradeController extends Controller
 
     public function groups($school_grade_id){
         try {
-            $classes = ClassStudy::where("school_grade_id",$school_grade_id)->withCount("students")->with("school_grade:id,name")->paginate(10);
+            $classes = ClassStudy::where("school_grade_id",$school_grade_id)
+            ->withCount("students")->with("school_grade:id,name")->paginate(10);
 
             return view("Teacher.classes.index",compact("classes"));
         } catch (\Throwable $th) {

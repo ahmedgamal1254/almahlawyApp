@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\{
     FreeBookController,
     FreeCourcesController,
     FreeExamController,
+    RechargeWalletController,
     ResetPasswordController,
     UpdatePasswordController
 };
@@ -139,3 +140,9 @@ Route::group([
     Route::post('/login', [TeacherAuthMobileController::class, 'login']);
 });
 
+// recharge wallet
+Route::group([
+    'middleware' => 'auth_user'
+], function ($router){
+    Route::post("recharge_wallet",[RechargeWalletController::class,'recharge']);
+});

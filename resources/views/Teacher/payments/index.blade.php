@@ -21,7 +21,7 @@
                 <tbody>
                     @forelse ($payments as $payment)
                     <tr>
-                        <td>{{ $payment->username }}</td>
+                        <td>{{ $payment->user ? $payment->user->name:"" }}</td>
                         <td>
                             @if ($payment->image_url)
                             <img src="{{ asset("public/app/". $payment->image_url) }}" width="100" height="100" alt="">

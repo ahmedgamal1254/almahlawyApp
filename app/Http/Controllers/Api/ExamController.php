@@ -66,59 +66,73 @@ class ExamController extends Controller
         $examId = $request->exam_id;
         $schoolGradeId = Auth::guard('api')->user()->school_grade_id;
 
-        foreach ($request->questions as $question) {
-            //store question and answer in Question_Exam_Student
-            Question_Exam_Student::updateOrCreate([
-                "exam_id" => $examId,
-                "user_id" => $userId,
-                "question_id" => $question["id"],
-            ],[
-                "exam_id" => $examId,
-                "user_id" => $userId,
-                "student_answer" => $question["answer"],
-                "question_id" => $question["id"],
-                "school_grade_id" =>$schoolGradeId
-            ]);
+        try {
+            DB::beginTransaction();
 
-        }
+            foreach ($request->questions as $question) {
+                //store question and answer in Question_Exam_Student
+                Question_Exam_Student::updateOrCreate([
+                    "exam_id" => $examId,
+                    "user_id" => $userId,
+                    "question_id" => $question["id"],
+                ],[
+                    "exam_id" => $examId,
+                    "user_id" => $userId,
+                    "student_answer" => $question["answer"],
+                    "question_id" => $question["id"],
+                    "school_grade_id" =>$schoolGradeId
+                ]);
 
-        // collect degree
-        $exam_student=DB::table("question_exam_students")->join("questions","questions.id","=","question_exam_students.question_id")
-        ->select("questions.answer","questions.degree","question_exam_students.student_answer")
-        ->where("question_exam_students.exam_id","=",$examId)
-        ->where("question_exam_students.user_id","=",$userId)->get();
-
-        $degree=0;
-        $total=Exam::find($examId)->questions->sum("degree");
-
-        foreach ($exam_student as $value) {
-            if($value->answer==$value->student_answer){
-                $degree+=$value->degree;
             }
+
+            // collect degree
+            $exam_student=DB::table("question_exam_students")->join("questions","questions.id","=","question_exam_students.question_id")
+            ->select("questions.answer","questions.degree","question_exam_students.student_answer")
+            ->where("question_exam_students.exam_id","=",$examId)
+            ->where("question_exam_students.user_id","=",$userId)->get();
+
+            $degree=0;
+            $total=Exam::find($examId)->questions->sum("degree");
+
+            foreach ($exam_student as $value) {
+                if($value->answer==$value->student_answer){
+                    $degree+=$value->degree;
+                }
+            }
+
+
+            // store or update degre of exam
+            $student_degree=DB::table('exam_student')->where("user_id","=",$userId)
+            ->where("exam_id","=",$examId)->first();
+
+            if($student_degree == null){
+                $exam=new ExamStudent();
+                $exam->user_id=$userId;
+                $exam->exam_id=$examId;
+                $exam->status=0;
+                $exam->degree=$degree;
+                $exam->total=$total;
+                $exam->save();
+            }
+
+            DB::commit();
+
+            $data["status"]=true;
+            $data["congrats"]="تم اجراء الامتحان بنجاح";
+            $data["degree"]=$degree;
+            $data["total"]=$total;
+            $data["percent"]=round(($degree/$total)*100,2);
+
+            return $this->make_response($data,200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return response()->json([
+                "error" => "error happend,please send to adminstrator",
+                "status" => 500,
+                "success" => false
+            ],500);
         }
-
-
-        // store or update degre of exam
-        $student_degree=DB::table('exam_student')->where("user_id","=",$userId)
-        ->where("exam_id","=",$examId)->first();
-
-        if($student_degree == null){
-            $exam=new ExamStudent();
-            $exam->user_id=$userId;
-            $exam->exam_id=$examId;
-            $exam->status=0;
-            $exam->degree=$degree;
-            $exam->total=$total;
-            $exam->save();
-        }
-
-        $data["status"]=true;
-        $data["congrats"]="تم اجراء الامتحان بنجاح";
-        $data["degree"]=$degree;
-        $data["total"]=$total;
-        $data["percent"]=round(($degree/$total)*100,2);
-
-        return $this->make_response($data,200);
     }
 
     private function question_exists($exam_id,$question_id){

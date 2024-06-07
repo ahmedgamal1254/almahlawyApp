@@ -31,7 +31,6 @@ class GroupController extends Controller
             ->join('class_studies', 'users.group_id', '=', 'class_studies.id')
             ->select('users.*', 'class_studies.group_name as subject_name', 'school_grades.name as school_grade')
             ->where("users.group_id","=",$group_id)
-            ->where("users.teacher_id","=",Auth::guard("teacher")->user()->id)
             ->paginate(15);
 
             $school_grades=DB::table("school_grades")->where("deleted_at","=",null)->get();

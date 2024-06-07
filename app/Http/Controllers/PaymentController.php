@@ -68,13 +68,14 @@ class PaymentController extends Controller
     public function show($id)
     {
         try {
-            $payment=DB::table("payments")->select("users.name as username","users.id as user_id","payments.*")
-            ->join("users","users.id","=","payments.user_id")
-            ->where("payments.status","=",1)->where("payments.id","=",$id)
-            ->where("payments.teacher_id","=",Auth::guard("teacher")->user()->id)->first();
+            $payment=Payment::with("user")->find($id);
 
             if(!$payment){
                 return redirect()->back()->with('error', 'هذا الطلب غير موجود' . $id);
+            }
+
+            if($payment->status != 0){
+                return redirect()->back()->with('error', 'هذا الطلب غير صحيح' . $id);
             }
 
             return view("Teacher.payments.show",compact("payment"));
@@ -85,10 +86,7 @@ class PaymentController extends Controller
 
     public function all_payments(){
         try {
-            $payments=DB::table("payments")->select("users.name as username","payments.*")
-            ->join("users","users.id","=","payments.user_id")
-            ->where("payments.status","=",1)
-            ->where("payments.teacher_id","=",Auth::guard("teacher")->user()->id)->paginate(50);
+            $payments=Payment::with("user:id,name")->whereNull("status")->paginate(50);
 
             return view("Teacher.payments.index",compact("payments"));
         } catch (\Throwable $th) {

@@ -24,7 +24,7 @@
                 <a href="{{ route("all_payments") }}" class="icon-button">
                     <span class="material-icons"><i class="ficon" data-feather="bell"></i></span>
                     <span class="icon-button__badge">
-                        {{ App\Models\Payment::where("status","=",1)->where("teacher_id","=",Auth::guard('teacher')->user()->id)->count() }}
+                        {{ App\Models\Payment::whereNull("status")->count() }}
                     </span>
                 </a>
             </li>

@@ -13,7 +13,6 @@
                     <tr>
                         <th>الطالب</th>
                         <th>رقم الهاتف</th>
-                        <th>الصف الدراسى</th>
                         <th>المجموعة الدراسية</th>
                         <th>وقت الاضافة</th>
                         <th>مجموع النقاط</th>
@@ -26,8 +25,7 @@
                     <tr>
                         <td>{{ $student->name }}</td>
                         <td>{{ $student->phonenumber }}</td>
-                        <td>{{ $student->school_grade }}</td>
-                        <td>{{ $student->subject_name }}</td>
+                        <td>{{ $student->group ?$student->group->title:"" }}</td>
                         <td>{{ $diff = Carbon\Carbon::parse($student->created_at)->diffForHumans(Carbon\Carbon::now()) }}</td>
                         <td>{{ $student->all_points }}</td>
                         <td>{{ $student->active_points }}</td>
@@ -63,5 +61,5 @@
 @endsection
 
 @section("script")
-    <script src="{{ asset("assets/js/ajax_student.js") }}"></script>
+    <script src="{{ asset("assets/landing_assets/js/ajax_student.js") }}"></script>
 @endsection
