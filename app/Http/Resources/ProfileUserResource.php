@@ -21,7 +21,7 @@ class ProfileUserResource extends JsonResource
             "phonenumber" => $this->phonenumber,
             "government" => $this->government,
             "total_balance" => $this->all_points,
-            "current_balance" => $this->active_balance,
+            "current_balance" => $this->active_points,
             "img_profile" => $this->profile
         ];
     }

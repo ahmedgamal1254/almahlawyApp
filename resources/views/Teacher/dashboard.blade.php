@@ -237,7 +237,7 @@
 
                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6">
                         <div class="card text-center">
-                            <a href="{{ route("posts") }}">
+                            <a href="{{ route("all_payments") }}">
                                 <div class="card-body">
                                     <div class="avatar bg-light-info p-50 mb-1">
                                         <div class="avatar-content">

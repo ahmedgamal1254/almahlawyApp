@@ -12,6 +12,7 @@ use App\Services\{
     UnLockMonth,
 };
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 class MonthController extends Controller
 {
@@ -105,6 +106,15 @@ class MonthController extends Controller
     }
 
     public function unlock_month(Request $request){
+        // validation exam id , question array
+        $validator = Validator::make($request->all(), [
+            'month_id' => 'required|integer|exists:months,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
         if(isset($request->month_id)){
             $monthId = $request->input('month_id');
 
@@ -131,12 +141,10 @@ class MonthController extends Controller
                             "msg" => "مبروك لقد تم فتح محتويات الشهر يمكنك التصفح الان",
                             "success"=>true,
                             "points" =>Auth::guard('api')->user()->active_points,
-                            "swal" => "swal2-success"
                         ]);
                     }else{
                         return response([
                             "status" => 200,
-                            "swal" => "swal2-info",
                             "msg" => "مبروك لقد تم شراء محتويات هذا الشهر من قبل",
                             "success"=>true,
                         ]);
@@ -145,23 +153,20 @@ class MonthController extends Controller
                     return response([
                         "status"=>200,
                         "msg" => "عفوا أنت لا تملك الرصيد الكافى لفتح الشهر",
-                        "swal" => "swal2-error"
                     ]);
                 }
             }
             else{
-                return response([
-                    "status"=>201,
+                return response()->json([
+                    "status"=>500,
                     "msg" => "عفوا هذا المحتوى  خاطئ",
-                    "swal" => "swal2-error"
-                ]);
+                ],500);
             }
         }else{
-           return response([
-                    "status"=>200,
-                    "msg" => "عفوا هذا غير صحيح ربما تكون مشترك فى الكورس من قبل",
-                    "swal" => "swal2-error"
-                ]);
+            return response()->json([
+                "status"=>404,
+                "msg" => "عفوا هذا غير صحيح ربما تكون مشترك فى الكورس من قبل",
+            ],404);
         }
     }
 }

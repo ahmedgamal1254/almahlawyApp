@@ -18,9 +18,6 @@ use Illuminate\Support\Facades\Mail;
 class AuthMobileController extends Controller
 {
     use Upload;
-    public function __construct() {
-        // $this->middleware('api.guard', ['except' => ['register','login',"register_otp"]]);
-    }
 
     public function login(Request $request){
     	$validator = Validator::make($request->all(), [
@@ -99,12 +96,48 @@ class AuthMobileController extends Controller
             DB::rollBack();
             return response()->json(['error' => 'Registration failed, please try again.'], 500);
         }
+    }
 
+    public function resend_otp(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email' => ['required', 'string', 'email', 'max:255', "exists:users,email"],
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors(), 400);
+        }
+
+        $pincode=rand(100000,999999);
+
+        // user
+        $user=User::where("email",$request->email)->first();
+
+        if(!$user){
+            return response()->json(["message" => "user not found","status"=>404,"success"=>false],404);
+        }
+
+        // Send verification email
+        RegisterToken::updateOrCreate([
+            "email" => $request->email
+        ],[
+            "email" => $request->email,
+            "pin_code" => $pincode,
+            "expired_at" => Carbon::parse()->addDays(1)
+        ]);
+
+        Mail::to($request->email)->send(new RegisterUser($user,$pincode));
+
+        return response()->json([
+            "message" => "تم ارسال الرمز على البريد الالكترونى بنجاح",
+            "status" => 200,
+            "success" => true
+        ],200);
     }
 
     public function register_otp(Request $request){
         $validator=Validator::make($request->all(),[
             'pin_code' => ['required', 'digits_between:5,7',"numeric","exists:register_tokens,pin_code"],
+            'email' => ['required', "email","exists:register_tokens,email"]
         ]);
 
 
@@ -112,7 +145,7 @@ class AuthMobileController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $otp=RegisterToken::where("pin_code",$request->pin_code)->first();
+        $otp=RegisterToken::where("pin_code",$request->pin_code)->where("email",$request->email)->first();
 
         if($otp){
             $user=User::where("email",$otp->email)->first();

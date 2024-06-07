@@ -18,10 +18,12 @@ use App\Http\Controllers\Api\{
     FreeBookController,
     FreeCourcesController,
     FreeExamController,
+    NotificationController,
     RechargeWalletController,
     ResetPasswordController,
     UpdatePasswordController
 };
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +43,7 @@ Route::group([
 ],function ($router) {
     Route::post('/login', [AuthMobileController::class, 'login']);
     Route::post('/register', [AuthMobileController::class, 'register']);
+    Route::post('/resend-otp', [AuthMobileController::class, 'resend_otp']);
     Route::post('/register-otp', [AuthMobileController::class, 'register_otp']);
     Route::post("/reset-password",[ResetPasswordController::class,"store"]);
     Route::post("/check-code",[UpdatePasswordController::class,"check_code"]);
@@ -115,10 +118,13 @@ Route::group([
 
 // free videos / books / exam
 Route::group([
-    // 'middleware' => 'auth_user'
+    'middleware' => 'auth_user'
 ],function ($router){
     Route::get("free-videos",[FreeCourcesController::class,'index']);
+    Route::get("free-video/{id}",[FreeCourcesController::class,'show']);
+
     Route::get("free-books",[FreeBookController::class,'index']);
+    Route::get("free-book/{id}",[FreeBookController::class,'show']);
 });
 
 // teacher dashboard
@@ -145,4 +151,13 @@ Route::group([
     'middleware' => 'auth_user'
 ], function ($router){
     Route::post("recharge_wallet",[RechargeWalletController::class,'recharge']);
+});
+
+// notifications
+Route::middleware(['auth_user'])->group(function () {
+    Route::get('/notifcations',[NotificationController::class,"index"])->name("notifcations");
+    // show notification payment to make it read
+    Route::get('/notifications/show/{id}',[NotificationController::class,"update"]);
+    // make all notifications read
+    Route::get('/notifications/make_all_read',[NotificationController::class,"make_all_read"]);
 });

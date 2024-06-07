@@ -112,7 +112,7 @@ class PaymentController extends Controller
                 $user=User::find($request->user_id);
 
                 $message["success"]=true;
-                $message["msg"]="تم اضافة رصيد لك";
+                $message["msg"]="تم اضافة $request->points رصيد لك";
                 $message["points"]=$request->points;
                 $message["teacher_name"]=Auth::guard("teacher")->user()->name;
 
