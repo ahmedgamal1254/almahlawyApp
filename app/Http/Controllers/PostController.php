@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Jobs\NotificationPostJob;
+use App\Models\User;
+use App\Notifications\NotificationPost;
 use App\Traits\Upload;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -60,6 +63,11 @@ class PostController extends Controller
             $post->subject_id=Auth::guard('teacher')->user()->subject_id;
             $post->teacher_id=Auth::guard('teacher')->user()->id;
             $post->save();
+
+            NotificationPostJob::dispatch(
+                User::where("school_grade_id",$request->school_grade_id)->get(),
+                "تم نشر  $post->title"
+            );
 
             return redirect()->route("posts")->with('message','تم اضافة المنشور بنجاح');
         } catch (\Throwable $th) {

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\Media;
 use App\Http\Requests\StoreMediaRequest;
 use App\Http\Requests\UpdateMediaRequest;
+use App\Jobs\NotificationBookJob;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Traits\{Upload,MakeDate};
 use Illuminate\Http\Request;
@@ -60,6 +62,9 @@ class MediaController extends Controller
             $book->teacher_id=Auth::guard('teacher')->user()->id;
             $book->date_show=$this->make_date($request->date_show);
             $book->save();
+
+            $users=User::where("school_grade_id","=",$request->school_grade_id)->get();
+            NotificationBookJob::dispatch($users,$book);
 
             return redirect()->route("books")->with('message','تم اضافة الكتاب بنجاح');
         } catch (\Throwable $th) {

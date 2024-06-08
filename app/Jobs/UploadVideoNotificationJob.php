@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Notifications\UploadVideoNotification;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,24 +18,25 @@ class UploadVideoNotificationJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $data=[];
-    private $video_id;
-    private $teacher;
+    private $video;
 
-    public function __construct($data,$video_id,$teacher)
+    public function __construct($data,$video)
     {
         $this->data=$data;
-        $this->video_id=$video_id;
-        $this->teacher=$teacher;
+        $this->video=$video;
     }
 
     public function handle(): void
     {
         $users=$this->data;
-        
+
+        $dateShow = Carbon::parse($this->video->date_show);
+        $monthName = $dateShow->format('F'); // Full month name
+        $year = $dateShow->format('Y'); // Year in 4 digits
+
         $message["success"]=true;
-        $message["msg"]="تم رفع فيديو جديد ";
-        $message["teacher_name"]=$this->teacher;
-        
+        $message["msg"]="تم رفع فيديو جديد لشهر $monthName";
+
         foreach ($users as $user) {
             Notification::send($user,new UploadVideoNotification($message));
         }

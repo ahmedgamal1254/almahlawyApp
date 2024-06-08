@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Exam;
 use App\Http\Requests\StoreExamRequest;
 use App\Http\Requests\UpdateExamRequest;
+use App\Jobs\NotificationExamJob;
 use App\Models\Question;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\MakeDate;
@@ -68,7 +70,6 @@ class ExamController extends Controller
             $exam->teacher_id=Auth::guard('teacher')->user()->id;
             $exam->save();
 
-
             $questions = [];
 
             // questions per unit  ==> count q / count unit ==> 3 ==> 2 2
@@ -82,6 +83,9 @@ class ExamController extends Controller
             }
 
             $exam->questions()->attach($questions);
+
+            $users=User::where("school_grade_id","=",$request->school_grade_id)->get();
+            NotificationExamJob::dispatch($users,$exam);
 
             return redirect()->route("exams")->with('message','تم اضافة الامتحان بنجاح');
         } catch (\Throwable $th) {

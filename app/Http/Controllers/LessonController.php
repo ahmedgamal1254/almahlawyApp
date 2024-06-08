@@ -75,7 +75,7 @@ class LessonController extends Controller
             $teacher=Teacher::find(Auth::guard('teacher')->user()->id);
 
             $users=User::where("school_grade_id","=",$request->school_grade_id)->get();
-            UploadVideoNotificationJob::dispatch($users,$video_id,$teacher->name);
+            UploadVideoNotificationJob::dispatch($users,$lesson);
 
             return redirect()->route("lessons")->with('message','تم اضافة الدرس بنجاح من فضلك قم برفع الغيديو للدرس');
         } catch (\Throwable $th) {
