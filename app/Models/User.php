@@ -76,6 +76,6 @@ class User extends Authenticatable implements JWTSubject,MustVerifyEmail{
     }
 
     public function months(){
-        return $this->belongsToMany(Month::class);
+        return $this->belongsToMany(Month::class,"month_student");
     }
 }

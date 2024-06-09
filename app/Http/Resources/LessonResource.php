@@ -20,6 +20,7 @@ class LessonResource extends JsonResource
             "description" => $this->description,
             "cover" => $this->img_caption,
             "video_url"=> $this->video_url,
+            "duration" => $this->duration,
             "created_at"=> $this->created_at,
             "updated_at"=> $this->updated_at
         ];

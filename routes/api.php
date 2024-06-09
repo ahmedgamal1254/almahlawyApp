@@ -155,7 +155,7 @@ Route::group([
 
 // notifications
 Route::middleware(['auth_user'])->group(function () {
-    Route::get('/notifcations',[NotificationController::class,"index"])->name("notifcations");
+    Route::get('/notifcations',[NotificationController::class,"index"]);
     // show notification payment to make it read
     Route::get('/notifications/show/{id}',[NotificationController::class,"update"]);
     // make all notifications read

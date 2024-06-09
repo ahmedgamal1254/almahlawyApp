@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LessonResource;
+use App\Traits\MakeDate;
 use Illuminate\Support\Facades\DB;
 use App\Traits\ResponseRequest;
 use Illuminate\Http\Request;
@@ -11,10 +12,26 @@ use Illuminate\Support\Facades\Auth;
 
 class LessonController extends Controller
 {
-    use ResponseRequest;
+    use ResponseRequest,MakeDate;
     public function index(){
-        $lessons=DB::table("lessons")->select("*")->
-        where("school_grade_id","=",Auth::guard('api')->user()->school_grade_id)->get();
+        $user = Auth::guard("api")->user();
+
+        // Extract months and school grade ID from the user
+        $months = $user->months;
+        $schoolGradeId = $user->school_grade_id;
+
+        $lessons=DB::table("lessons")->select("*")
+        ->where(function ($query) use ($months) {
+            foreach ($months as $month) {
+                $year = date('Y', strtotime($month->month_date));
+                $month = date('m', strtotime($month->month_date));
+                $query->orWhere(function ($query) use ($year, $month) {
+                    $query->whereYear('date_show', '=', $year)
+                          ->whereMonth('date_show', '=', $month);
+                });
+            }
+        })
+        ->where("school_grade_id","=",$schoolGradeId)->paginate(15);
 
         if(!$lessons){
             return response()->json([
@@ -23,7 +40,7 @@ class LessonController extends Controller
             ],404);
         }
 
-        return $this->make_response(new LessonResource($lessons),200);
+        return $this->make_response(LessonResource::collection($lessons),200);
     }
 
     public function show($id){

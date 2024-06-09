@@ -16,9 +16,25 @@ class ExamController extends Controller
     use ResponseRequest;
 
     public function index(){
+        $user = Auth::guard("api")->user();
+
+        // Extract months and school grade ID from the user
+        $months = $user->months;
+        $schoolGradeId = $user->school_grade_id;
+
         $exams=DB::table('exams')
         ->select("id","title","description","code","duration","start_time","end_time","date_exam")
-        ->where("school_grade_id","=",Auth::guard('api')->user()->school_grade_id)->get();
+        ->where(function ($query) use ($months) {
+            foreach ($months as $month) {
+                $year = date('Y', strtotime($month->month_date));
+                $month = date('m', strtotime($month->month_date));
+                $query->orWhere(function ($query) use ($year, $month) {
+                    $query->whereYear('date_exam', '=', $year)
+                          ->whereMonth('date_exam', '=', $month);
+                });
+            }
+        })
+        ->where("school_grade_id","=",$schoolGradeId)->get();
 
         return $this->make_response($exams,200);
     }
