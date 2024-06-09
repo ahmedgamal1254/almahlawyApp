@@ -10,7 +10,7 @@ class Question extends Model
     use HasFactory;
 
     protected $fillable=[
-        'name','type','description','chooses',"type_question","img",
+        'name','type','description','chooses',"type_question","img","degree",
         'answer','subject_id','school_grade_id','teacher_id','unit_id'
     ];
 

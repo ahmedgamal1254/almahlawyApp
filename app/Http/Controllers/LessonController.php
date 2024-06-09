@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Lesson;
 use App\Http\Requests\StoreLessonRequest;
 use App\Http\Requests\UpdateLessonRequest;
+use App\Jobs\NotificationLessonJob;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\{
@@ -14,7 +15,9 @@ use App\Traits\{
 use App\Models\User;
 use App\Models\Teacher;
 use App\Jobs\UploadVideoNotificationJob;
+use App\Notifications\NotificationLesson;
 use App\Notifications\UploadVideoNotification;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
 
 class LessonController extends Controller
@@ -70,12 +73,16 @@ class LessonController extends Controller
             $lesson->duration=$request->duration;
             $lesson->save();
 
-            // send users where show this video to job to send notification
-            $video_id=$lesson->id;
-            $teacher=Teacher::find(Auth::guard('teacher')->user()->id);
+            $dateShow = Carbon::parse($lesson->date_show);
+            Carbon::setLocale("ar");
+            $monthName = $dateShow->format('F'); // Full month name
+            $message="تم رفع فيديو جديد لشهر $monthName";
 
-            $users=User::where("school_grade_id","=",$request->school_grade_id)->get();
-            UploadVideoNotificationJob::dispatch($users,$lesson);
+            // send users where show this video to job to send notification
+            NotificationLessonJob::dispatch(
+                User::where("school_grade_id",$request->school_grade_id)->get(),
+                $message
+            );
 
             return redirect()->route("lessons")->with('message','تم اضافة الدرس بنجاح من فضلك قم برفع الغيديو للدرس');
         } catch (\Throwable $th) {

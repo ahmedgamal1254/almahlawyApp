@@ -50,7 +50,7 @@ class NotificationBook extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            "msg" => $this->message['msg'],
+            "msg" => $this->message,
         ];
     }
 }

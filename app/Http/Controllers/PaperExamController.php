@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PaperExamRequestStore;
 use App\Http\Requests\StoreVrSessionRequest;
 use App\Http\Requests\UpdateVrSessionRequest;
 use App\Models\StaticExam;
@@ -17,7 +18,7 @@ class PaperExamController extends Controller
     public function index()
     {
         try {
-            $exams=StaticExam::with("school_grade","user")->paginate(15);
+            $exams=StaticExam::with("school_grade","user")->orderByDesc("id")->paginate(15);
 
             return view("Teacher.paper-exams.index",compact("exams"));
         } catch (\Throwable $th) {
@@ -55,7 +56,7 @@ class PaperExamController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(PaperExamRequestStore $request)
     {
         try {
             $data=$request->all();

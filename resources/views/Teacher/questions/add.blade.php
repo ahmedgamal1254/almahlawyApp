@@ -282,7 +282,7 @@
             }
         };
 
-        let val=parseInt($(this).val())
+        let val=parseInt($("#type_question").val())
 
         if(val == 3){
             $(".type").removeClass("d-none")

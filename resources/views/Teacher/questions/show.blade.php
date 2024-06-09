@@ -21,14 +21,16 @@
               <p class="card-text">اسم الوحدة الدراسية :- {{ $question->unit_name }}</p>
                 <h5 class="card-title">عنوان السؤال :- {{ $question->name }}</h5>
                 <p class="card-text">اجابات السؤال</p>
-                @forelse (explode(",",$question->chooses) as $item)
-                   <div class="form-control">
-                    <input type="radio" name="chooses" id="{{ $item }}">
-                    <label for="{{ $item }}">{{ $item }}</label>
-                   </div>
-                @empty
+                @if (is_array(json_decode($question->chooses, true)))
+                    @forelse (json_decode($question->chooses, true) as $item)
+                        <div class="form-control">
+                        <input type="radio" name="chooses" id="{{ $item }}">
+                        <label for="{{ $item }}">{{ $item }}</label>
+                        </div>
+                    @empty
 
-                @endforelse
+                    @endforelse
+                @endif
                 <br>
                 <div class="row">
                     <span>الاجابة الصحيحة</span>

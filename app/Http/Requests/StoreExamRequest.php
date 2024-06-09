@@ -22,11 +22,14 @@ class StoreExamRequest extends FormRequest
     public function rules(): array
     {
         return [
+            "title" => ["required","string","unique:exams,title"],
+            "count_question" => ["required","numeric"],
             'duration' => ['required'],
+            "date_exam" => ["required","date"],
             'time_start' => ['required'],
             'time_end' => ['required'],
-            'school_grade_id' => ["required"]
-
+            'school_grade_id' => ["required"],
+            "units" => ["required","array"]
         ];
     }
 

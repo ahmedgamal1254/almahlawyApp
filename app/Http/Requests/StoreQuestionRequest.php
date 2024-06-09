@@ -23,13 +23,13 @@ class StoreQuestionRequest extends FormRequest
     {
         return [
             'title' => 'nullable|string',
+            "img" => "nullable|image|mimes:png,jpg,gif",
             'num_of_questions' => "required",
             'chooses' => ['required',"array","min:2"],
             "chooses.*"  => "required|string",
             'answer' => 'required',
             'school_grade_id' => 'required|numeric|exists:school_grades,id',
             'unit_id' => 'required|numeric|exists:units,id',
-            "img" => "nullable"
         ];
     }
 

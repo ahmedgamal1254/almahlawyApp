@@ -9,7 +9,13 @@
         @endif
     </td>
     <td>
-        {{ $item->chooses }}
+        @if (is_array(json_decode($item->chooses, true)))
+        @forelse (json_decode($item->chooses, true) as $index => $choose)
+            <span class="d-block">{{ $index + 1 }} - {{ $choose }}</span>
+        @empty
+
+        @endforelse
+    @endif
     </td>
     <td>
         {{ $item->answer }}

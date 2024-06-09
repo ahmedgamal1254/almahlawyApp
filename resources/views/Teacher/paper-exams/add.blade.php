@@ -54,10 +54,11 @@
                     <fieldset class="form-group position-relative has-icon-left mb-1">
                         <label for="">الامتحان فى صيغة pdf</label>
                         <input type="file" name="exam" class="form-control" id="pdf" onchange="loadFile(event)">
-                        <embed src="" id="pdf_display">
                         @error("exam")
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
+                        <br>
+                        <embed src="" class="d-none" id="pdf_display">
                     </fieldset>
                 </div>
 
@@ -92,6 +93,7 @@
 
         var loadFile = function(event) {
             var output = document.getElementById('pdf_display');
+            output.classList.remove("d-none")
             output.src = URL.createObjectURL(event.target.files[0]);
             output.onload = function() {
                 URL.revokeObjectURL(output.src) // free memory

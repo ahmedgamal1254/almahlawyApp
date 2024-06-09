@@ -32,6 +32,7 @@ class NotificationBookJob implements ShouldQueue
     public function handle(): void
     {
         $dateShow = Carbon::parse($this->book->date_show);
+        Carbon::setLocale("ar");
         $monthName = $dateShow->format('F'); // Full month name
         $year = $dateShow->format('Y'); // Year in 4 digits
 

@@ -23,7 +23,7 @@ class StoreLessonRequest extends FormRequest
     {
         return [
             "date_show"=>["required"],
-            "title"=>["required","string"],
+            "title"=>["required","string","unique:lessons,title"],
             "school_grade_id" => 'required',
             "subject_id" => "required",
         ];

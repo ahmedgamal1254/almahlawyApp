@@ -121,6 +121,18 @@ class UnitController extends Controller
 
     public function destroy($id)
     {
-        //
+        try {
+            $unit=Unit::findOrFail($id);
+
+            if($unit){
+                $unit->delete();
+
+                return redirect()->route("units")->with('message','تم حذف  الفصل (الوحدة) بنجاح');
+            }else{
+                return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+            }
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+        }
     }
 }

@@ -123,19 +123,21 @@
                                     <div class="mb-1">
                                         <div class="tags-input">
                                             <ul id="tags">
-                                                @foreach (explode(",",old("units")) as $unit)
-                                                    @if(!empty($unit))
-                                                        <li>
-                                                            {{ $unit }}
-                                                            <input type="hidden" name="units[]" value="{{ $unit }}">
-                                                        </li>
-                                                    @endif
-                                                @endforeach
+                                                @if (is_array(old("units")))
+                                                    @foreach (old("units") as $unit)
+                                                        @if(!empty($unit))
+                                                            <li>
+                                                                {{ $unit }}
+                                                                <input type="hidden" name="units[]" value="{{ $unit }}">
+                                                            </li>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
                                             </ul>
                                             <input type="hidden" name="unit" />
                                             <input type="text" id="input-tag" placeholder="ابحص باسم الوحدة" />
                                         </div>
-                                        <select name="" id="select" multiple class="form-control form-control-lg">
+                                        <select name="" id="select" class="form-control form-control-lg">
                                             <option value="">أدخل اسم الوحدة</option>
                                             @forelse ($units as $unit)
                                                 <option value="{{ $unit->title }}" data-id="{{ $unit->id }}">{{ $unit->title }}</option>
@@ -143,7 +145,7 @@
                                                 <option value="0">لا توجد وحدة دراسية بعد</option>
                                             @endforelse
                                         </select>
-                                        @error("school_grade_id")
+                                        @error("units_id")
                                             <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </div>

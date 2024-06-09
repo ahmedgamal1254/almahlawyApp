@@ -129,17 +129,19 @@
                                     <div class="mb-1">
                                         <div class="tags-input">
                                             <ul id="tags">
-                                                @foreach ($units as $unit)
-                                                    <li>
-                                                        {{ $unit->title }}
-                                                        <input type="hidden" name="unit[]" value="{{ $unit->id }}">
-                                                    </li>
-                                                @endforeach
+                                                @if ($units)
+                                                    @foreach ($units as $unit)
+                                                        <li>
+                                                            {{ $unit->title }}
+                                                            <input type="hidden" name="unit[]" value="{{ $unit->id }}">
+                                                        </li>
+                                                    @endforeach
+                                                @endif
                                             </ul>
                                             <input type="text" id="input-tag"
                                                 placeholder="ابحص باسم الوحدة" />
                                         </div>
-                                        <select name="" id="select" multiple class="form-control form-control-lg">
+                                        <select name="" id="select" class="form-control form-control-lg">
                                             <option value="">أدخل اسم الوحدة</option>
                                             @forelse ($units as $unit)
                                                 <option value="{{ $unit->title }}" data-id="{{ $unit->id }}">{{ $unit->title }}</option>

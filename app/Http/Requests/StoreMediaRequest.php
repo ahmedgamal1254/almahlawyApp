@@ -22,7 +22,7 @@ class StoreMediaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => "required",
+            'title' => "required|unique:media,title",
             "img" => "required",
             'school_grade_id' => 'required',
             'date_show' => 'required'

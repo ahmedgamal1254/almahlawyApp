@@ -577,4 +577,12 @@ label{
     margin-right: -1rem;
     align-items: center;
 }
+
+span.text-error {
+    color: red;
+    font-size: 16px;
+    margin-right: 6px;
+    margin-top: 4px;
+}
+
 </style>

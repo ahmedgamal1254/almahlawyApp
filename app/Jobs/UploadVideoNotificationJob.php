@@ -17,20 +17,20 @@ class UploadVideoNotificationJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $data=[];
-    private $video;
+    protected $users;
+    protected $lesson;
 
-    public function __construct($data,$video)
+    public function __construct($users,$lesson)
     {
-        $this->data=$data;
-        $this->video=$video;
+        $this->users=$users;
+        $this->lesson=$lesson;
     }
 
     public function handle(): void
     {
-        $users=$this->data;
+        $users=$this->users;
 
-        $dateShow = Carbon::parse($this->video->date_show);
+        $dateShow = Carbon::parse($this->lesson->date_show);
         $monthName = $dateShow->format('F'); // Full month name
         $year = $dateShow->format('Y'); // Year in 4 digits
 
