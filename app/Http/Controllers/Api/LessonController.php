@@ -36,7 +36,7 @@ class LessonController extends Controller
         if(!$lessons){
             return response()->json([
                 "message" => "not found lessons",
-                "success" => true
+                "success" => false
             ],404);
         }
 
@@ -50,7 +50,7 @@ class LessonController extends Controller
         if(!$lesson){
             return response()->json([
                 "message" => "not found lesson",
-                "success" => true
+                "success" => false
             ],404);
         }
 

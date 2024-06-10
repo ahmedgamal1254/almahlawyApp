@@ -36,7 +36,7 @@ class MediaController extends Controller
         if(!$books){
             return response()->json([
                 "message" => "not found books",
-                "success" => true
+                "success" => false
             ],404);
         }
 
@@ -46,6 +46,13 @@ class MediaController extends Controller
     public function show($id){
         $book=DB::table("media")->select("*")->
         where("school_grade_id","=",Auth::guard('api')->user()->school_grade_id)->where("id","=",$id)->first();
+
+        if(!$book){
+            return response()->json([
+                "message" => "not found book",
+                "success" => false
+            ],404);
+        }
 
         return $this->make_response(new BookResource($book),200);
     }

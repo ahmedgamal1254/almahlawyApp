@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProfileUserResource;
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
-class AuthMobileController extends Controller
+class AuthController extends Controller
 {
     use Upload;
 
@@ -98,84 +98,6 @@ class AuthMobileController extends Controller
         }
     }
 
-    public function resend_otp(Request $request){
-        $validator = Validator::make($request->all(), [
-            'email' => ['required', 'string', 'email', 'max:255', "exists:users,email"],
-        ]);
-
-        if($validator->fails()){
-            return response()->json($validator->errors(), 400);
-        }
-
-        $pincode=rand(100000,999999);
-
-        // user
-        $user=User::where("email",$request->email)->first();
-
-        if(!$user){
-            return response()->json(["message" => "user not found","status"=>404,"success"=>false],404);
-        }
-
-        // Send verification email
-        RegisterToken::updateOrCreate([
-            "email" => $request->email
-        ],[
-            "email" => $request->email,
-            "pin_code" => $pincode,
-            "expired_at" => Carbon::parse()->addDays(1)
-        ]);
-
-        Mail::to($request->email)->send(new RegisterUser($user,$pincode));
-
-        return response()->json([
-            "message" => "تم ارسال الرمز على البريد الالكترونى بنجاح",
-            "status" => 200,
-            "success" => true
-        ],200);
-    }
-
-    public function register_otp(Request $request){
-        $validator=Validator::make($request->all(),[
-            'pin_code' => ['required', 'digits_between:5,7',"numeric","exists:register_tokens,pin_code"],
-            'email' => ['required', "email","exists:register_tokens,email"]
-        ]);
-
-
-        if($validator->fails()){
-            return response()->json($validator->errors(), 422);
-        }
-
-        $otp=RegisterToken::where("pin_code",$request->pin_code)->where("email",$request->email)->first();
-
-        if($otp){
-            $user=User::where("email",$otp->email)->first();
-
-            if($user->email_verified_at){
-                return response()->json([
-                    "message" => "تم تفعيل حسابك من قبل",
-                    "data" => $user,
-                ]);
-            }
-
-            $user->update([
-                "email_verified_at" => now()
-            ]);
-
-            $otp->delete();
-
-            return response()->json([
-                "message" => "تم تفعيل حسابك بنجاح",
-                "data" => $user,
-            ]);
-        }else{
-            return response()->json([
-                "message" => "عفوا حدث خطا قم بتالتاكد من الرقم قبل الارسال",
-                "success" => false,
-                "status" => 404
-            ],404);
-        }
-    }
-
     public function logout() {
         auth("api")->logout();
 
@@ -186,15 +108,6 @@ class AuthMobileController extends Controller
         return $this->createNewToken(auth("api")->refresh());
     }
 
-    /**
-     * @SWG\Get(
-     *     path="/profile",
-     *     summary="Get profile of auth user",
-     *     tags={"Users"},
-     *     @SWG\Response(response=200, description="Successful operation"),
-     *     @SWG\Response(response=400, description="Invalid request")
-     * )
-    */
     public function userProfile() {
         return response()->json(auth("api")->user());
     }

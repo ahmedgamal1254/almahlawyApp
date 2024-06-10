@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Middleware\AuthMobileTeacher;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\LessonController as ApiLessonController;
 use App\Http\Controllers\Api\PostController as ApiPostController;
@@ -8,20 +7,23 @@ use App\Http\Controllers\Api\{
     TeacherController,
     TeacherAuthMobileController,
     SchoolGradeController,
-    ProfileController,
     MonthController,
     MediaController,
     GroupController,
     GovernmnetController,
     ExamController,
-    AuthMobileController,
     FreeBookController,
     FreeCourcesController,
-    FreeExamController,
     NotificationController,
     RechargeWalletController,
+};
+
+use App\Http\Controllers\APi\Auth\{
+    VerifyEmailController,
     ResetPasswordController,
-    UpdatePasswordController
+    UpdatePasswordController,
+    ProfileController,
+    AuthController
 };
 use Illuminate\Support\Facades\DB;
 
@@ -41,14 +43,25 @@ Route::get("givernments",[GovernmnetController::class,'index']);
 Route::group([
     'prefix' => 'auth'
 ],function ($router) {
-    Route::post('/login', [AuthMobileController::class, 'login']);
-    Route::post('/register', [AuthMobileController::class, 'register']);
-    Route::post('/resend-otp', [AuthMobileController::class, 'resend_otp']);
-    Route::post('/register-otp', [AuthMobileController::class, 'register_otp']);
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register']);
+});
+
+// verify email  send otp and verify email
+Route::group([
+    "prefix" => "auth"
+],function ($router){
+    Route::post("/send-otp",[VerifyEmailController::class,"send_otp"]);
+    Route::post("/verify-email",[VerifyEmailController::class,"verify_email"]);
+});
+
+// reset and update password
+Route::group([
+    "prefix" => "auth"
+],function ($router){
     Route::post("/reset-password",[ResetPasswordController::class,"store"]);
     Route::post("/check-code",[UpdatePasswordController::class,"check_code"]);
     Route::post("/update-password",[UpdatePasswordController::class,"store"]);
-
 });
 
 Route::group([
@@ -56,10 +69,10 @@ Route::group([
     'prefix' => 'auth'
 
 ], function ($router) {
-    Route::post('/logout', [AuthMobileController::class, 'logout']);
-    Route::post('/refresh', [AuthMobileController::class, 'refresh']);
-    Route::get('/user-profile', [AuthMobileController::class, 'userProfile']);
-    Route::post('/update-profile', [AuthMobileController::class, 'update']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/refresh', [AuthController::class, 'refresh']);
+    Route::get('/user-profile', [AuthController::class, 'userProfile']);
+    Route::post('/update-profile', [AuthController::class, 'update']);
 });
 
 // all posts which user ==> school_grade_id
