@@ -165,7 +165,7 @@ class FreeVideosController extends Controller
 
             FreeVideos::find($id)->delete();
 
-            return redirect()->route("lessons")->with('message','تم حذف الدرس بنجاح');
+            return redirect()->route("free-lessons")->with('message','تم حذف الدرس بنجاح');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }

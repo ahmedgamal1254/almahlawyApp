@@ -15,13 +15,14 @@ class UpdatePasswordController extends Controller
     public function check_code(Request $request){
         $validator=Validator::make($request->all(),[
             'pin_code' => ['required', "digits_between:5,7","numeric"],
+            "email" => ["required","email","exists:password_reset_tokens,email"]
         ]);
 
         if($validator->fails()){
             return response()->json($validator->errors(), 422);
         }
 
-        $code=DB::table("password_reset_tokens")->where("pin_code",$request->pin_code)->first();
+        $code=DB::table("password_reset_tokens")->where("pin_code",$request->pin_code)->where("email",$request->email)->first();
 
         if($code){
             $expire_at=Carbon::createFromFormat('Y-m-d H:i:s', $code->expired_at);

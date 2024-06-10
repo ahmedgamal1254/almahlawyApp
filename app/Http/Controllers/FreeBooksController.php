@@ -153,7 +153,7 @@ class FreeBooksController extends Controller
             $book->teacher_id=Auth::guard('teacher')->user()->id;
             $book->save();
 
-            return redirect()->route("books")->with('message','تم الحفظ بنجاح');
+            return redirect()->route("free-books")->with('message','تم الحفظ بنجاح');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }

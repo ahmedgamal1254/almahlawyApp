@@ -57,7 +57,7 @@ class ResetPasswordController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
-                "message" => "An error occurred while sending the reset email. Please try again.",
+                "message" => "An error occurred while sending the reset email. Please try again. ",
                 "success" => false
             ], 500);
         }
