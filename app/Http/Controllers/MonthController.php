@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MonthRequest;
+use App\Http\Requests\UpdateMonthRequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Month;
@@ -149,7 +150,7 @@ class MonthController extends Controller
         }
     }
 
-    public function update(MonthRequest $request){
+    public function update(UpdateMonthRequest $request){
         $date = Carbon::parse($request->month);
         $month_en = $date->monthName;
         $month_ar = $date->locale('ar')->monthName;
@@ -200,6 +201,7 @@ class MonthController extends Controller
                 $month->month_name_ar=$month_ar;
                 $month->month_description=$request->description;
                 $month->cost=$request->cost;
+                $month->status=0;
                 $month->orderValue=$request->orderValue;
                 $month->teacher_id=Auth::guard("teacher")->user()->id;
                 $month->save();

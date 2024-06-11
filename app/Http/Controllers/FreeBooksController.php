@@ -1,8 +1,10 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreFreeBookRequest;
 use App\Models\Media;
 use App\Http\Requests\StoreMediaRequest;
+use App\Http\Requests\UpdateFreeBookRequest;
 use App\Http\Requests\UpdateMediaRequest;
 use App\Models\FreeBooks;
 use Illuminate\Support\Facades\DB;
@@ -10,6 +12,7 @@ use App\Traits\{Upload,MakeDate};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\UploadLarageFile;
+use Exception;
 
 class FreeBooksController extends Controller
 {
@@ -22,6 +25,7 @@ class FreeBooksController extends Controller
             ->join('subjects', 'free_books.subject_id', '=', 'subjects.id')
             ->select('free_books.*', 'subjects.title as subject_name', 'school_grades.name as school_grade')
             ->where("free_books.teacher_id","=",Auth::guard('teacher')->user()->id)
+            ->whereNull("free_books.deleted_at")
             ->orderByDesc("created_at")
             ->paginate(10);
 
@@ -44,9 +48,8 @@ class FreeBooksController extends Controller
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
     }
-    public function store(Request $request)
+    public function store(StoreFreeBookRequest $request)
     {
-        // return $request->all();
         try {
             $caption=Null;
             if($request->file("img")){
@@ -61,7 +64,6 @@ class FreeBooksController extends Controller
             $book->unit_id=$request->unit_id;
             $book->school_grade_id=$request->school_grade_id;
             $book->subject_id=Auth::guard('teacher')->user()->subject_id;
-            $book->media_url=$request->url;
             $book->teacher_id=Auth::guard('teacher')->user()->id;
             $book->save();
 
@@ -104,38 +106,33 @@ class FreeBooksController extends Controller
     {
         try {
             $book=DB::table('free_books')
-                ->join('school_grades', 'media.school_grade_id', '=', 'school_grades.id')
-                ->join('subjects', 'media.subject_id', '=', 'subjects.id')
-                ->select('media.*', 'subjects.title as subject_name', 'school_grades.name as school_grade')
-                ->where('media.id','=',$id)
+                ->join('school_grades', 'free_books.school_grade_id', '=', 'school_grades.id')
+                ->join('subjects', 'free_books.subject_id', '=', 'subjects.id')
+                ->select('free_books.*', 'subjects.title as subject_name', 'school_grades.name as school_grade')
+                ->where('free_books.id','=',$id)
                 ->first();
 
             return view("Teacher.free-books.show",compact("book"));
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+            echo $th->getMessage();
+            // return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
     }
     public function edit($id)
     {
         try {
             $school_grades=DB::table("school_grades")->where("deleted_at","=",null)->get();
-            $subjects=DB::table("subjects")->where("deleted_at","=",null)->where("teacher_id","=",Auth::guard("teacher")->user()->id)->get();
+            $units=DB::table("units")->get();
             $book=FreeBooks::findOrFail($id);
 
-            return view("Teacher.free-books.edit",compact("school_grades","subjects","book"));
+            return view("Teacher.free-books.edit",compact("school_grades","units","book"));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
     }
-    public function update(UpdateMediaRequest $request)
+    public function update(UpdateFreeBookRequest $request)
     {
         try {
-            $file=Null;
-            if($request->file("pdf")){
-                // image upload name must img
-                $file=$this->pdf_upload($request,'books');
-            }
-
             $caption=Null;
             if($request->file("img")){
                 // image upload name must img
@@ -146,10 +143,8 @@ class FreeBooksController extends Controller
             $book->title=$request->title;
             $book->description=$request->description;
             $book->school_grade_id=$request->school_grade_id;
-            $book->date_show=$this->make_date($request->date_show);
             $book->subject_id=Auth::guard('teacher')->user()->subject_id;
-            $book->media_url=$file == null ? $request->book_url : $file;
-            $book->caption=$caption == null ? $request->book_caption : $caption;
+            $book->cover=$caption == null ? $request->book_caption : $caption;
             $book->teacher_id=Auth::guard('teacher')->user()->id;
             $book->save();
 
@@ -158,9 +153,17 @@ class FreeBooksController extends Controller
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
     }
-    public function destroy(Media $media)
+    public function destroy($id)
     {
-        //
+        try{
+            $parent = FreeBooks::findOrFail($id);
+
+            $parent->delete();
+
+            return redirect()->route("free-books")->with('message','تم الحذف بنجاح');
+        }catch(Exception $th){
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+        }
     }
 
     public function download($id){

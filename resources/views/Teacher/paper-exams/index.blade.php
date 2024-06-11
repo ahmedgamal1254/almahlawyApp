@@ -31,13 +31,14 @@
                             <x-operation
                                 :edit="route('teacher.paper-exams.edit',['id'=>$exam->id])"
                                 :delete="route('teacher.paper-exams.destroy',['id'=>$exam->id])"
+                                :view="route('teacher.paper-exams.show',['id'=>$exam->id])"
                                 :id="$exam->id">
                             </x-operation>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center">
+                        <td colspan="6" class="text-center">
                             <div class="alert alert-danger">
                                 <span class="message_not_found">لا توجد امتحانات بعد</span>
                             </div>

@@ -22,8 +22,8 @@ class StoreUnitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required',"string"],
-            "school_grade_id" => 'required',
+            'title' => ['required',"string","unique:units,title"],
+            "school_grade_id" => 'required|numeric|exists:school_grades,id',
         ];
     }
 

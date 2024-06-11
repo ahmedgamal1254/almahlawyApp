@@ -13,9 +13,7 @@
                     <fieldset class="form-group position-relative has-icon-left mb-0">
                         <input type="text" name="name" class="form-control form-control-lg input-lg"
                         value="{{ $vrsession->name }}" id="name" placeholder="أدخل اسم الحصة">
-                        <div class="form-control-position">
-                            <i class="fa fa-school"></i>
-                        </div>
+                        
                         @error("name")
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -82,7 +80,7 @@
                 <div class="col-6">
                     <fieldset class="form-group position-relative has-icon-left mb-1">
                         <label for="desc">أدخل اسم المرحلة الدراسية</label>
-                        <select name="school_grade_id" id="" class="form-control form-control-lg">
+                        <select name="school_grade_id" id="school_grades" class="form-control form-control-lg">
                             <option value="">أدخل اسم المرحلة الدراسية</option>
                             @forelse ($school_grades as $school_grade)
                                 <option
@@ -101,7 +99,7 @@
                 <div class="col-6">
                     <fieldset class="form-group position-relative has-icon-left mb-0">
                         <label for="desc">أدخل الفصول الدراسية</label>
-                        <select name="unit_id" id="" class="form-control form-control-lg">
+                        <select name="unit_id" id="units" class="form-control form-control-lg">
                             <option value="">أدخل  الفصول الدراسية</option>
                             @forelse ($units as $unit)
                                 <option

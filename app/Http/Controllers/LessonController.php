@@ -101,6 +101,10 @@ class LessonController extends Controller
             ->where('lessons.id','=',$id)
             ->first();
 
+            if(!$lesson){
+                return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+            }
+
             return view("Teacher.lessons.show",compact("lesson"));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");

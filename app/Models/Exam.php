@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Exam extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
 
     protected $fillable=[
         'code',
@@ -29,13 +30,5 @@ class Exam extends Model
 
     public function questions(){
         return $this->belongsToMany(Question::class,"question_exams");
-    }
-
-    public function delete()
-    {
-        $this->questions()->detach();
-        $this->users()->detach();
-
-        return parent::delete();
     }
 }

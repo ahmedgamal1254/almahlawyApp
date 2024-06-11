@@ -29,6 +29,7 @@ class FreeVideosController extends Controller
             ->leftJoin('units', 'free_videos.unit_id', '=', 'units.id')
             ->select('free_videos.*',"units.title as unit_name", 'school_grades.name as school_grade')
             ->where("free_videos.teacher_id","=",Auth::guard('teacher')->user()->id)
+            ->whereNull("free_videos.deleted_at")
             ->orderByDesc("created_at")
             ->paginate(5);
 
@@ -93,6 +94,10 @@ class FreeVideosController extends Controller
             ->select('free_videos.*', 'units.title as unit_name', 'school_grades.name as school_grade')
             ->where('free_videos.id','=',$id)
             ->first();
+
+            if(!$lesson){
+                return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+            }
 
             return view("Teacher.free-lessons.show",compact("lesson"));
         } catch (\Throwable $th) {

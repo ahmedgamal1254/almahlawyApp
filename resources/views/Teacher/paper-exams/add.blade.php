@@ -61,25 +61,6 @@
                         <embed src="" class="d-none" id="pdf_display">
                     </fieldset>
                 </div>
-
-                <div class="col-6">
-                    <fieldset class="form-group position-relative has-icon-left mb-0">
-                        <label for="desc">أدخل اسم المرحلة الدراسية</label>
-                        <select name="school_grade_id" id="" class="form-control form-control-lg">
-                            <option value="">أدخل اسم المرحلة الدراسية</option>
-                            @forelse ($school_grades as $school_grade)
-                                <option
-                                @if(old("school_grade_id") == $school_grade->id) selected @endif
-                                value="{{ $school_grade->id }}">{{ $school_grade->name }}</option>
-                            @empty
-                            <option value="0">لا توجد مراحل دراسية بعد</option>
-                            @endforelse
-                        </select>
-                        @error("school_grade_id")
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </fieldset>
-                </div>
             </div>
             <button type="submit" class="btn btn-primary mt-1">ارسال</button>
         </form>

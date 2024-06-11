@@ -17,7 +17,7 @@ class VrSessionController extends Controller
     public function index()
     {
         try {
-            $vrsession=VRSession::with("school_grade","unit")->paginate(15);
+            $vrsession=VRSession::with("school_grade","unit")->orderByDesc("id")->paginate(15);
 
             return view("Teacher.vrsessions.index",compact("vrsession"));
         } catch (\Throwable $th) {

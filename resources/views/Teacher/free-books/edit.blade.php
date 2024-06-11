@@ -36,7 +36,7 @@
                                     <input type="hidden" name="id" value="{{ $book->id }}">
 
                                     <div class="row">
-                                        <div class="col-6">
+                                        <div class="col-12">
                                             <fieldset class="form-group position-relative has-icon-left mb-0">
                                                 <input type="text" name="title"
                                                        class="form-control form-control-lg input-lg"
@@ -47,7 +47,7 @@
                                             </fieldset>
                                         </div>
 
-                                        <div class="col-6">
+                                        <div class="col-12">
                                             <fieldset class="form-group position-relative has-icon-left mb-0">
                                                 <label for="desc">أدخل وصف الكتاب</label>
                                                 <textarea type="text" name="description" id="desc" cols="30" rows="10"
@@ -60,10 +60,13 @@
                                         </div>
                                     </div>
 
-                                    <input type="hidden" name="book_caption" value="{{ $book->caption }}">
+                                    <input type="hidden" name="book_caption" value="{{ $book->cover }}">
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="pdf">أرفع صورة مصغرة الكتاب</label>
                                         <input class="form-control form-control-lg" id="img" name="img" type="file">
+                                        @if ($book->cover)
+                                        <img src="{{ asset("public/app/" . $book->cover) }}" alt="">
+                                        @endif
                                         @error("img")
                                             <span class="text-errpr">{{ $message }}</span>
                                         @enderror
@@ -73,7 +76,7 @@
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="desc">أدخل اسم المرحلة الدراسية</label>
-                                        <select name="school_grade_id" id="" class="form-control form-control-lg">
+                                        <select name="school_grade_id" id="school_grades" class="form-control form-control-lg">
                                             <option value="">أدخل اسم المرحلة الدراسية</option>
                                             @forelse ($school_grades as $school_grade)
                                             <option
@@ -91,7 +94,7 @@
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="desc">أدخل اسم الفصل (الشابتر) </label>
-                                        <select name="unit_id" id="" class="form-control form-control-lg">
+                                        <select name="unit_id" id="units" class="form-control form-control-lg">
                                             <option value="">أدخل اسم الفصل (الشابتر) </option>
                                             @forelse ($units as $unit)
                                                 <option

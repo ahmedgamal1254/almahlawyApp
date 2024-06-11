@@ -24,11 +24,11 @@ class StoreExamRequest extends FormRequest
         return [
             "title" => ["required","string","unique:exams,title"],
             "count_question" => ["required","numeric"],
-            'duration' => ['required'],
+            'duration' => ['required',"numeric"],
             "date_exam" => ["required","date"],
             'time_start' => ['required'],
             'time_end' => ['required'],
-            'school_grade_id' => ["required"],
+            'school_grade_id' => ["required","numeric","exists:school_grades,id"],
             "units" => ["required","array"]
         ];
     }

@@ -23,7 +23,7 @@ class MonthRequest extends FormRequest
     {
         return [
             'cost'=>'required|numeric',
-            'month' => 'required'
+            'month' => 'required|string|unique:months,month_date'
         ];
     }
 

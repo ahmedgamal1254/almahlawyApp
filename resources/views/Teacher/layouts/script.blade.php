@@ -28,6 +28,38 @@
 {{-- <script src="{{ asset("assets/teacher_assets/app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js")}}"></script> --}}
 <script src="{{ asset("assets/teacher_assets/app-assets/js/scripts/charts/chart-chartjs.min.js")}}"></script>
 <script src="{{ asset("assets/teacher_assets/app-assets/js/scripts/tables/table-template.js")}}"></script>
+<script>
+    try {
+        let url="{{ env("APP_URL") }}"
+
+        var element = document.getElementById("school_grades");
+        element.addEventListener('change', function (){
+            var school_grade=document.getElementById("school_grades").value
+
+            let units=document.getElementById("units")
+            units.innerHTML=""
+            units.innerHTML+=`<option value="">اختر الفصل (الشابتر)</option>`
+            $.ajax({
+                url:  url + "/teachers/school_grade/" + school_grade + "/units",
+                type: 'get',
+
+                success: function(data) {
+                    console.log(data)
+
+                    data.forEach(ele => {
+                        units.innerHTML+=`<option value="${ele.id}">${ele.title}</option>`
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    // Handle any errors
+                    console.log('Error:', textStatus, errorThrown);
+                },
+            });
+        });
+    } catch (error) {
+
+    }
+</script>
     <script>
         $(window).on('load', function() {
             if (feather) {

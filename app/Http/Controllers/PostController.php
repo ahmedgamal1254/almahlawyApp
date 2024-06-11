@@ -22,9 +22,10 @@ class PostController extends Controller
         try {
             $posts=DB::table('posts')
             ->join('school_grades', 'posts.school_grade_id', '=', 'school_grades.id')
-            ->join('subjects', 'posts.subject_id', '=', 'subjects.id')
-            ->select('posts.*', 'subjects.title as subject_name', 'school_grades.name as school_grade')
+            ->join('units', 'posts.unit_id', '=', 'units.id')
+            ->select('posts.*', 'units.title as subject_name', 'school_grades.name as school_grade')
             ->where("posts.teacher_id","=",Auth::guard('teacher')->user()->id)
+            ->whereNull("posts.deleted_at")
             ->orderByDesc("created_at")
             ->paginate(10);
 
@@ -38,9 +39,9 @@ class PostController extends Controller
     {
         try {
             $school_grades=DB::table("school_grades")->where("deleted_at","=",null)->get();
-            $subjects=DB::table("subjects")->where("deleted_at","=",null)->where("teacher_id","=",Auth::guard("teacher")->user()->id)->get();
+            $units=DB::table("units")->where("deleted_at","=",null)->get();
 
-            return view("Teacher.posts.add",compact("school_grades","subjects"));
+            return view("Teacher.posts.add",compact("school_grades","units"));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
@@ -60,7 +61,7 @@ class PostController extends Controller
             $post->description=$request->description;
             $post->image_url=$file;
             $post->school_grade_id=$request->school_grade_id;
-            $post->subject_id=Auth::guard('teacher')->user()->subject_id;
+            $post->unit_id=$request->unit_id;
             $post->teacher_id=Auth::guard('teacher')->user()->id;
             $post->save();
 
@@ -80,7 +81,7 @@ class PostController extends Controller
         try {
             $post=DB::table('posts')
             ->join('school_grades', 'posts.school_grade_id', '=', 'school_grades.id')
-            ->join('subjects', 'posts.subject_id', '=', 'subjects.id')
+            ->join('units', 'posts.unit_id', '=', 'units.id')
             ->select('posts.*', 'subjects.title as subject_name', 'school_grades.name as school_grade')
             ->where('posts.id','=',$id)
             ->first();
@@ -100,7 +101,7 @@ class PostController extends Controller
     {
         try {
             $school_grades=DB::table("school_grades")->where("deleted_at","=",null)->get();
-            $subjects=DB::table("subjects")->where("deleted_at","=",null)->where("teacher_id","=",Auth::guard("teacher")->user()->id)->get();
+            $units=DB::table("units")->where("deleted_at","=",null)->get();
             $post=Post::findOrFail($id);
 
             if (!$post) {
@@ -108,7 +109,7 @@ class PostController extends Controller
                 return redirect()->back()->with('error', 'هذا المنشور غير موجود' . $id);
             }
 
-            return view("Teacher.posts.edit",compact("school_grades","subjects","post"));
+            return view("Teacher.posts.edit",compact("school_grades","units","post"));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
@@ -127,7 +128,7 @@ class PostController extends Controller
                 $post->description=$request->description;
                 $post->image_url=$file;
                 $post->school_grade_id=$request->school_grade_id;
-                $post->subject_id=Auth::guard('teacher')->user()->subject_id;
+                $post->unit_id=$request->unit_id;
                 $post->teacher_id=Auth::guard('teacher')->user()->id;
                 $post->save();
 
@@ -136,7 +137,7 @@ class PostController extends Controller
                 $post->title=$request->title;
                 $post->description=$request->description;
                 $post->school_grade_id=$request->school_grade_id;
-                $post->subject_id=Auth::guard('teacher')->user()->subject_id;
+                $post->unit_id=$request->unit_id;
                 $post->teacher_id=Auth::guard('teacher')->user()->id;
                 $post->save();
             }

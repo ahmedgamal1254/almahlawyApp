@@ -38,11 +38,9 @@
                                         <input type="text" name="title"
                                                class="form-control form-control-lg input-lg"
                                                value="{{ old("title") }}" id="email" placeholder="أدخل اسم الكتاب او الملخص">
-                                        <div class="form-control-position">
-                                            <i class="fa fa-school"></i>
-                                        </div>
+
                                         @error("tilte")
-                                            <span class="text-errpr">{{ $message }}</span>
+                                            <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
 
@@ -52,7 +50,7 @@
                                                class="form-control form-control-lg input-lg"
                                                value="" id="email" placeholder="أدخل وصف الكتاب او الملخص">{{ old("description") }}</textarea>
                                         @error("description")
-                                            <span class="text-errpr">{{ $message }}</span>
+                                            <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
 
@@ -61,7 +59,7 @@
                                         <input class="form-control form-control-lg" id="img"
                                         name="img" type="file">
                                         @error("img")
-                                            <span class="text-errpr">{{ $message }}</span>
+                                            <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
 
@@ -69,7 +67,7 @@
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="desc">أدخل اسم المرحلة الدراسية</label>
-                                        <select name="school_grade_id" id="" class="form-control form-control-lg">
+                                        <select name="school_grade_id" id="school_grades" class="form-control form-control-lg">
                                             <option value="">أدخل اسم المرحلة الدراسية</option>
                                             @forelse ($school_grades as $school_grade)
                                             <option
@@ -80,14 +78,14 @@
                                             @endforelse
                                         </select>
                                         @error("school_grade_id")
-                                            <span class="text-errpr">{{ $message }}</span>
+                                            <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
 
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="desc">أدخل اسم الفصل (الشابتر) </label>
-                                        <select name="unit_id" id="" class="form-control form-control-lg">
+                                        <select name="unit_id" id="units" class="form-control form-control-lg">
                                             <option value="">أدخل اسم الفصل (الشابتر) </option>
                                             @forelse ($units as $unit)
                                                 <option
@@ -99,7 +97,7 @@
                                         </select>
 
                                         @error("unit_id")
-                                            <span class="text-errpr">{{ $message }}</span>
+                                            <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
 
@@ -113,4 +111,35 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('script')
+    <script>
+        let url="{{ env("APP_URL") }}"
+
+        var element = document.getElementById("school_grades");
+        element.addEventListener('change', function (){
+            var school_grade=document.getElementById("school_grades").value
+
+            let units=document.getElementById("units")
+            units.innerHTML=""
+
+            $.ajax({
+                url:  url + "/teachers/school_grade/" + school_grade + "/units",
+                type: 'get',
+
+                success: function(data) {
+                    console.log(data)
+
+                    data.forEach(ele => {
+                        units.innerHTML+=`<option value="${ele.id}">${ele.title}</option>`
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    // Handle any errors
+                    console.log('Error:', textStatus, errorThrown);
+                },
+            });
+        });
+    </script>
 @endsection

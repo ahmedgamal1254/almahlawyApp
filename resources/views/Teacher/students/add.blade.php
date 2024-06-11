@@ -48,7 +48,7 @@
                                             <!-- upload and reset button -->
                                             <div class="media-body mt-75 ml-1">
                                                 <label for="account-upload" class="btn btn-sm btn-primary mb-75 mr-75">رفع صورة</label>
-                                                <input type="file" name="img" id="account-upload" hidden accept="image/*" />
+                                                <input type="file" onchange="loadFile(event)" name="img" id="account-upload" hidden accept="image/*" />
                                                 <p>نوع الصور المسموح بها ( JPG , PNG , JPEG )</p>
                                             </div>
                                             <!--/ upload and reset button -->
@@ -223,4 +223,16 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section("script")
+<script>
+    var loadFile = function(event) {
+        var output = document.getElementById('account-upload-img');
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.onload = function() {
+            URL.revokeObjectURL(output.src) // free memory
+        }
+    };
+</script>
 @endsection

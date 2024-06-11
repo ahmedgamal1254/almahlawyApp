@@ -40,18 +40,18 @@
                                         <div class="media">
                                             <a href="javascript:void(0);" class="mr-25">
                                                 <img
-                                                src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-                                                id="account-upload-img"
-                                                class="rounded mr-50"
-                                                alt="profile image"
-                                                height="80"
-                                                width="80"
+                                                    src="{{ $student->profile?asset("public/app/".$student->profile):"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" }}"
+                                                    id="account-upload-img"
+                                                    class="rounded mr-50"
+                                                    alt="profile image"
+                                                    height="80"
+                                                    width="80"
                                                 />
                                             </a>
                                             <!-- upload and reset button -->
                                             <div class="media-body mt-75 ml-1">
                                                 <label for="account-upload" class="btn btn-sm btn-primary mb-75 mr-75">رفع صورة</label>
-                                                <input type="file" name="img" id="account-upload" hidden accept="image/*" />
+                                                <input type="file" onchange="loadFile(event)" name="img" id="account-upload" hidden accept="image/*" />
                                                 <p>نوع الصور المسموح بها ( JPG , PNG , JPEG )</p>
                                             </div>
 
@@ -215,4 +215,16 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section("script")
+<script>
+    var loadFile = function(event) {
+        var output = document.getElementById('account-upload-img');
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.onload = function() {
+            URL.revokeObjectURL(output.src) // free memory
+        }
+    };
+</script>
 @endsection

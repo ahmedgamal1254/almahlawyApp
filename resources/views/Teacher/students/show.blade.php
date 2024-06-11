@@ -63,12 +63,6 @@
                         <td>{{ $student->all_points }}</td>
                     </tr>
                     <tr>
-                        <td>مجموع النقاط</td>
-                        <td>:</td>
-                        <td>{{ $student->points }}</td>
-                    </tr>
-
-                    <tr>
                         <td>تم الاضافة</td>
                         <td>:</td>
                         <td>{{ $diff = Carbon\Carbon::parse($student->created_at)->diffForHumans(Carbon\Carbon::now()) }}</td>

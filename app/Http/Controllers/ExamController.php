@@ -26,6 +26,7 @@ class ExamController extends Controller
             ->join('subjects', 'exams.subject_id', '=', 'subjects.id')
             ->select('exams.*', 'subjects.title as subject_name', 'school_grades.name as school_grade')
             ->where("exams.teacher_id","=",Auth::guard('teacher')->user()->id)
+            ->whereNull("exams.deleted_at")
             ->orderByDesc("created_at")
             ->paginate(10);
 
@@ -133,7 +134,6 @@ class ExamController extends Controller
     {
         try {
             $school_grades=DB::table("school_grades")->where("deleted_at","=",null)->get();
-            $units=DB::table("units")->where("teacher_id","=",Auth::guard("teacher")->user()->id)->get();
             $exam=Exam::findOrFail($id);
 
             if (!$exam) {
@@ -141,7 +141,10 @@ class ExamController extends Controller
                 return back()->with('error', 'هذا الامتحان غير موجود' . $id);
             }
 
-            return view("Teacher.exams.edit",compact("school_grades","units","exam"));
+            $units_in_exam=DB::table("units")->whereIn("id",explode(",",$exam->units_id))->get();
+            $units=DB::table("units")->get();
+
+            return view("Teacher.exams.edit",compact("school_grades","units","units_in_exam","exam"));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
@@ -152,11 +155,9 @@ class ExamController extends Controller
         try {
             // return $request->all();
             $data='';
-            foreach ($request->all() as $key => $value) {
-                if(str_contains($key, 'unit')){
-                    $data.=$value;
-                    $data.=',';
-                }
+            foreach ($request->units as $unit) {
+                $data.=$unit;
+                $data.=',';
             }
 
             $exam=Exam::find($request->id);
@@ -181,20 +182,28 @@ class ExamController extends Controller
 
     public function destroy($id)
     {
-        $exam = Exam::findOrFail($id);
-        $exam->delete();
+        try {
+            $exam = Exam::findOrFail($id);
+            $exam->delete();
 
-        return redirect()->route("exams")->with('message','تم الحذف بنجاح');
+            return redirect()->route("exams")->with('message','تم الحذف بنجاح');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+        }
     }
 
     public function printExam($id)
     {
-        $exam = Exam::with('questions',"stage")->findOrFail($id);
+        try {
+            $exam = Exam::with('questions',"stage")->findOrFail($id);
 
-        $alphabet=["a","b","c","d","e","f"];
+            $alphabet=["a","b","c","d","e","f"];
 
-        $pdf = PDF::loadView('Teacher.exams.print', ['exam' => $exam,"chars"=>$alphabet]);
+            $pdf = PDF::loadView('Teacher.exams.print', ['exam' => $exam,"chars"=>$alphabet]);
 
-        return $pdf->stream('document.pdf');
+            return $pdf->stream('document.pdf');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+        }
     }
 }

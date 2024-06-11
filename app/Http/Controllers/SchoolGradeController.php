@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\
     {
     ClassStudy,
-    SchoolGrade,User
+    SchoolGrade, Unit, User
     };
 use App\Http\Requests\StoreSchoolGradeRequest;
 use App\Http\Requests\UpdateSchoolGradeRequest;
@@ -39,7 +39,7 @@ class SchoolGradeController extends Controller
     public function students($school_grade_id){
         try {
 
-            $students=User::with('group','schoolgrade')->where("school_grade_id","=",$school_grade_id)->get();
+            $students=User::with('group','schoolgrade')->where("school_grade_id","=",$school_grade_id)->orderByDesc("id")->get();
 
             return view("Teacher.school_grade.students",compact("students"));
         } catch (\Throwable $th) {
@@ -47,12 +47,28 @@ class SchoolGradeController extends Controller
         }
     }
 
-    public function groups($school_grade_id){
+    public function groups($school_grade_id,Request $request){
         try {
             $classes = ClassStudy::where("school_grade_id",$school_grade_id)
             ->withCount("students")->with("school_grade:id,name")->paginate(10);
 
+
+            if($request->ajax()){
+                return response()->json(ClassStudy::where("school_grade_id",$school_grade_id)->get(),200);
+            }
+
             return view("Teacher.classes.index",compact("classes"));
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+        }
+    }
+
+    public function units($school_grade_id,Request $request){
+        try {
+            if($request->ajax()){
+                return response()->json(Unit::where("school_grade_id",$school_grade_id)->get(),200);
+            }
+
         } catch (\Throwable $th) {
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
@@ -148,7 +164,7 @@ class SchoolGradeController extends Controller
                 return redirect()->back()->with('error', 'هذا الصف الدراسى غير موجود غير موجود' . $id);
             }
 
-            SchoolGrade::find($id)->delete();
+            $school_grade->delete();
 
             return redirect()->route("school_grade")->with('message','تم حذف الصف الدراسى بنجاح');
         } catch (\Throwable $th) {

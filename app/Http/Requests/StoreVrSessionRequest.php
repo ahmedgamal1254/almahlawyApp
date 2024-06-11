@@ -22,7 +22,7 @@ class StoreVrSessionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => "required|string",
+            "name" => "required|string|unique:sessionslive,name",
             "school_grade_id"=> "required|exists:school_grades,id",
             "unit_id"=> "required|exists:units,id",
             "serviceName"=> "required|exists:vr_services,name",

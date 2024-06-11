@@ -20,6 +20,7 @@ class QuestionController extends Controller
             ->join('units', 'questions.unit_id', '=', 'units.id')
             ->select('questions.*', 'units.title as unit_name', 'school_grades.name as school_grade')
             ->where("questions.teacher_id","=",Auth::guard('teacher')->user()->id)
+            ->whereNull("questions.deleted_at")
             ->orderByDesc("id")
             ->paginate(15);
 
@@ -110,62 +111,75 @@ class QuestionController extends Controller
 
     public function edit($id)
     {
-        $school_grades=DB::table("school_grades")->where("deleted_at","=",null)->get();
-        $units=DB::table("units")->where("teacher_id","=",Auth::guard("teacher")->user()->id)->get();
+        try{
+            $school_grades=DB::table("school_grades")->where("deleted_at","=",null)->get();
+            $units=DB::table("units")->where("teacher_id","=",Auth::guard("teacher")->user()->id)->get();
 
-        $question=DB::table('questions')
-        ->join('school_grades', 'questions.school_grade_id', '=', 'school_grades.id')
-        ->join('units', 'questions.unit_id', '=', 'units.id')
-        ->select('questions.*', 'units.title as unit_name', 'school_grades.name as school_grade')
-        ->where('questions.id','=',$id)
-        ->first();
+            $question=DB::table('questions')
+            ->join('school_grades', 'questions.school_grade_id', '=', 'school_grades.id')
+            ->join('units', 'questions.unit_id', '=', 'units.id')
+            ->select('questions.*', 'units.title as unit_name', 'school_grades.name as school_grade')
+            ->where('questions.id','=',$id)
+            ->first();
 
-        if(!$question){
-            return redirect()->back()->with('error', 'هذا السؤال غير موجود' . $id);
+            if(!$question){
+                return redirect()->back()->with('error', 'هذا السؤال غير موجود' . $id);
+            }
+
+            return view("Teacher.questions.edit",compact("question","school_grades","units"));
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
-
-        return view("Teacher.questions.edit",compact("question","school_grades","units"));
     }
 
     public function update(UpdateQuestionRequest $request)
     {
-        $chooses=$request->chooses;
+        try{
+            $chooses=$request->chooses;
 
-        if($request->hasFile("img")){
-            $file=$this->image_upload($request,"questions");
-        }
+            if($request->hasFile("img")){
+                $file=$this->image_upload($request,"questions");
+            }
 
-        if($request->answer < array_count_values($chooses)){
-            $question=Question::find($request->id);
+            if($request->answer < array_count_values($chooses)){
+                $question=Question::find($request->id);
 
-            $question->update([
-                'name' => $request->title,
-                'type' => $request->type_question,
-                "type_question" => $request->type,
-                "img" => isset($file) ? $file:$request->old_image,
-                'title' => $request->title,
-                'description' => $request->description,
-                'chooses' => json_encode($chooses,JSON_UNESCAPED_UNICODE),
-                'answer' => $request->answer,
-                'degree' => $request->degree,
-                'subject_id' => Auth::guard("teacher")->user()->subject_id,
-                'school_grade_id' => $request->school_grade_id,
-                'unit_id' => $request->unit_id,
-                'teacher_id' => Auth::guard("teacher")->user()->id
-            ]);
+                $question->update([
+                    'name' => $request->title,
+                    'type' => $request->type_question,
+                    "type_question" => $request->type,
+                    "img" => isset($file) ? $file:$request->old_image,
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'chooses' => json_encode($chooses,JSON_UNESCAPED_UNICODE),
+                    'answer' => $request->answer,
+                    'degree' => $request->degree,
+                    'subject_id' => Auth::guard("teacher")->user()->subject_id,
+                    'school_grade_id' => $request->school_grade_id,
+                    'unit_id' => $request->unit_id,
+                    'teacher_id' => Auth::guard("teacher")->user()->id
+                ]);
 
-            return redirect()->route("questions")->with('message','تم الحفظ بنجاح');
+                return redirect()->route("questions")->with('message','تم الحفظ بنجاح');
 
-        }else{
-            return back()->with("warning","عفوا الاجابة المدخلة ليست من ضمن الاختيارات");
+            }else{
+                return back()->with("warning","عفوا الاجابة المدخلة ليست من ضمن الاختيارات");
+            }
+
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
     }
 
     public function destroy($id)
     {
-        $question = Question::findOrFail($id);
-        $question->delete();
+        try {
+            $question = Question::findOrFail($id);
+            $question->delete();
 
-        return redirect()->route("questions")->with('message','تم الحذف بنجاح');
+            return redirect()->route("questions")->with('message','تم الحذف بنجاح');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+        }
     }
 }

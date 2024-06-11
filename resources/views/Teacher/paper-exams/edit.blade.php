@@ -4,9 +4,10 @@
 <div class="app-content content">
     <div class="container">
         <div class="alert alert-primary p-2">الامتحانات الورقية</div>
-        <form action="{{ route("teacher.paper-exams.store") }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route("teacher.paper-exams.update") }}" method="post" enctype="multipart/form-data">
             @csrf
 
+            <input type="hidden" name="id" value="{{ $exam->id }}">
             <div class="row">
                 <div class="col-12">
                     <fieldset class="form-group position-relative has-icon-left mb-0">
@@ -50,25 +51,6 @@
                         <input type="file" name="exam" class="form-control" id="pdf" onchange="loadFile(event)">
                         <embed src="{{ asset("public/app/" . $exam->exam) }}" style="width: 100%;height: 600px;" id="pdf_display">
                         @error("exam")
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </fieldset>
-                </div>
-
-                <div class="col-6">
-                    <fieldset class="form-group position-relative has-icon-left mb-0">
-                        <label for="desc">أدخل اسم المرحلة الدراسية</label>
-                        <select name="school_grade_id" id="" class="form-control form-control-lg">
-                            <option value="">أدخل اسم المرحلة الدراسية</option>
-                            @forelse ($school_grades as $school_grade)
-                                <option
-                                @if($exam->school_grade_id == $school_grade->id) selected @endif
-                                value="{{ $school_grade->id }}">{{ $school_grade->name }}</option>
-                            @empty
-                            <option value="0">لا توجد مراحل دراسية بعد</option>
-                            @endforelse
-                        </select>
-                        @error("school_grade_id")
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </fieldset>

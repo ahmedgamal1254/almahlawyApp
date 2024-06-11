@@ -22,9 +22,9 @@ class StoreQuestionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'nullable|string',
+            'title' => 'nullable|string|unique:questions,title',
             "img" => "nullable|image|mimes:png,jpg,gif",
-            'num_of_questions' => "required",
+            'num_of_questions' => "required|numeric",
             'chooses' => ['required',"array","min:2"],
             "chooses.*"  => "required|string",
             'answer' => 'required',

@@ -17,7 +17,7 @@
                 <thead>
                     <tr>
                         <th>عنوان السؤال</th>
-                        <th>وصف السؤال</th>
+                        <th>صورة السؤال</th>
                         <th>احتيارات السؤال</th>
                         <th>اسم الوحدة</th>
                         <th>المرحلة الدراسية</th>
@@ -25,26 +25,7 @@
                     </tr>
                 </thead>
                 <tbody id="search_part">
-                    @forelse ($questions as $item)
-                    <tr>
-                        <td>{{ $item->name }}</td>
-                        <td>{{ $item->description }}</td>
-                        <td>
-                            {{ $item->answer }}
-                        </td>
-                        <td>{{ $item->unit_name }}</td>
-                        <td>{{ $item->school_grade }}</td>
-                        <td>
-                            <x-operation
-                                :edit="route('question.edit',['id'=>$item->id])"
-                                :view="route('question.show',['id'=>$item->id])"
-                                >
-                            </x-operation>
-                        </td>
-                    </tr>
-                    @empty
-                    <div class="alert alert-danger">لا توجد أسئلة دراسية بعد</div>
-                    @endforelse
+                    @include("Teacher.questions.load")
                 </tbody>
             </table>
 

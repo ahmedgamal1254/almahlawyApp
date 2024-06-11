@@ -45,7 +45,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center">
+                        <td colspan="6" class="text-center">
                             <div class="alert alert-danger">
                                 <span class="message_not_found">لا توجد كتب دراسية بعد</span>
                             </div>

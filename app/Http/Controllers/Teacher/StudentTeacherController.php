@@ -24,6 +24,7 @@ class StudentTeacherController extends Controller
             'school_grades.name as school_grade', DB::raw('SUM(exam_student.degree) AS points'))
             ->leftjoin("exam_student","exam_student.user_id","=","users.id")
             ->groupBy("users.id")
+            ->whereNull("users.deleted_at")
             ->orderByDesc("created_at")
             ->paginate(15);
 
@@ -32,7 +33,8 @@ class StudentTeacherController extends Controller
 
             return view("Teacher.students.index",compact("students","school_grades","groups"));
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+            echo $th->getMessage();
+            // return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
     }
 
@@ -155,6 +157,7 @@ class StudentTeacherController extends Controller
             User::create([
                 'name' => $request->name,
                 'email' => $request->email,
+                "email_verified_at" => now(),
                 'profile' => $file,
                 'password' => Hash::make($request->password),
                 'phonenumber' => $request->phonenumber,
@@ -166,7 +169,7 @@ class StudentTeacherController extends Controller
                 'group_id' => $request->group_id,
             ]);
 
-            return redirect()->route("teacher");
+            return redirect()->route("students")->with("success","تم الحفظ بنجاح");
         } catch (\Throwable $th) {
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
@@ -193,7 +196,7 @@ class StudentTeacherController extends Controller
 
 
     public function update_student(Request $request){
-        // try {
+        try {
             $request->validate([
                 'name' => ['required', 'string', 'max:255'],
                 'email' => ['required','email'],
@@ -226,10 +229,10 @@ class StudentTeacherController extends Controller
                 'group_id' => $request->group_id,
             ]);
 
-            return redirect()->route("teacher")->with('message','تم الحفظ بنجاح');
-        // } catch (\Throwable $th) {
-        //     return redirect()->back()->with('error',"عفوا حدث خطأ ما");
-        // }
+            return redirect()->route("students")->with("success","تم الحفظ بنجاح");
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+        }
     }
 
     public function show($id){

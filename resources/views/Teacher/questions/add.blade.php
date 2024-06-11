@@ -179,7 +179,7 @@
                                         <div class="col-6">
                                             <fieldset class="form-group position-relative has-icon-left mb-0">
                                                 <label for="desc">أدخل اسم المرحلة الدراسية</label>
-                                                <select name="school_grade_id" id="" class="form-control form-control-lg">
+                                                <select name="school_grade_id" id="school_grades" class="form-control form-control-lg">
                                                     <option value="">أدخل اسم المرحلة الدراسية</option>
                                                     @forelse ($school_grades as $school_grade)
                                                         <option
@@ -198,7 +198,7 @@
                                         <div class="col-6">
                                             <fieldset class="form-group position-relative has-icon-left mb-0">
                                                 <label for="desc">أدخل اسم الوحدة الدراسية</label>
-                                                <select name="unit_id" id="" class="form-control form-control-lg">
+                                                <select name="unit_id" id="units" class="form-control form-control-lg">
                                                     <option value="">أدخل اسم الوحدة الدراسية</option>
                                                     @forelse ($units as $unit)
                                                         <option
@@ -250,7 +250,7 @@
                             <label style="color: black;font-size:20px;margin-bottom:10px;">الاختيار ${index + 1}</label>
                             <textarea type="text" name="chooses[${index}]" id="desc" cols="30" rows="2"
                             class="form-control form-control-lg input-lg"
-                            value="" id="email" placeholder="الاختيار رقم  ${index + 2}">{{ old("chooses[index]") }}</textarea>
+                            value="" id="email" placeholder="الاختيار رقم  ${index + 1}">{{ old("chooses[index]") }}</textarea>
                         </fieldset>
                     </div>
                 </div>
@@ -290,6 +290,8 @@
             $(".type").addClass("d-none")
             $(`.type[data-type=${val}]`).removeClass("d-none")
         }
+
+
     </script>
     <script src="https://editor.codecogs.com/eqneditor.api.min.js" crossorigin="anonymous"></script>
     <script>

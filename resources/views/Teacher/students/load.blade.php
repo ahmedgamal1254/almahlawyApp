@@ -47,7 +47,7 @@
     </tr>
 @empty
     <tr>
-        <td colspan="7" class="text-center">
+        <td colspan="8" class="text-center">
             <div class="alert alert-danger">
                 <span class="message_not_found">
                     لا بوجد طلاب بعد

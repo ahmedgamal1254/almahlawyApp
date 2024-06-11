@@ -17,10 +17,7 @@
               <p class="card-text">وصف الكتاب :- {{ $book->description }}</p>
               <p class="card-text">اسم المرحلة الدراسية :- {{ $book->school_grade }}</p>
               <p class="card-text">اسم المادة الدراسية :- {{ $book->subject_name }}</p>
-                <p>وقت عرض الكتاب :-
-                    {{ Carbon\Carbon::createFromDate($book->date_show)->monthName }}
-                    {{ Carbon\Carbon::createFromDate($book->date_show)->year }}
-                </p>
+
               <x-operation
                 :edit="route('free-book.edit',['id'=>$book->id])"
                 :delete="route('free-book.destroy',['id'=>$book->id])"
@@ -30,7 +27,7 @@
         </div>
 
         <div class="card">
-            <a href="{{ $book->url }}" class="btn btn-primary">عرض الكتاب</a>
+            <a href="{{ $book->media_url }}" class="btn btn-primary">عرض الكتاب</a>
         </div>
 
         <a href="{{ route("free-books") }}" class="btn btn-primary">Show All <i class="fa fa-eye"></i></a>

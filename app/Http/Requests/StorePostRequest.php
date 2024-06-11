@@ -23,7 +23,7 @@ class StorePostRequest extends FormRequest
     {
         return [
             "title" => ['required',"string","unique:posts,title"],
-            "school_grade_id" => 'required',
+            "school_grade_id" => 'required|numeric|exists:school_grades,id',
         ];
     }
 

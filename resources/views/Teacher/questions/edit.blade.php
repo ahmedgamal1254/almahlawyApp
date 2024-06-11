@@ -148,7 +148,7 @@
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="desc">أدخل اسم المرحلة الدراسية</label>
-                                        <select name="school_grade_id" id="" class="form-control form-control-lg">
+                                        <select name="school_grade_id" id="school_grades" class="form-control form-control-lg">
                                             <option value="{{ $question->school_grade_id }}">أدخل اسم المرحلة الدراسية</option>
                                             @forelse ($school_grades as $school_grade)
                                                 <option
@@ -165,7 +165,7 @@
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="desc">أدخل اسم الوحدة الدراسية</label>
-                                        <select name="unit_id" id="" class="form-control form-control-lg">
+                                        <select name="unit_id" id="units" class="form-control form-control-lg">
                                             <option value="{{ $question->unit_id }}">أدخل اسم الوحدة الدراسية</option>
                                             @forelse ($units as $unit)
                                                 <option
@@ -216,5 +216,32 @@
             $(".type").addClass("d-none")
             $(`.type[data-type=${val}]`).removeClass("d-none")
         }
+
+        let url="{{ env("APP_URL") }}"
+
+        var element = document.getElementById("school_grades");
+        element.addEventListener('change', function (){
+            var school_grade=document.getElementById("school_grades").value
+
+            let units=document.getElementById("units")
+            units.innerHTML=""
+
+            $.ajax({
+                url:  url + "/teachers/school_grade/" + school_grade + "/units",
+                type: 'get',
+
+                success: function(data) {
+                    console.log(data)
+
+                    data.forEach(ele => {
+                        units.innerHTML+=`<option value="${ele.id}">${ele.title}</option>`
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    // Handle any errors
+                    console.log('Error:', textStatus, errorThrown);
+                },
+            });
+        });
 </script>
 @endsection

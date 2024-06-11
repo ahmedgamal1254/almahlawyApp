@@ -105,7 +105,7 @@
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="desc">أدخل اسم المرحلة الدراسية</label>
-                                        <select name="school_grade_id" id="" class="form-control form-control-lg">
+                                        <select name="school_grade_id" id="school_grades" class="form-control form-control-lg">
                                             <option value="">أدخل اسم المرحلة الدراسية</option>
                                             @forelse ($school_grades as $school_grade)
                                                 <option
@@ -137,7 +137,7 @@
                                             <input type="hidden" name="unit" />
                                             <input type="text" id="input-tag" placeholder="ابحص باسم الوحدة" />
                                         </div>
-                                        <select name="" id="select" class="form-control form-control-lg">
+                                        <select name="" id="units_exam" class="form-control form-control-lg">
                                             <option value="">أدخل اسم الوحدة</option>
                                             @forelse ($units as $unit)
                                                 <option value="{{ $unit->title }}" data-id="{{ $unit->id }}">{{ $unit->title }}</option>
@@ -171,14 +171,15 @@
 
 @section("script")
 <script>
+    let url="{{ env("APP_URL") }}"
 
     // Get the tags and input elements from the DOM
     const tags = document.getElementById('tags');
     const input = document.getElementById('input-tag');
-    const select = document.getElementById('select');
+    const select = document.getElementById('units_exam');
 
     // Add an event listener for keydown on the input element
-    select.addEventListener('change', function (event) {
+    select.addEventListener('input', function (event) {
         // Create a new list item element for the tag
         const tag = document.createElement('li');
 
@@ -212,8 +213,10 @@
 
     document.getElementById("input-tag").addEventListener("input",function (){
         val=document.getElementById("input-tag").value
-        selection=document.getElementById("select")
+        selection=document.getElementById("units_exam")
         selection.innerHTML=''
+        selection.innerHTML+=`<option value="">اختر الفصل (الشابتر)</option>`
+
         $.ajax({
             url:  "/teacher/units/search?search="+val,
             type: 'get',
@@ -233,5 +236,31 @@
             }
         });
     })
+
+    var element = document.getElementById("school_grades");
+    element.addEventListener('change', function (){
+        var school_grade=document.getElementById("school_grades").value
+
+        let units=document.getElementById("units_exam")
+        units.innerHTML=""
+        units.innerHTML+=`<option value="">اختر الفصل (الشابتر)</option>`
+
+        $.ajax({
+            url:  url + "/teachers/school_grade/" + school_grade + "/units",
+            type: 'get',
+
+            success: function(data) {
+                console.log(data)
+
+                data.forEach(ele => {
+                    units.innerHTML+=`<option value="${ele.title}" data-id="${ele.id}">${ele.title}</option>`
+                });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // Handle any errors
+                console.log('Error:', textStatus, errorThrown);
+            },
+        });
+    });
 </script>
 @endsection

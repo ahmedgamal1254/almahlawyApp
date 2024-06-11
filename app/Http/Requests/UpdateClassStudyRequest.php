@@ -24,7 +24,7 @@ class UpdateClassStudyRequest extends FormRequest
         return [
             'name' => "required",
             "start_time" => "required",
-            "school_grade_id" => 'required',
+            "school_grade_id" => 'required|numeric|exists:school_grades,id',
         ];
     }
 

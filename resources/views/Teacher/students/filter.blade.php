@@ -43,5 +43,8 @@
 @endsection
 
 @section("script")
-    <script src="{{ asset("assets/js/ajax_student.js") }}"></script>
+    <script>
+        let url="{{ env("APP_URL") }}"
+    </script>
+    <script src="{{ asset("assets/landing_assets/js/ajax_student.js") }}"></script>
 @endsection

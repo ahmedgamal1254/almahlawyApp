@@ -14,7 +14,7 @@ class PostController extends Controller
     use ResponseRequest;
     public function index(){
         $posts=DB::table("posts")->select('*')->
-        where("school_grade_id","=",Auth::guard('api')->user()->school_grade_id)->get();
+        where("school_grade_id","=",Auth::guard('api')->user()->school_grade_id)->orderByDesc("created_at")->get();
 
         if(!$posts){
             return response()->json([

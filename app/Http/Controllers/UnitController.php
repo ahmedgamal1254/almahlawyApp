@@ -19,11 +19,13 @@ class UnitController extends Controller
             ->join('school_grades', 'units.school_grade_id', '=', 'school_grades.id')
             ->select('units.*', 'school_grades.name as school_grade')
             ->where("units.teacher_id","=",Auth::guard('teacher')->user()->id)
+            ->whereNull("units.deleted_at")
             ->orderByDesc("created_at")
             ->paginate(10);
 
             return view("Teacher.units.index",compact('units'));
        } catch (\Throwable $th) {
+
         return redirect()->back()->with('error',"عفوا حدث خطأ ما");
        }
     }

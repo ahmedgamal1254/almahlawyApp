@@ -25,8 +25,8 @@ class RegisterRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'government' => ['required', 'string'],
-            'school_grade_id' => ['required', 'integer'],
-            'group_id' => ['required', 'integer'],
+            'school_grade_id' => ['required', 'numeric',"exists:school_grades,id"],
+            'group_id' => ['required', "numeric","exists:class_studies,id"],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'min:8', 'max:100'],
             'password_confirmed' => ['required', 'min:8', 'max:100'],

@@ -86,6 +86,7 @@ Route::middleware(['teacher'])->group(function () {
     Route::get("teachers/school_grade",[SchoolGradeController::class,'index'])->name("school_grade");
     Route::get("teachers/school_grade/{school_grade_id}/users",[SchoolGradeController::class,'students'])->name("school_grade.students");
     Route::get("teachers/school_grade/{school_grade_id}/groups",[SchoolGradeController::class,'groups'])->name("school_grade.groups");
+    Route::get("teachers/school_grade/{school_grade_id}/units",[SchoolGradeController::class,'units'])->name("school_grade.units");
     Route::get("teachers/school_grade/edit/{id}",[SchoolGradeController::class,'edit'])->name("school_grade.edit");
     Route::post("teachers/school_grade/update",[SchoolGradeController::class,'update'])->name("school_grade.update");
     Route::get("teachers/school_grade/show/{id}",[SchoolGradeController::class,'show'])->name("school_grade.show");

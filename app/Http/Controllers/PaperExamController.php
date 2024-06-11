@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PaperExamRequestStore;
 use App\Http\Requests\StoreVrSessionRequest;
+use App\Http\Requests\UpdatePaperExamRequest;
 use App\Http\Requests\UpdateVrSessionRequest;
 use App\Models\StaticExam;
 use App\Models\User;
@@ -69,17 +70,21 @@ class PaperExamController extends Controller
             $user=User::find($request->user_id);
 
             $data["title"]="امتحان الطالب " . $user->name;
+            $data["school_grade_id"]=$user->school_grade_id;
 
             StaticExam::create($data);
 
             return redirect()->route("teacher.paper-exams")->with('message','تم اضافة الامتحان بنجاح');
         } catch (\Throwable $th) {
+            // echo $th->getMessage();
             return redirect()->back()->with('error','حدث خطا ما');
         }
     }
 
-    public function show(){
-        //
+    public function show($id){
+        $exam=StaticExam::with("school_grade","user")->findOrFail($id);
+
+        return view("Teacher.paper-exams.show",compact("exam"));
     }
 
     public function edit($id)
@@ -90,7 +95,7 @@ class PaperExamController extends Controller
         return view("Teacher.paper-exams.edit",compact("school_grades","exam"));
     }
 
-    public function update(UpdateVrSessionRequest $request)
+    public function update(UpdatePaperExamRequest $request)
     {
 
         try {
@@ -104,12 +109,15 @@ class PaperExamController extends Controller
             $user=User::findOrFail($request->user_id);
 
             $data["title"]="امتحان الطالب " . $user->name;
+            $data["school_grade_id"]=$user->school_grade_id;
 
             StaticExam::findOrFail($request->id)->update($data);
 
-            return redirect()->route("teacher.sessions")->with('message','تم الحفظ بنجاح');
+            return redirect()->route("teacher.paper-exams")->with('message','تم الحفظ بنجاح');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error','حدث خطا ما');
+            echo $th->getMessage();
+
+            // return redirect()->back()->with('error','حدث خطا ما');
         }
     }
 

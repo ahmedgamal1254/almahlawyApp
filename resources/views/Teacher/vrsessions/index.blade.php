@@ -1,7 +1,7 @@
 @extends("Teacher.layouts.main")
 
 @section("title-header")
-<p>المواد الدراسية</p>
+<p>الفصول الافتراضية</p>
 @endsection
 
 @section("content")

@@ -26,7 +26,7 @@
                         <td>{{ $lesson->description }}</td>
                         <td>
                             @if ($lesson->video_url and $lesson->image_caption)
-                                <a href="{{ route("lesson.show",['id'=>$lesson->id]) }}" >
+                                <a href="{{ route("free-lesson.show",['id'=>$lesson->id]) }}" >
                                     <img class="img-thumbnail" style="width: 150px;height:150px;"
                                     src="{{ asset("public/app/".$lesson->image_caption) }}" alt=""></a>
                             @endif
@@ -46,7 +46,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center">
+                        <td colspan="6" class="text-center">
                             <div class="alert alert-danger">
                                 <span class="message_not_found">لا توجد دروس بعد</span>
                             </div>
