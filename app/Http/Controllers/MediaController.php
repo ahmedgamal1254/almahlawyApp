@@ -22,7 +22,7 @@ class MediaController extends Controller
             ->join('school_grades', 'media.school_grade_id', '=', 'school_grades.id')
             ->join('subjects', 'media.subject_id', '=', 'subjects.id')
             ->select('media.*', 'subjects.title as subject_name', 'school_grades.name as school_grade')
-            ->where("media.teacher_id","=",Auth::guard('teacher')->user()->id)
+            ->whereNull("media.deleted_at")
             ->orderByDesc("created_at")
             ->paginate(10);
 
@@ -47,9 +47,9 @@ class MediaController extends Controller
     {
         try {
             $caption=Null;
-            if($request->file("books_caption")){
+            if($request->file("img")){
                 // image upload name must img
-                $caption=$this->pdf_upload($request,'books_caption');
+                $caption=$this->image_upload($request,'books_caption');
             }
 
             $book=new Media();
@@ -131,12 +131,6 @@ class MediaController extends Controller
     public function update(UpdateMediaRequest $request)
     {
         try {
-            $file=Null;
-            if($request->file("pdf")){
-                // image upload name must img
-                $file=$this->pdf_upload($request,'books');
-            }
-
             $caption=Null;
             if($request->file("img")){
                 // image upload name must img
@@ -149,7 +143,6 @@ class MediaController extends Controller
             $book->school_grade_id=$request->school_grade_id;
             $book->date_show=$this->make_date($request->date_show);
             $book->subject_id=Auth::guard('teacher')->user()->subject_id;
-            $book->media_url=$file == null ? $request->book_url : $file;
             $book->caption=$caption == null ? $request->book_caption : $caption;
             $book->teacher_id=Auth::guard('teacher')->user()->id;
             $book->save();
@@ -159,9 +152,21 @@ class MediaController extends Controller
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
     }
-    public function destroy(Media $media)
+    public function destroy($id)
     {
-        //
+        try {
+            $book=Media::find($id);
+
+            if(!$book){
+                return redirect()->back()->with('error', 'هذا الدرس (الفيديو) غير موجود' . $id);
+            }
+
+            Media::find($id)->delete();
+
+            return redirect()->route("books")->with('message','تم حذف الدرس بنجاح');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+        }
     }
 
     public function download($id){

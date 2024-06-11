@@ -31,6 +31,7 @@ class LessonController extends Controller
             ->leftJoin('units', 'lessons.unit_id', '=', 'units.id')
             ->select('lessons.*',"units.title as unit_name", 'school_grades.name as school_grade')
             ->where("lessons.teacher_id","=",Auth::guard('teacher')->user()->id)
+            ->whereNull("lessons.deleted_at")
             ->orderByDesc("created_at")
             ->paginate(5);
 
@@ -86,8 +87,7 @@ class LessonController extends Controller
 
             return redirect()->route("lessons")->with('message','تم اضافة الدرس بنجاح من فضلك قم برفع الغيديو للدرس');
         } catch (\Throwable $th) {
-            echo $th;
-            // return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
     }
 
