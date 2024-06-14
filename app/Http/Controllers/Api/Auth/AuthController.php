@@ -2,7 +2,6 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ProfileUserResource;
 use App\Mail\RegisterUser;
 use App\Models\RegisterToken;
 use App\Traits\Upload;
@@ -14,6 +13,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Resources\PaperExamStudentResource;
+use App\Http\Resources\ProfileUserResource;
+use App\Http\Resources\ExamStudentResource;
 
 class AuthController extends Controller
 {
@@ -35,7 +37,12 @@ class AuthController extends Controller
 
         $user = auth("api")->user();
         if (!$user->email_verified_at) {
-            return response()->json(['error' => 'Email not verified'], 403);
+            return response()->json(
+                [
+                    'error' => 'Email not verified',
+                    "email_verified" => false
+                ], 403
+            );
         }
 
         return $this->createNewToken($token);
@@ -151,11 +158,17 @@ class AuthController extends Controller
     }
 
     protected function createNewToken($token){
+        $profile=User::find(Auth::guard('api')->id());
+
+        $data["profile"]=new ProfileUserResource($profile);
+        $data["paper_exams"]=PaperExamStudentResource::collection(User::find(Auth::guard('api')->id())->paper_exams);
+        $data["exams"]=ExamStudentResource::collection(User::find(Auth::guard('api')->id())->exams);
+
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth("api")->factory()->getTTL() * 60 * 24 *30,
-            'user' => new ProfileUserResource(auth("api")->user())
+            'data' => $data
         ]);
     }
 }

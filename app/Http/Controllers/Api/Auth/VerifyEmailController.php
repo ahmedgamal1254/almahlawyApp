@@ -11,7 +11,14 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Resources\PaperExamStudentResource;
+use App\Http\Resources\ProfileUserResource;
+use App\Http\Resources\ExamStudentResource;
+
+use JWTAuth;
+
 class VerifyEmailController extends Controller
 {
     public function send_otp(Request $request){
@@ -61,8 +68,8 @@ class VerifyEmailController extends Controller
         }
 
         $otp = RegisterToken::where('pin_code', $request->pin_code)
-                             ->where('email', $request->email)
-                             ->first();
+            ->where('email', $request->email)
+            ->first();
 
         if (!$otp) {
             return response()->json(['error' => 'Invalid OTP or email', 'status' => 404], 404);
@@ -70,23 +77,37 @@ class VerifyEmailController extends Controller
 
         $user = User::where('email', $otp->email)->first();
 
+        // Generate token for the user
+        $token = JWTAuth::fromUser($user);
+
         if ($user->email_verified_at) {
-            return response()->json([
-                'message' => 'Account already verified.',
-                'status' => 200,
-                'success' => true,
-                'user' => $user,
-            ]);
+            return $this->createNewToken($token, $user,'Email Already verified .');
         }
 
         $user->update(['email_verified_at' => now()]);
         $otp->delete();
 
+        return $this->createNewToken($token, $user,'Email verified successfully.');
+    }
+
+    protected function createNewToken($token, $user,$message)
+    {
+        $profile = new ProfileUserResource($user);
+        $paper_exams = PaperExamStudentResource::collection($user->paper_exams);
+        $exams = ExamStudentResource::collection($user->exams);
+
         return response()->json([
-            'message' => 'Email verified successfully.',
+            'message' => $message,
             'status' => 200,
             'success' => true,
-            'user' => $user,
-        ]);
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => JWTAuth::factory()->getTTL() * 60 * 24 * 30,
+            'data' => [
+                'profile' => $profile,
+                'paper_exams' => $paper_exams,
+                'exams' => $exams
+            ]
+        ],200);
     }
 }

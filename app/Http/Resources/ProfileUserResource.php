@@ -18,6 +18,7 @@ class ProfileUserResource extends JsonResource
             "id" => $this->id,
             "name" => $this->name,
             "email" => $this->email,
+            "email_verified" => $this->email_verified_at ? true:false,
             "phonenumber" => $this->phonenumber,
             "government" => $this->government,
             "total_balance" => $this->all_points,
