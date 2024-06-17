@@ -34,20 +34,10 @@
                                     <input type="hidden" name="id" value="{{ $class->id }}">
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="desc">أدخل اسم المجموعة الدراسية</label>
-                                        <input type="text" name="name"
+                                        <input type="text" name="group_name"
                                             class="form-control form-control-lg input-lg"
-                                            value="{{ $class->group_name }}" id="" placeholder="مثل السبت والاربعاء">
-                                        @error("name")
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </fieldset>
-
-                                    <fieldset class="form-group position-relative has-icon-left mb-0">
-                                        <label for="desc">أدخل ميعاد المجموعة الدراسية</label>
-                                        <input type="time" name="start_time"
-                                            class="form-control form-control-lg input-lg"
-                                            value="{{ $class->group_time }}" id="" placeholder="12:00 PM مثال">
-                                        @error("start_time")
+                                            value="{{ $class->group_name }}" id="" placeholder="مثل :- سنتر او اونلاين">
+                                        @error("group_name")
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
@@ -62,25 +52,6 @@
                                         @enderror
                                     </fieldset>
 
-                                    <fieldset class="form-group position-relative has-icon-left mb-0">
-                                        <label for="desc">أدخل اسم المرحلة الدراسية</label>
-                                        <select name="school_grade_id" id="" class="form-control form-control-lg">
-                                            <option value="">أدخل اسم المرحلة الدراسية</option>
-                                            @forelse ($school_grades as $school_grade)
-                                                <option
-                                                @if($school_grade->id == $class->school_grade_id) selected @endif
-                                                value="{{ $school_grade->id }}">{{ $school_grade->name }}</option>
-                                            @empty
-                                                <option value="0">لا توجد مراحل دراسية بعد</option>
-                                            @endforelse
-                                            @error("school_grade_id")
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </select>
-
-                                        <span class="text-danger"> </span>
-
-                                    </fieldset>
 
                                     <div class="custom-form-elemrnt-button">
                                         <div class="row">

@@ -22,6 +22,7 @@ class UpdateMonthRequest extends FormRequest
     public function rules(): array
     {
         return [
+            "description" => "required",
             'cost'=>'required|numeric',
             'month' => 'required|string'
         ];

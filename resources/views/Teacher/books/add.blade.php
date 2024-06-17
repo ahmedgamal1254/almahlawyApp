@@ -38,9 +38,9 @@
                                         <input type="text" name="title"
                                                class="form-control form-control-lg input-lg"
                                                value="{{ old("title") }}" id="email" placeholder="أدخل اسم الكتاب او الملخص">
-                                       
+
                                         @error("tilte")
-                                            <span class="text-errpr">{{ $message }}</span>
+                                            <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
 
@@ -50,7 +50,7 @@
                                                class="form-control form-control-lg input-lg"
                                                value="" id="email" placeholder="أدخل وصف الكتاب او الملخص">{{ old("description") }}</textarea>
                                         @error("description")
-                                            <span class="text-errpr">{{ $message }}</span>
+                                            <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
 
@@ -58,7 +58,7 @@
                                         <label for="pdf">أرفع صورة مصغرة الكتاب</label>
                                         <input class="form-control form-control-lg" id="img" name="img" value="{{ old("img") }}" type="file">
                                         @error("img")
-                                            <span class="text-errpr">{{ $message }}</span>
+                                            <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
 
@@ -67,13 +67,13 @@
                                         <small>أدحل الشهر والسنة المراد عرض فيهم الكتاب</small>
                                         <input class="form-control form-control-lg" id="date_show" name="date_show" type="month">
                                         @error("date_show")
-                                            <span class="text-errpr">{{ $message }}</span>
+                                            <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="desc">أدخل اسم المرحلة الدراسية</label>
-                                        <select name="school_grade_id" id="" class="form-control form-control-lg">
+                                        <select name="school_grade_id" id="school_grades" class="form-control form-control-lg">
                                             <option value="">أدخل اسم المرحلة الدراسية</option>
                                             @forelse ($school_grades as $school_grade)
                                             <option
@@ -84,7 +84,24 @@
                                             @endforelse
                                         </select>
                                         @error("school_grade_id")
-                                            <span class="text-errpr">{{ $message }}</span>
+                                            <span class="text-error">{{ $message }}</span>
+                                        @enderror
+                                    </fieldset>
+
+                                    <fieldset class="form-group position-relative has-icon-left mb-0">
+                                        <label for="desc">أدخل اسم الفصل (الشابتر)</label>
+                                        <select name="unit_id" id="units" class="form-control form-control-lg">
+                                            <option value="">أدخل اسم الفصل (الشابتر)</option>
+                                            @forelse ($units as $unit)
+                                            <option
+                                                @if(old("unit_id") == $unit->id) selected @endif
+                                                value="{{ $unit->id }}">{{ $unit->title }}</option>
+                                            @empty
+                                                <option value="0">لا توجد نتائج بعد</option>
+                                            @endforelse
+                                        </select>
+                                        @error("unit_id")
+                                            <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
 

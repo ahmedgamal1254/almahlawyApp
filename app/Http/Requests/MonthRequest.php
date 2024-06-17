@@ -22,8 +22,9 @@ class MonthRequest extends FormRequest
     public function rules(): array
     {
         return [
+            "description" => "required",
             'cost'=>'required|numeric',
-            'month' => 'required|string|unique:months,month_date'
+            'month' => 'required||date_format:Y-m|unique:months,month_date'
         ];
     }
 

@@ -1,7 +1,7 @@
 @extends("Teacher.layouts.main")
 
 @section("title-header")
-<p>تعديل منشور {{ $post->title }}</p>
+<p>تعديل منشور {{ str()->limit($post->title,100) }}</p>
 @endsection
 
 @section("content")
@@ -18,10 +18,10 @@
                             <div class="table-parent">
                                 <div class="table-header">
                                     <div class="table-name">
-                                        <p>إضافة منشور جديد</p>
+                                        <p>تعديل منشور {{ str()->limit($post->title,100) }}</p>
                                     </div>
                                     <div class="table-link table-link-">
-                                        <a href="{{ route("class") }}" class="btn btn-primary">
+                                        <a href="{{ route("posts") }}" class="btn btn-primary">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layout"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
                                             <span>جميع المنشورات</span>
                                         </a>
@@ -37,7 +37,9 @@
                                                class="form-control form-control-lg input-lg"
                                                value="{{ $post->title }}" id="email" placeholder="أدخل اسم المادة">
 
-                                        <span class="text-danger"> </span>
+                                        @error("title")
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
 
                                     </fieldset>
 
@@ -45,9 +47,11 @@
                                         <label for="desc">أدخل وصف المادة</label>
                                         <textarea type="text" name="description" id="desc" cols="30" rows="10"
                                                class="form-control form-control-lg input-lg"
-                                               id="email" placeholder="أدخل وصف الماد">{{ $post->description }}</textarea>
+                                               id="email" placeholder="أدخل وصف الماد">{!! $post->description !!}</textarea>
 
-                                        <span class="text-danger"> </span>
+                                        @error("description")
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
 
                                     </fieldset>
 
@@ -59,7 +63,9 @@
                                         <label for="img">تعديل صورة للبوست</label>
                                         <input class="form-control form-control-lg" id="img" name="img" type="file">
 
-                                        <span class="text-danger"> </span>
+                                        @error("img")
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
 
                                     </fieldset>
 
@@ -75,9 +81,9 @@
                                             <option value="0">لا توجد مراحل دراسية بعد</option>
                                             @endforelse
                                         </select>
-
-                                        <span class="text-danger"> </span>
-
+                                        @error("school_grade_id")
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                     </fieldset>
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
@@ -92,9 +98,9 @@
                                             <option value="0">لا توجد فصول دراسية بعد</option>
                                             @endforelse
                                         </select>
-
-                                        <span class="text-danger"> </span>
-
+                                        @error("unit_id")
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                     </fieldset>
 
                                     <div class="custom-form-elemrnt-button">
@@ -114,3 +120,4 @@
     </div>
 </div>
 @endsection
+

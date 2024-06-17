@@ -23,9 +23,10 @@ class StoreFreeBookRequest extends FormRequest
     {
         return [
             'title' => "required|string|unique:free_books,title",
+            "description" => "required",
             "img" => "required|image|mimes:png,jpg",
             'school_grade_id' => 'required|numeric|exists:school_grades,id',
-            "unit_id" => "required|numeric|exists:units,id"
+            "unit_id" => "nullable|numeric|exists:units,id"
         ];
     }
 }

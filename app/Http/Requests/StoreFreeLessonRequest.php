@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateVrSessionRequest extends FormRequest
+class StoreFreeLessonRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,11 @@ class UpdateVrSessionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => "required|string",
-            "school_grade_id"=> "required|exists:school_grades,id",
-            "unit_id"=> "nullable|exists:units,id",
-            "serviceName"=> "required|exists:vr_services,name",
-            "link" => "required|url"
+            'title' => "required|string|unique:free_videos,title",
+            "description" => "required",
+            "img" => "required|image|mimes:png,jpg",
+            'school_grade_id' => 'required|numeric|exists:school_grades,id',
+            "unit_id" => "nullable|numeric|exists:units,id"
         ];
     }
 }

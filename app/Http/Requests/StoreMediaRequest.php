@@ -23,6 +23,7 @@ class StoreMediaRequest extends FormRequest
     {
         return [
             'title' => "required|unique:media,title",
+            "description" => "required",
             "img" => "required|image|mimes:png,jpg",
             'school_grade_id' => 'required|numeric|exists:school_grades,id',
             'date_show' => 'required'

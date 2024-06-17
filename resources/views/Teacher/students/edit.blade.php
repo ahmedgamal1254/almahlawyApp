@@ -110,7 +110,7 @@
                                     <fieldset class="form-group">
                                         <label>المجموعة</label>
                                         <select class="form-control select2 select-group-select" data-placeholder="اختر المجموعة"
-                                        required name="group_id">
+                                        name="group_id">
                                             <option value="">أدخل اسم المجموعة الدراسية</option>
                                             @forelse ($groups as $group)
                                                 <option

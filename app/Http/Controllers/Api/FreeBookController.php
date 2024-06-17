@@ -16,7 +16,7 @@ class FreeBookController extends Controller
     public function index(){
         $free_books=DB::table("free_books")
         ->where("school_grade_id","=",Auth::guard("api")->user()->school_grade_id)
-        ->paginate(15);
+        ->get();
 
         return $this->make_response($free_books,200);
     }

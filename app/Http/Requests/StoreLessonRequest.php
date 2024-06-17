@@ -24,6 +24,7 @@ class StoreLessonRequest extends FormRequest
         return [
             "date_show"=>["required"],
             "title"=>["required","string","unique:lessons,title"],
+            "description" => "required",
             "img" => "required|image|mimes:png,jpg",
             'school_grade_id' => 'required|numeric|exists:school_grades,id',
             "subject_id" => "required|numeric|exists:units,id",

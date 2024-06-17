@@ -17,14 +17,14 @@ class UpdateQuestionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'title' => 'nullable|string',
-            // 'num_of_questions' => "required",
-            // 'chooses' => ['required',"array","min:2"],
-            // "chooses.*"  => "required|string",
-            // 'answer' => 'required',
-            // 'school_grade_id' => 'required|numeric|exists:school_grades,id',
-            // 'unit_id' => 'required|numeric|exists:units,id',
-            // "img" => "nullable"
+            'title' => 'nullable|string',
+            'num_of_questions' => "required",
+            'chooses' => ['required',"array","min:2"],
+            "chooses.*"  => "required|string",
+            'answer' => 'required',
+            'school_grade_id' => 'required|numeric|exists:school_grades,id',
+            'unit_id' => 'required|numeric|exists:units,id',
+            "img" => "nullable|image|mimes:png,jpg,gif"
         ];
     }
 

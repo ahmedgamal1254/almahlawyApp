@@ -74,7 +74,7 @@
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="desc">أدخل اسم المرحلة الدراسية</label>
-                                        <select name="school_grade_id" id="" class="form-control form-control-lg">
+                                        <select name="school_grade_id" id="school_grades" class="form-control form-control-lg">
                                             <option value="">أدخل اسم المرحلة الدراسية</option>
                                             @forelse ($school_grades as $school_grade)
                                             <option
@@ -86,6 +86,23 @@
                                         </select>
 
                                         @error("school_grade_id")
+                                            <span class="text-errpr">{{ $message }}</span>
+                                        @enderror
+                                    </fieldset>
+
+                                    <fieldset class="form-group position-relative has-icon-left mb-0">
+                                        <label for="desc">أدخل اسم الفصل (الشابتر)</label>
+                                        <select name="unit_id" id="units" class="form-control form-control-lg">
+                                            <option value="">أدخل اسم الفصل (الشابتر)</option>
+                                            @forelse ($units as $unit)
+                                            <option
+                                                @if($book->unit_id == $unit->id) selected @endif
+                                                value="{{ $unit->id }}">{{ $unit->title }}</option>
+                                            @empty
+                                                <option value="0">لا توجد نتائج بعد</option>
+                                            @endforelse
+                                        </select>
+                                        @error("unit_id")
                                             <span class="text-errpr">{{ $message }}</span>
                                         @enderror
                                     </fieldset>

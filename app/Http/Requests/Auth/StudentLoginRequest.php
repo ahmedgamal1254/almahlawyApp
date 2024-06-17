@@ -42,7 +42,7 @@ class StudentLoginRequest extends FormRequest
         $this->ensureIsNotRateLimited();
 
         $credentials = $this->only('email', 'password');
-        $credentials['active'] = 1; // Add this line to check the "active" column
+        // $credentials['active'] = 1; // Add this line to check the "active" column
 
         if (! Auth::guard($guard)->attempt($credentials, $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());

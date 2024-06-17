@@ -47,7 +47,7 @@
                                         <textarea type="text" name="description" id="desc" cols="30" rows="10"
                                             class="form-control form-control-lg input-lg"
                                             id="email" placeholder="أدخل وصف الدرس">{{ old("desc") }}</textarea>
-                                        @error("desc")
+                                        @error("description")
                                             <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
@@ -55,7 +55,7 @@
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <input type="number" name="duration"
                                                class="form-control form-control-lg input-lg"
-                                               value="{{ old("duration") }}" placeholder="أدخل مدة الدرس(الفيديو)">
+                                               value="{{ old("duration") }}" placeholder="أدخل مدة الدرس(الفيديو) بالدقيقة">
                                         @error("duration")
                                             <span class="text-error">{{ $message }}</span>
                                         @enderror
@@ -94,24 +94,24 @@
                                             @endforelse
                                         </select>
                                         @error("school_grade_id")
-                                            <span class="text-errpr">{{ $message }}</span>
+                                            <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="desc">أدخل اسم الوحدة</label>
-                                        <select name="subject_id" id="units" class="form-control form-control-lg">
+                                        <select name="unit_id" id="units" class="form-control form-control-lg">
                                             <option value="">أدخل اسم الوحدة</option>
                                             @forelse ($units as $unit)
                                                 <option
-                                                @if(old("subject_id") == $unit->id) selected @endif
+                                                @if(old("unit_id") == $unit->id) selected @endif
                                                 value="{{ $unit->id }}">{{ $unit->title }}</option>
                                             @empty
                                                 <option value="0">لا توجد مواد وحدات دراسية بعد</option>
                                             @endforelse
                                         </select>
-                                        @error("subject_id")
-                                            <span class="text-errpr">{{ $message }}</span>
+                                        @error("unit_id")
+                                            <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
 

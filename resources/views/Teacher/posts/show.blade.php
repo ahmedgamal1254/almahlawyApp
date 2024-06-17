@@ -1,7 +1,7 @@
 @extends("Teacher.layouts.main")
 
 @section("title-header")
-<p>{{ $post->title }}</p>
+<p>{{ str()->limit($post->title,100) }}</p>
 @endsection
 
 @section("content")
@@ -12,15 +12,11 @@
         <div class="card" style="width: 100%">
             <div class="card-body">
               <h5 class="card-title">عنوان المنشور :- {{ $post->title }}</h5>
-              <p class="card-text">وصف المنشور :- {{ $post->description }}</p>
               <p class="card-text">اسم المرحلة الدراسية :- {{ $post->school_grade }}</p>
               <p class="card-text">اسم المادة الدراسية :- {{ $post->subject_name }}</p>
               <img src="{{ asset("public/app/". $post->image_url) }}" class="img-thumbnail img-container" alt="">
-              <x-operation
-                :edit="route('post.edit',['id'=>$post->id])"
-                :delete="route('post.destroy',['id'=>$post->id])"
-                >
-                </x-operation>
+
+                <p class="card-text">وصف المنشور :- {!! $post->description !!}</p>
             </div>
         </div>
 

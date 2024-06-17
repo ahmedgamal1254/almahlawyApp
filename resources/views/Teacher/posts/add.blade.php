@@ -44,16 +44,19 @@
                                         <label for="desc">أدخل وصف المنشور</label>
                                         <textarea type="text" name="description" id="desc" cols="30" rows="10"
                                                class="form-control form-control-lg input-lg"
-                                               value="{{ old("description") }}" id="email" placeholder="أدخل وصف البوست"></textarea>
+                                               placeholder="أدخل وصف البوست">{{ old("description") }}</textarea>
                                         @error("description")
                                             <span class="text-error">{{ $message }}</span>
                                         @enderror
+
                                     </fieldset>
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="img">أرفع صورة للبوست</label>
                                         <input class="form-control form-control-lg" id="img" name="img" type="file">
-
+                                        @error("img")
+                                            <span class="text-error">{{ $message }}</span>
+                                        @enderror
                                     </fieldset>
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
@@ -66,6 +69,9 @@
                                             <option value="0">لا توجد مراحل دراسية بعد</option>
                                             @endforelse
                                         </select>
+                                        @error("school_grade_id")
+                                            <span class="text-error">{{ $message }}</span>
+                                        @enderror
                                     </fieldset>
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
@@ -80,6 +86,9 @@
                                                 <option value="0">لا توجد فصول دراسية بعد</option>
                                             @endforelse
                                         </select>
+                                        @error("unit_id")
+                                            <span class="text-error">{{ $message }}</span>
+                                        @enderror
                                     </fieldset>
 
                                     <div class="custom-form-elemrnt-button">

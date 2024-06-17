@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UpdateStudentRequest;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Auth;
@@ -33,15 +34,15 @@ class StudentTeacherController extends Controller
 
             return view("Teacher.students.index",compact("students","school_grades","groups"));
         } catch (\Throwable $th) {
-            echo $th->getMessage();
-            // return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
     }
 
     public function search(Request $request){
         $students=DB::table('users')
-        ->join('school_grades', 'users.school_grade_id', '=', 'school_grades.id')
-        ->join('class_studies', 'users.group_id', '=', 'class_studies.id')
+        ->leftJoin('school_grades', 'users.school_grade_id', '=', 'school_grades.id')
+        ->leftJoin('class_studies', 'users.group_id', '=', 'class_studies.id')
         ->select('users.*', 'class_studies.group_name as subject_name',
         'school_grades.name as school_grade', DB::raw('SUM(exam_student.degree) AS points'))
         ->leftjoin("exam_student","exam_student.user_id","=","users.id")
@@ -62,8 +63,8 @@ class StudentTeacherController extends Controller
     public function filter(Request $request){
         try{
             $query=DB::table('users')
-            ->join('school_grades', 'users.school_grade_id', '=', 'school_grades.id')
-            ->join('class_studies', 'users.group_id', '=', 'class_studies.id')
+            ->leftJoin('school_grades', 'users.school_grade_id', '=', 'school_grades.id')
+            ->leftJoin('class_studies', 'users.group_id', '=', 'class_studies.id')
             ->select('users.*', 'class_studies.group_name as subject_name',
             'school_grades.name as school_grade', DB::raw('SUM(exam_student.degree) AS points'))
             ->leftjoin("exam_student","exam_student.user_id","=","users.id")
@@ -115,8 +116,8 @@ class StudentTeacherController extends Controller
     public function students_points(){
         try {
             $students=DB::table('users')
-            ->join('school_grades', 'users.school_grade_id', '=', 'school_grades.id')
-            ->join('class_studies', 'users.group_id', '=', 'class_studies.id')
+            ->leftJoin('school_grades', 'users.school_grade_id', '=', 'school_grades.id')
+            ->leftJoin('class_studies', 'users.group_id', '=', 'class_studies.id')
             ->select('users.*', 'class_studies.group_name as subject_name',
             'school_grades.name as school_grade', DB::raw('SUM(exam_student.degree) AS points'))
             ->leftjoin("exam_student","exam_student.user_id","=","users.id")
@@ -195,13 +196,8 @@ class StudentTeacherController extends Controller
     }
 
 
-    public function update_student(Request $request){
+    public function update_student(UpdateStudentRequest $request){
         try {
-            $request->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required','email'],
-            ]);
-
             $pass='';
             if($request->password == null){
                 $pass=Hash::make($request->password);
@@ -238,8 +234,8 @@ class StudentTeacherController extends Controller
     public function show($id){
         try {
             $student=DB::table('users')
-            ->join('school_grades', 'users.school_grade_id', '=', 'school_grades.id')
-            ->join('class_studies', 'users.group_id', '=', 'class_studies.id')
+            ->leftJoin('school_grades', 'users.school_grade_id', '=', 'school_grades.id')
+            ->leftJoin('class_studies', 'users.group_id', '=', 'class_studies.id')
             ->select('users.*', 'class_studies.group_name as subject_name',
             'school_grades.name as school_grade', DB::raw('SUM(exam_student.degree) AS points'))
             ->leftjoin("exam_student","exam_student.user_id","=","users.id")

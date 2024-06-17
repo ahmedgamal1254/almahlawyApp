@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateClassStudyRequest extends FormRequest
 {
@@ -22,17 +23,14 @@ class UpdateClassStudyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => "required",
-            "start_time" => "required",
-            "school_grade_id" => 'required|numeric|exists:school_grades,id',
+            'group_name' => "required|string|" . Rule::unique("class_studies")->ignore($this->id),
         ];
     }
 
     public function messages()
     {
         return [
-            "name.required" => "قم بوضع اسم المجموعة",
-            "school_grade_id.required" => "من فضلك أدخل الصف الدراسى",
+            "group_name.required" => "قم بوضع اسم المجموعة",
         ];
     }
 }

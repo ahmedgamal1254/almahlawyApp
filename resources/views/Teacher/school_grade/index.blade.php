@@ -17,7 +17,6 @@
                 <thead>
                     <tr>
                         <th>اسم المرحلة</th>
-                        <th>المجموعات</th>
                         <th>الطلاب</th>
                         <th>الكتب</th>
                         <th>الفيديوهات</th>
@@ -29,12 +28,6 @@
                     @forelse ($school_grades as $school_grade)
                     <tr>
                         <td>{{ $school_grade->name }}</td>
-                        <td>
-                            <span>{{ count($school_grade->classes) }}</span>
-                            | <a href="{{ route("school_grade.groups",["school_grade_id"=>$school_grade->id]) }}">
-                                <i class="fa fa-eye"></i>
-                            </a>
-                        </td>
                         <td>
                             <span>{{ count($school_grade->users) }}</span>
                             | <a href="{{ route("school_grade.students",["school_grade_id"=>$school_grade->id]) }}">
@@ -62,7 +55,6 @@
                         <td>
                             <x-operation
                                 :edit="route('school_grade.edit',['id'=>$school_grade->id])"
-                                :view="route('school_grade.show',['id'=>$school_grade->id])"
                                 :delete="route('school_grade.destroy',['id'=>$school_grade->id])"
                                 :id="$school_grade->id"
                                 >

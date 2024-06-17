@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateUnitRequest extends FormRequest
 {
@@ -22,7 +23,7 @@ class UpdateUnitRequest extends FormRequest
      public function rules(): array
      {
          return [
-             "title" => ['required',"string"],
+             "title" => ['required',"string",Rule::unique("units")->ignore($this->id)],
          ];
      }
 

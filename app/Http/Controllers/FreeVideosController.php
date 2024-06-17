@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreFreeBookRequest;
+use App\Http\Requests\StoreFreeLessonRequest;
+use App\Http\Requests\UpdateFreeLessonRequest;
 use App\Models\FreeVideos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -51,7 +54,7 @@ class FreeVideosController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(StoreFreeLessonRequest $request)
     {
         try {
             $file=Null;
@@ -64,7 +67,7 @@ class FreeVideosController extends Controller
             $lesson->title=$request->title;
             $lesson->description=$request->description;
             $lesson->school_grade_id=$request->school_grade_id;
-            $lesson->unit_id=$request->subject_id;
+            $lesson->unit_id=$request->unit_id;
             $lesson->image_caption=$file;
             $lesson->subject_id=Auth::guard('teacher')->user()->subject_id;
             $lesson->teacher_id=Auth::guard('teacher')->user()->id;
@@ -80,8 +83,7 @@ class FreeVideosController extends Controller
 
             return redirect()->route("free-lessons")->with('message','تم اضافة الدرس بنجاح من فضلك قم برفع الغيديو للدرس');
         } catch (\Throwable $th) {
-            echo $th;
-            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما")->withInput();
         }
     }
 
@@ -112,7 +114,7 @@ class FreeVideosController extends Controller
             $units=DB::table("units")->where("teacher_id","=",Auth::guard("teacher")->user()->id)->get();
             $lesson=FreeVideos::findOrFail($id);
 
-            return view("Teacher.lessons.edit",compact("school_grades","units","lesson"));
+            return view("Teacher.free-lessons.edit",compact("school_grades","units","lesson"));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
@@ -121,7 +123,7 @@ class FreeVideosController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateLessonRequest $request)
+    public function update(UpdateFreeLessonRequest $request)
     {
         try {
             $file=Null;

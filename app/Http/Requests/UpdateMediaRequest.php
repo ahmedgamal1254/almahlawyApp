@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateMediaRequest extends FormRequest
 {
@@ -22,8 +23,10 @@ class UpdateMediaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => "required",
-            'school_grade_id' => 'required',
+            'title' => "required|" . Rule::unique("media")->ignore($this->id),
+            "description" => "required",
+            "img" => "nullable|image|mimes:png,jpg",
+            'school_grade_id' => 'required|numeric|exists:school_grades,id',
             'date_show' => 'required'
         ];
     }

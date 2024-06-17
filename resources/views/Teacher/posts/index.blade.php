@@ -14,9 +14,7 @@
                 <thead>
                     <tr>
                         <th>عنوان المنشور</th>
-                        <th>وصف المنشور</th>
                         <th>صورة المنشور</th>
-                        <th>اسم المادة</th>
                         <th>المرحلة الدراسية</th>
                         <th>التعديلات</th>
                     </tr>
@@ -25,7 +23,6 @@
                     @forelse ($posts as $post)
                     <tr>
                         <td>{{ $post->title }}</td>
-                        <td>{{ $post->description }}</td>
                         <td>
                             @if ($post->image_url)
                             <img src="{{ asset("public/app/". $post->image_url) }}" width="100" height="100" alt="">
@@ -33,7 +30,6 @@
                             <img src="" alt="">
                             @endif
                         </td>
-                        <td>{{ $post->subject_name }}</td>
                         <td>{{ $post->school_grade }}</td>
                         <td>
                             <x-operation
@@ -57,10 +53,13 @@
                 </tbody>
             </table>
 
+
             <div class="row">
                 <a href="{{ route("post.add") }}" class="btn btn-primary"><i class="fa fa-plus"></i> اضافة منشور جديد</a>
             </div>
         </div>
+
+        {{ $posts->links() }}
     </div>
 </div>
 @endsection

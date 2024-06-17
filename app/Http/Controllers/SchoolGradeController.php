@@ -28,7 +28,7 @@ class SchoolGradeController extends Controller
             //     Cache::put('school_grades', $school_grades,6000);
             // }
 
-            $school_grades=SchoolGrade::with('users','exams','classes','lessons','books')->paginate();
+            $school_grades=SchoolGrade::with('users','exams','lessons','books')->paginate(10);
 
             return view("Teacher.school_grade.index",compact("school_grades"));
         } catch (\Throwable $th) {

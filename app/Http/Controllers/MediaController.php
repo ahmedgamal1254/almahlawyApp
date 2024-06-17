@@ -5,12 +5,15 @@ use App\Models\Media;
 use App\Http\Requests\StoreMediaRequest;
 use App\Http\Requests\UpdateMediaRequest;
 use App\Jobs\NotificationBookJob;
+use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Traits\{Upload,MakeDate};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\UploadLarageFile;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class MediaController extends Controller
 {
@@ -20,8 +23,8 @@ class MediaController extends Controller
         try {
             $books=DB::table('media')
             ->join('school_grades', 'media.school_grade_id', '=', 'school_grades.id')
-            ->join('subjects', 'media.subject_id', '=', 'subjects.id')
-            ->select('media.*', 'subjects.title as subject_name', 'school_grades.name as school_grade')
+            ->leftJoin('units', 'media.unit_id', '=', 'units.id')
+            ->select('media.*', 'units.title as subject_name', 'school_grades.name as school_grade')
             ->whereNull("media.deleted_at")
             ->orderByDesc("created_at")
             ->paginate(10);
@@ -36,9 +39,9 @@ class MediaController extends Controller
     {
         try {
             $school_grades=DB::table("school_grades")->where("deleted_at","=",null)->get();
-            $subjects=DB::table("subjects")->where("deleted_at","=",null)->where("teacher_id","=",Auth::guard("teacher")->user()->id)->get();
+            $units=Unit::get();
 
-            return view("Teacher.books.add",compact("school_grades","subjects"));
+            return view("Teacher.books.add",compact("school_grades","units"));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
@@ -57,7 +60,7 @@ class MediaController extends Controller
             $book->description=$request->description;
             $book->caption=$caption;
             $book->school_grade_id=$request->school_grade_id;
-            $book->subject_id=Auth::guard('teacher')->user()->subject_id;
+            $book->unit_id=$request->unit_id;
             $book->url=$request->url;
             $book->teacher_id=Auth::guard('teacher')->user()->id;
             $book->date_show=$this->make_date($request->date_show);
@@ -106,10 +109,14 @@ class MediaController extends Controller
         try {
             $book=DB::table('media')
                 ->join('school_grades', 'media.school_grade_id', '=', 'school_grades.id')
-                ->join('subjects', 'media.subject_id', '=', 'subjects.id')
-                ->select('media.*', 'subjects.title as subject_name', 'school_grades.name as school_grade')
+                ->leftJoin('units', 'media.unit_id', '=', 'units.id')
+                ->select('media.*', 'units.title as subject_name', 'school_grades.name as school_grade')
                 ->where('media.id','=',$id)
                 ->first();
+
+            if(!$book){
+                return redirect()->back()->with('error',"عفوا هذا الكتاب غير موجود");
+            }
 
             return view("Teacher.books.show",compact("book"));
         } catch (\Throwable $th) {
@@ -120,10 +127,10 @@ class MediaController extends Controller
     {
         try {
             $school_grades=DB::table("school_grades")->where("deleted_at","=",null)->get();
-            $subjects=DB::table("subjects")->where("deleted_at","=",null)->where("teacher_id","=",Auth::guard("teacher")->user()->id)->get();
+            $units=Unit::get();
             $book=Media::findOrFail($id);
 
-            return view("Teacher.books.edit",compact("school_grades","subjects","book"));
+            return view("Teacher.books.edit",compact("school_grades","units","book"));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
@@ -142,7 +149,7 @@ class MediaController extends Controller
             $book->description=$request->description;
             $book->school_grade_id=$request->school_grade_id;
             $book->date_show=$this->make_date($request->date_show);
-            $book->subject_id=Auth::guard('teacher')->user()->subject_id;
+            $book->unit_id=$request->unit_id;
             $book->caption=$caption == null ? $request->book_caption : $caption;
             $book->teacher_id=Auth::guard('teacher')->user()->id;
             $book->save();

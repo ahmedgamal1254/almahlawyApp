@@ -28,6 +28,7 @@
 {{-- <script src="{{ asset("assets/teacher_assets/app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js")}}"></script> --}}
 <script src="{{ asset("assets/teacher_assets/app-assets/js/scripts/charts/chart-chartjs.min.js")}}"></script>
 <script src="{{ asset("assets/teacher_assets/app-assets/js/scripts/tables/table-template.js")}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <script>
     try {
         let url="{{ env("APP_URL") }}"

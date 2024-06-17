@@ -31,31 +31,12 @@
                             <div class="card-body">
                                 <form action="{{ route("class.store") }}" method="post">
                                     @csrf
-                                    <fieldset class="form-group position-relative has-icon-left mb-0">
-                                        <label for="desc">أدخل اسم المرحلة الدراسية</label>
-                                        <select name="school_grade_id" class="form-control select2 select-stage-select" id="select-stage"
-                                        data-placeholder="اختر الصف الدراسي" required>
-                                            <option value="">أدخل اسم المرحلة الدراسية</option>
-                                            @forelse ($school_grades as $school_grade)
-                                                <option
-                                                @if(old("school_grade_id") == $school_grade->id) selected  @endif
-                                                value="{{ $school_grade->id }}">{{ $school_grade->name }}</option>
-                                            @empty
-                                                <option value="0">لا توجد مراحل دراسية بعد</option>
-                                            @endforelse
-                                        </select>
-
-                                        @error("school_grade_id")
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-
-                                    </fieldset>
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="desc">أدخل اسم المجموعة الدراسية</label>
                                         <input type="text" name="name"
                                             class="form-control form-control-lg input-lg"
-                                            value="{{ old("name") }}" id="" placeholder="مثل السبت والاربعاء">
+                                            value="{{ old("name") }}" id="" placeholder="مثل :- سنتر او اونلاين">
                                         @error("name")
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -67,16 +48,6 @@
                                             class="form-control form-control-lg input-lg"
                                             placeholder="أدخل وصف المجموعة">{{ old("description") }}</textarea>
                                         @error("description")
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </fieldset>
-
-                                    <fieldset class="form-group position-relative has-icon-left mb-0">
-                                        <label for="desc">أدخل ميعاد المجموعة الدراسية</label>
-                                        <input type="time" name="start_time"
-                                            class="form-control form-control-lg input-lg"
-                                            value="{{ old("start_time") }}" id="" placeholder="12:00 PM مثال">
-                                        @error("start_time")
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </fieldset>

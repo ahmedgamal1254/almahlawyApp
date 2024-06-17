@@ -48,7 +48,7 @@
                                         <textarea type="text" name="description" id="desc" cols="30" rows="10"
                                             class="form-control form-control-lg input-lg"
                                             id="email" placeholder="أدخل وصف الدرس">{{ $lesson->description }}</textarea>
-                                        @error("title")
+                                        @error("description")
                                             <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
@@ -56,7 +56,7 @@
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <input type="number" name="duration"
                                             class="form-control form-control-lg input-lg"
-                                            value="{{ $lesson->duration }}" placeholder="أدخل مدة الدرس(الفيديو)">
+                                            value="{{ $lesson->duration }}" placeholder="أدخل مدة الدرس(الفيديو) بالدقيقة">
                                         @error("duration")
                                             <span class="text-error">{{ $message }}</span>
                                         @enderror
@@ -65,6 +65,7 @@
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="">أرفع صورة مصغرة للفيديو</label>
                                         <input class="form-control form-control-lg" id="img" name="img" type="file">
+                                        <img src="{{ asset("public/app/" . $lesson->image_caption) }}" alt="">
                                         @error("img")
                                             <span class="text-error">{{ $message }}</span>
                                         @enderror
@@ -83,13 +84,13 @@
                                             @endforelse
                                         </select>
                                         @error("school_grade_id")
-                                            <span class="text-errpr">{{ $message }}</span>
+                                            <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="desc">أدخل اسم الوحدة</label>
-                                        <select name="subject_id" id="units" class="form-control form-control-lg">
+                                        <select name="unit_id" id="units" class="form-control form-control-lg">
                                             <option value="">أدخل اسم الوحدة</option>
                                             @forelse ($units as $unit)
                                                 <option
@@ -99,8 +100,8 @@
                                                 <option value="0">لا توجد مواد وحدات دراسية بعد</option>
                                             @endforelse
                                         </select>
-                                        @error("subject_id")
-                                            <span class="text-errpr">{{ $message }}</span>
+                                        @error("unit_id")
+                                            <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
 

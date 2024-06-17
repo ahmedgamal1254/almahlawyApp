@@ -23,7 +23,9 @@ class StorePostRequest extends FormRequest
     {
         return [
             "title" => ['required',"string","unique:posts,title"],
+            "description" => "required",
             "school_grade_id" => 'required|numeric|exists:school_grades,id',
+            "img" => "nullable|image|mimes:png,jpg"
         ];
     }
 

@@ -56,25 +56,17 @@ class Month{
     }
 
     public function get_exams_per_month($year,$month,$guard="web"){
-        $exams=DB::table('exams')->join("question_exams","question_exams.exam_id","=","exams.id")
-        ->select("exams.*")->selectRaw('count(question_exams.id) as cnt')
-        ->where("exams.school_grade_id","=",Auth::guard($guard)->user()->school_grade_id)
-        ->whereMonth("date_exam","=",$month)->whereYear("date_exam","=",$year)
-        ->groupBy("exams.id")->get();
-
-        $exams=collect($exams)->map(function ($exam){
-            return [
-                "id" => $exam->id,
-                "title" => $exam->title,
-                "description" => $exam->description,
-                "code" => $exam->code,
-                "duration" => $exam->duration,
-                "exam_date" => $exam->date_exam,
-                "start_time" => $exam->start_time,
-                "end_time" => $exam->end_time,
-                "questions_count" => $exam->cnt
-            ];
-        });
+        $exams=DB::table('exams')->leftJoin('exam_student', function ($join) use ($guard) {
+            $join->on('exams.id', '=', 'exam_student.exam_id')
+            ->where('exam_student.user_id', '=', Auth::guard($guard)->user()->id);
+        })
+        ->join('question_exams', 'question_exams.exam_id', '=', 'exams.id')
+        ->select('exams.*', 'exam_student.total', 'exam_student.degree', DB::raw('COUNT(question_exams.id) as cnt'))
+        ->where('exams.school_grade_id', '=', Auth::guard($guard)->user()->school_grade_id)
+        ->whereMonth('exams.date_exam', '=', $month)
+        ->whereYear('exams.date_exam', '=', $year)
+        ->groupBy('exams.id')
+        ->get();
 
         return $exams;
     }
@@ -123,9 +115,9 @@ class Month{
             }
         }
 
-        $stats_question["count_correct_answers"]=count($all_questions_student);
-        $stats_question["all_questions_student"]=count($all_questions_student)==0?1:count($all_questions_student);
-        $stats_question["all_questions_count"]=count($all_questions)==0?1:count($all_questions);
+        $stats_question["count_correct_answers"]=$count_correct_answers;
+        $stats_question["all_questions_student"]=count($all_questions_student);
+        $stats_question["all_questions_count"]=count($all_questions);
 
         return $stats_question;
     }
@@ -177,7 +169,23 @@ class Month{
         $exams_answered=$this->get_exams_student_answered($month_value["year"],$month_value["month_num"],$guard);
 
         // combination between exams adn show it
-        $exams=$exams_answered->merge($exams)->unique("id");  // merge two array all months and months which student participant for it
+        $exams=$exams_answered->merge($exams)->unique("id");
+
+        $exams=collect($exams)->map(function ($exam){
+            return [
+                "id" => $exam->id,
+                "title" => $exam->title,
+                "description" => $exam->description,
+                "code" => $exam->code,
+                "duration" => $exam->duration,
+                "exam_date" => $exam->date_exam,
+                "start_time" => $exam->start_time,
+                "end_time" => $exam->end_time,
+                "total" => $exam->total,
+                "degree" => $exam->degree,
+                "questions_count" => $exam->cnt
+            ];
+        });
 
         $stats=$this->month_stats($month_value["year"],$month_value["month_num"],$guard);
 

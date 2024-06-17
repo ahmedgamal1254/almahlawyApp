@@ -16,7 +16,7 @@ class GroupController extends Controller
     public function index()
     {
         try {
-            $classes = ClassStudy::withCount("students")->with("school_grade:id,name")->paginate(10);
+            $classes = ClassStudy::withCount("students")->paginate(10);
 
             return view("Teacher.classes.index",compact("classes"));
         } catch (\Throwable $th) {
@@ -127,10 +127,8 @@ class GroupController extends Controller
     {
         try {
             $class_study=ClassStudy::find($request->id);
-            $class_study->group_name=$request->name;
-            $class_study->group_time=$request->start_time;
+            $class_study->group_name=$request->group_name;
             $class_study->description=$request->description;
-            $class_study->school_grade_id=$request->school_grade_id;
             $class_study->subject_id=Auth::guard('teacher')->user()->subject_id;
             $class_study->save();
 

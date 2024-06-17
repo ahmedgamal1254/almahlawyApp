@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateFreeBookRequest extends FormRequest
 {
@@ -22,10 +23,11 @@ class UpdateFreeBookRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => "required|string",
+            'title' => "required|string|",Rule::unique('free_books')->ignore($this->id),
+            "description" => "required",
             "img" => "nullable|image|mimes:png,jpg",
             'school_grade_id' => 'required|numeric|exists:school_grades,id',
-            "unit_id" => "required|numeric|exists:units,id"
+            "unit_id" => "nullable|numeric|exists:units,id"
         ];
     }
 }

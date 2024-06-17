@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateSchoolGradeRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class UpdateSchoolGradeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required'],
+            'name' => ['required',"string",Rule::unique("school_grades")->ignore($this->id)],
         ];
     }
 

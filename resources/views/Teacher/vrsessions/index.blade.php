@@ -22,9 +22,9 @@
                     @forelse ($vrsession as $item)
                     <tr>
                         <td>{{ $item->name }}</td>
-                        <td>{{ $item->link }}</td>
+                        <td><a href="{{ $item->link }}">رابط الحصة</a></td>
                         <td>{{ $item->school_grade->name }}</td>
-                        <td>{{ $item->unit->title }}</td>
+                        <td>{{ $item->unit?$item->unit->title:"المنهج بالكامل" }}</td>
                         <td>
                             <x-operation
                                 :edit="route('teacher.sessions.edit',['id'=>$item->id])"

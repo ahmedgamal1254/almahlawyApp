@@ -22,9 +22,7 @@ class PostController extends Controller
         try {
             $posts=DB::table('posts')
             ->join('school_grades', 'posts.school_grade_id', '=', 'school_grades.id')
-            ->join('units', 'posts.unit_id', '=', 'units.id')
-            ->select('posts.*', 'units.title as subject_name', 'school_grades.name as school_grade')
-            ->where("posts.teacher_id","=",Auth::guard('teacher')->user()->id)
+            ->select('posts.*', 'school_grades.name as school_grade')
             ->whereNull("posts.deleted_at")
             ->orderByDesc("created_at")
             ->paginate(10);
@@ -47,7 +45,7 @@ class PostController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
         try {
             $file=Null;
@@ -81,8 +79,8 @@ class PostController extends Controller
         try {
             $post=DB::table('posts')
             ->join('school_grades', 'posts.school_grade_id', '=', 'school_grades.id')
-            ->join('units', 'posts.unit_id', '=', 'units.id')
-            ->select('posts.*', 'subjects.title as subject_name', 'school_grades.name as school_grade')
+            ->leftJoin('units', 'posts.unit_id', '=', 'units.id')
+            ->select('posts.*', 'units.title as subject_name', 'school_grades.name as school_grade')
             ->where('posts.id','=',$id)
             ->first();
 
@@ -93,7 +91,8 @@ class PostController extends Controller
 
             return view("Teacher.posts.show",compact("post"));
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+            echo $th->getMessage();
+            // return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
     }
 
@@ -115,7 +114,7 @@ class PostController extends Controller
         }
     }
 
-    public function update(UpdatePostRequest $request, Post $post)
+    public function update(UpdatePostRequest $request)
     {
         try {
             $file=Null;

@@ -22,7 +22,7 @@ class UpdateExamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'duration' => ['required'],
+            'duration' => ['required',"numeric"],
             'start_time' => ['required'],
             'end_time' => ['required'],
             'title' => ['required'],

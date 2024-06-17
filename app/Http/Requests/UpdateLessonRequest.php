@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateLessonRequest extends FormRequest
 {
@@ -23,7 +24,11 @@ class UpdateLessonRequest extends FormRequest
     {
         return [
             "date_show"=>["required"],
-            "title"=>["required","string"],
+            "title"=>["required","string",Rule::unique("lessons")->ignore($this->id)],
+            "description" => "required",
+            "img" => "required|image|mimes:png,jpg",
+            'school_grade_id' => 'required|numeric|exists:school_grades,id',
+            "subject_id" => "required|numeric|exists:units,id",
         ];
     }
 

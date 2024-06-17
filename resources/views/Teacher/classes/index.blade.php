@@ -14,9 +14,7 @@
             <table class="table table-de mb-0 table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>ميعاد المجموعة</th>
                         <th>اسم المجموعة</th>
-                        <th>المرحلة الدراسية</th>
                         <th>الطلاب</th>
                         <th>التعديلات</th>
                     </tr>
@@ -24,10 +22,8 @@
                 <tbody>
                     @forelse ($classes as $class)
                     <tr>
-                        <td>{{ $class->group_time }}</td>
                         <td>{{ $class->group_name }}</td>
-                        <td>{{ $class->school_grade->name }}</td>
-                        <td>
+=                        <td>
                             <span>{{ $class->students_count }}</span>
                             | <a href="{{ route("group.students",["group_id"=>$class->id]) }}">
                                 <i class="fa fa-eye"></i>
@@ -36,7 +32,6 @@
                         <td>
                             <x-operation
                                 :edit="route('class.edit',['id'=>$class->id])"
-                                :view="route('class.show',['id'=>$class->id])"
                                 :delete="route('class.destroy',['id'=>$class->id])"
                                 :id="$class->id"
                                 >

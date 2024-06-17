@@ -14,15 +14,15 @@ class FreeCourcesController extends Controller
 {
     use ResponseRequest;
     public function index(){
-        $free_videos=DB::table("free_videos")->select("id","title","description","video_url","image_caption")
+        $free_videos=DB::table("free_videos")->select("id","title","description","video_url","image_caption as cover")
         ->where("school_grade_id","=",Auth::guard("api")->user()->school_grade_id)
-        ->paginate(15);
+        ->get();
 
-        return $this->make_response($free_videos,200);
+        return $this->make_response(LessonResource::collection($free_videos),200);
     }
 
     public function show($id){
-        $free_video=FreeVideos::where("id",$id)
+        $free_video=FreeVideos::where("id",$id)->select("id","title","description","video_url","image_caption as cover")
         ->where("school_grade_id","=",Auth::guard("api")->user()->school_grade_id)->first();
 
         if(!$free_video){

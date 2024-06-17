@@ -66,7 +66,7 @@ class LessonController extends Controller
             $lesson->title=$request->title;
             $lesson->description=$request->description;
             $lesson->school_grade_id=$request->school_grade_id;
-            $lesson->unit_id=$request->subject_id;
+            $lesson->unit_id=$request->unit_id;
             $lesson->img_caption=$file;
             $lesson->subject_id=Auth::guard('teacher')->user()->subject_id;
             $lesson->teacher_id=Auth::guard('teacher')->user()->id;

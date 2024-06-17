@@ -22,9 +22,7 @@ class StoreClassStudyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => "required",
-            "start_time" => "required",
-            "school_grade_id" => 'required|numeric|exists:school_grades,id',
+            'name' => "required|string|unique:class_studies,group_name",
         ];
     }
 
@@ -32,7 +30,6 @@ class StoreClassStudyRequest extends FormRequest
     {
         return [
             "name.required" => "قم بوضع اسم المجموعة",
-            "school_grade_id.required" => "من فضلك أدخل الصف الدراسى",
         ];
     }
 }

@@ -69,7 +69,8 @@ class FreeBooksController extends Controller
 
             return redirect()->route("free-books")->with('message','تم اضافة الكتاب بنجاح');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error',"عفوا حدث خطأ ما")->withInput();
+            return $th->getMessage();
+            // return redirect()->back()->with('error',"عفوا حدث خطأ ما")->withInput();
         }
     }
 
