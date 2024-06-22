@@ -26,22 +26,18 @@ class MonthController extends Controller
         $this->unlockmonth=new UnLockMonth();
     }
     public function index(){
-        $months=DB::table("months")->select("months.id","months.month_date as date","months.month_name as name","months.month_description as description",
-        "year","month")
-        ->where("months.status","=",0)
-        ->groupBy("months.month_date")
-        ->get();
+        $user = Auth::guard("api")->user();
 
-        $months_available = DB::table("month_student")
-        ->select("months.id","months.month_date as date","months.month_name as name","months.month_description as description",
+        $months=DB::table("months")
+        ->leftJoin("month_student",function ($join) use($user){
+            $join->on("months.id","=","month_student.month_id")
+            ->where("month_student.user_id",$user->id);
+        })->select("months.id","months.month_date as date","months.month_name as name","months.month_description as description",
         "year","month",
         "month_student.lock", "month_student.points_paid",
         "month_student.user_id")
-        ->join("months","month_student.month_id","=","months.id")
-        ->where("month_student.user_id", "=", Auth::guard('api')->user()->id)
+        ->orderByDesc("month_student.points_paid")
         ->get();
-
-        $months=$months_available->merge($months)->unique("id");  // merge two array all months and months which student participant for it
 
         // return $months;
         $books=DB::table("months")->select("months.month_date",DB::raw('Count(DISTINCT media.id) as book_count'),"status")
@@ -49,21 +45,21 @@ class MonthController extends Controller
         ->leftJoin("users","users.school_grade_id","=","media.school_grade_id")
         ->groupBy("months.month_date")
         ->where("months.status","=",0)
-        ->where("media.school_grade_id","=",Auth::guard('api')->user()->school_grade_id)->orWhereNull("media.id")
+        ->where("media.school_grade_id","=",$user->school_grade_id)->orWhereNull("media.id")
         ->get();
 
         $lessons=DB::table("months")->select("months.month_date",DB::raw('Count(DISTINCT lessons.id) as lesson_count'),"status")
         ->leftJoin("lessons","months.month_date","=",DB::raw("DATE_FORMAT(lessons.date_show, '%Y-%m')"))
         ->leftJoin("users","users.school_grade_id","=","lessons.school_grade_id")
         ->groupBy("months.month_date")
-        ->where("lessons.school_grade_id","=",Auth::guard('api')->user()->school_grade_id)->orWhereNull("lessons.id")
+        ->where("lessons.school_grade_id","=",$user->school_grade_id)->orWhereNull("lessons.id")
         ->get();
 
         $exams=DB::table("months")->select("months.month_date",DB::raw('Count(DISTINCT exams.id) as exam_count'),"status")
         ->leftJoin("exams","months.month_date","=",DB::raw("DATE_FORMAT(exams.date_exam, '%Y-%m')"))
         ->leftJoin("users","users.school_grade_id","=","exams.school_grade_id")
         ->groupBy("months.month_date")
-        ->where("exams.school_grade_id","=",Auth::guard('api')->user()->school_grade_id)->orWhereNull("exams.id")
+        ->where("exams.school_grade_id","=",$user->school_grade_id)->orWhereNull("exams.id")
         ->get();
 
         $months = collect($months)->map(function ($month) use ($lessons, $exams, $books) {

@@ -4,11 +4,8 @@ namespace App\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\{
-    PostResource,LessonResource,BookResource,
-    ExamResource
+    LessonResource,BookResource,
 };
-
-use App\Models\{Teacher};
 
 class Month{
 
@@ -71,19 +68,6 @@ class Month{
         return $exams;
     }
 
-    public function get_exams_student_answered($year,$month,$guard="web"){
-        $exams_ansered=DB::table('exam_student')
-            ->join("question_exams","question_exams.exam_id","=","exam_student.exam_id")
-            ->select("exams.*","total","degree","user_id")->selectRaw('count(question_exams.id) as cnt')
-            ->leftJoin("exams","exams.id","=","exam_student.exam_id")
-            ->where("exams.school_grade_id","=",Auth::guard($guard)->user()->school_grade_id)
-            ->whereMonth("date_exam","=",$month)->whereYear("date_exam","=",$year)
-            ->where("exam_student.user_id","=",Auth::guard($guard)->user()->id)
-            ->groupBy("exams.id")->get();
-
-        return $exams_ansered;
-    }
-
     public function month_stats($year,$month,$guard){
         $stats["questions_rate"]=$this->questions_rate($year,$month,$guard);
         $stats["complete_month"]=$this->compelete_month($year,$month,$guard);
@@ -130,10 +114,12 @@ class Month{
         ->where("book_view.user_id","=",Auth::guard($guard)->user()->id)->count();
 
         // lesson if watched
-        $lessons_watched=DB::table("lessons")->select('lessons.*',"video_minute.current_time")->whereYear('date_show','=',$year)
-        ->leftJoin("video_minute","video_minute.video_id","=","lessons.id")
-        ->whereMonth('date_show','=',$month)->where('school_grade_id','=',Auth::guard($guard)->user()->id)
-        ->where("video_minute.user_id","=",Auth::guard($guard)->user()->id)
+        $lessons_watched=DB::table("lessons")->select('lessons.id',"lessons.duration","video_minute.current_time")->whereYear('date_show','=',$year)
+        ->leftJoin("video_minute",function ($join) use ($guard){
+            $join->on("video_minute.video_id","=","lessons.id")
+            ->where("video_minute.user_id","=",Auth::guard($guard)->user()->id);
+        })
+        ->whereMonth('date_show','=',$month)->where('school_grade_id','=',Auth::guard($guard)->user()->school_grade_id)
         ->get();
 
         $sum_watched=0;
@@ -165,12 +151,6 @@ class Month{
         // exams
         $exams=$this->get_exams_per_month($month_value["year"],$month_value["month_num"],$guard);
 
-        // exams which student solved it
-        $exams_answered=$this->get_exams_student_answered($month_value["year"],$month_value["month_num"],$guard);
-
-        // combination between exams adn show it
-        $exams=$exams_answered->merge($exams)->unique("id");
-
         $exams=collect($exams)->map(function ($exam){
             return [
                 "id" => $exam->id,
@@ -189,21 +169,25 @@ class Month{
 
         $stats=$this->month_stats($month_value["year"],$month_value["month_num"],$guard);
 
-        // array of data (lessons , videos , exams , month , month_id)
+        // array of data (lessons , videos , exams , month , month_id , months stats)
         $data["lessons"]=$lessons;
         $data["books"]=$books;
         $data["exams"]=$exams;
         $data["month"]=$month_value["month"];
+
         $data["count_correct_answers"]=$stats["questions_rate"]["count_correct_answers"];
         $data["all_questions_student"]=$stats["questions_rate"]["all_questions_student"];
         $data["all_questions_count"]=$stats["questions_rate"]["all_questions_count"];
+
         $data["books_count"]=count($books)==0?1:count($books);
         $data["book_viewed"]=$stats["complete_month"]["book_viewed"];
+
         $data["minute_watched"]=$stats["complete_month"]["minute_watched"];
         $data["video_duration"]=$stats["complete_month"]["video_duration"];
-        $percentage=round(($stats["complete_month"]["book_viewed"]+$stats["complete_month"]["minutes_watched"])
-        /(count($books)+$stats["complete_month"]["all_minutes"]),2);
-        $data["percentage"]=$percentage*100;
+
+        $percentage_lessons=round(($stats["complete_month"]["minutes_watched"])/($stats["complete_month"]["all_minutes"]),2)*100;
+        $percentage_books=round(($stats["complete_month"]["book_viewed"])/$data["books_count"],2)*100;
+        $data["percentage"]=($percentage_books + $percentage_lessons) / 2;
 
         return $data;
     }

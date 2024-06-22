@@ -124,11 +124,25 @@
                                         <div class="tags-input">
                                             <ul id="tags">
                                                 @if (is_array(old("units")))
-                                                    @foreach (old("units") as $unit)
+                                                    @foreach (old("units") as $index => $unit)
                                                         @if(!empty($unit))
                                                             <li>
-                                                                {{ $unit }}
-                                                                <input type="hidden" name="units[]" value="{{ $unit }}">
+                                                                {{ \App\Models\Unit::find($unit["name"])->title }}
+                                                                <input type="number"
+                                                                    class="form-data"
+                                                                    placeholder="عدد الاسئلة" name="units[{{ $index }}][number]"
+                                                                    value="{{ $unit["number"] }}">
+                                                                <input type="hidden"
+                                                                    name="units[{{ $index }}][name]"
+                                                                    value="{{ $unit["name"] }}">
+                                                                <button class="delete-button">X</button>
+                                                                @error("units.$index.name")
+                                                                    <span class="text-error" style="color: #ffffff;">{{ $message }}</span>
+                                                                @enderror
+
+                                                                @error("units.$index.number")
+                                                                    <span class="text-error" style="color: #ffffff;">{{ $message }}</span>
+                                                                @enderror
                                                             </li>
                                                         @endif
                                                     @endforeach
@@ -145,7 +159,7 @@
                                                 <option value="0">لا توجد وحدة دراسية بعد</option>
                                             @endforelse
                                         </select>
-                                        @error("units_id")
+                                        @error("units")
                                             <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -179,6 +193,8 @@
     const select = document.getElementById('units_exam');
 
     // Add an event listener for keydown on the input element
+    let i=0;
+
     select.addEventListener('input', function (event) {
         // Create a new list item element for the tag
         const tag = document.createElement('li');
@@ -188,7 +204,9 @@
         tag.innerText = tagContent;
         tag.innerHTML += `<input type="hidden"
         value="${this.options[this.selectedIndex].getAttribute("data-id")}"
-         name="units[]" />`;
+         name="units[${i}][name]" />`;
+
+        tag.innerHTML +=`<input type="number" class="form-data" placeholder="عدد الاسئلة" name="units[${i}][number]">`
         // Add a delete button to the tag
         tag.innerHTML += '<button class="delete-button">X</button>';
 
@@ -198,6 +216,7 @@
         // Clear the input element's value
         input.value = '';
 
+        i+=1
     });
 
     // Add an event listener for click on the tags list

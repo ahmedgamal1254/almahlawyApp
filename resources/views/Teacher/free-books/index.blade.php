@@ -17,7 +17,7 @@
                         <th>اسم الكتاب</th>
                         <th>وصف الكتاب</th>
                         <th>رابط الكتاب</th>
-                        <th>اسم المادة</th>
+                        <th>اسم الشابتر</th>
                         <th>المرحلة الدراسية</th>
                         <th>التعديلات</th>
                     </tr>
@@ -30,7 +30,7 @@
                         <td>
                             <a href="{{ url("public/app/books/".$item->media_url) }}" frameborder="0">رابط الكتاب</a>
                         </td>
-                        <td>{{ $item->subject_name }}</td>
+                        <td>{{ $item->subject_name ? $item->subject_name:"المنهج بالكامل" }}</td>
                         <td>{{ $item->school_grade }}</td>
                         <td>
                             <x-operation

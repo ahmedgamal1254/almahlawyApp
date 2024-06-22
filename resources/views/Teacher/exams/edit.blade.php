@@ -54,15 +54,6 @@
                                     </fieldset>
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
-                                        <input type="text" name="code"
-                                               class="form-control form-control-lg input-lg"
-                                               value="{{ $exam->code }}" id="" placeholder="أدخل كود الامتحان">
-                                        @error("code")
-                                            <span class="text-error">{{ $message }}</span>
-                                        @enderror
-                                    </fieldset>
-
-                                    <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="desc">أدخل مدة الامتحان</label>
                                         <select name="duration" id="" class="form-control form-control-lg">
                                             <option value="">أدخل مدة الامتحان</option>
@@ -107,53 +98,6 @@
                                             <span class="text-error">{{ $message }}</span>
                                         @enderror
                                     </fieldset>
-
-                                    <fieldset class="form-group position-relative has-icon-left mb-0">
-                                        <label for="desc">أدخل اسم المرحلة الدراسية</label>
-                                        <select name="school_grade_id" id="school_grades" class="form-control form-control-lg">
-                                            <option value="">أدخل اسم المرحلة الدراسية</option>
-                                            @forelse ($school_grades as $school_grade)
-                                            <option
-                                                @if($exam->school_grade_id == $school_grade->id) selected @endif
-                                                value="{{ $school_grade->id }}">{{ $school_grade->name }}</option>
-                                            @empty
-                                                <option value="0">لا توجد مراحل دراسية بعد</option>
-                                            @endforelse
-                                        </select>
-
-                                        @error("school_grade_id")
-                                            <span class="text-error">{{ $message }}</span>
-                                        @enderror
-                                    </fieldset>
-
-                                    <div class="mb-1">
-                                        <div class="tags-input">
-                                            <ul id="tags">
-                                                @if ($units)
-                                                    @foreach ($units_in_exam as $unit)
-                                                        <li>
-                                                            {{ $unit->title }}
-                                                            <input type="hidden" name="units[]" value="{{ $unit->id }}">
-                                                        </li>
-                                                    @endforeach
-                                                @endif
-                                            </ul>
-                                            <input type="text" id="input-tag"
-                                                placeholder="ابحص باسم الوحدة" />
-                                        </div>
-                                        <select name="" id="units_exam" class="form-control form-control-lg">
-                                            <option value="">أدخل اسم الوحدة</option>
-                                            @forelse ($units as $unit)
-                                                <option value="{{ $unit->title }}" data-id="{{ $unit->id }}">{{ $unit->title }}</option>
-                                            @empty
-                                                <option value="0">لا توجد وحدة دراسية بعد</option>
-                                            @endforelse
-                                        </select>
-
-                                        @error("units")
-                                            <span class="text-error">{{ $message }}</span>
-                                        @enderror
-                                    </div>
 
                                     <div class="custom-form-elemrnt-button">
                                         <div class="row">

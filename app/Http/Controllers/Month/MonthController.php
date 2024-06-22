@@ -87,6 +87,7 @@ class MonthController extends Controller
 
             return view("student.teacher",compact("teacher_toggle","teacher","months"));
         } catch (\Throwable $th) {
+            // echo $th->getMessage();
             return redirect()->back()->with('error','حدث خطا ما');
         }
     }

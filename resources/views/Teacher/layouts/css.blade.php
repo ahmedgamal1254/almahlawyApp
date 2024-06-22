@@ -32,7 +32,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script src="{{ asset("assets/teacher_assets/assets/js/plupload.full.min.js") }}"></script>
-
 {{-- custom style --}}
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;400;500;800&family=Changa:wght@200;300;400;500;600;700&display=swap');
@@ -310,7 +309,7 @@ h2 {
 .main .card table {
     border: none;
     font-size: 16px;
-    height: 270px;
+    /* height: 270px; */
     width: 80%;
 }
 
@@ -439,6 +438,7 @@ h2 {
     padding: 5px 10px;
     margin-right: 5px;
     margin-bottom: 5px;
+    position: relative;
 }
 
 .tags-input input[type="text"] {
@@ -459,6 +459,30 @@ h2 {
     color: #ffffff;
     cursor: pointer;
     margin-left: 5px;
+    position: absolute;
+    top: 5px;
+    left: 0px;
+    font-size: 16px;
+    background: red;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+}
+
+.form-data{
+    display: block;
+    margin-top: 10px;
+    border-radius: 12px;
+    padding: 10px 2px;
+    width: 100%;
+    background: transparent;
+    color: white;
+    box-shadow: 1px 0px 2px #000;
+    transition: all 1s ease-in-out;
+}
+
+.form-data::placeholder {
+  color: #ffffff;
 }
 
 .loader {
@@ -586,3 +610,4 @@ span.text-error {
 }
 
 </style>
+@yield('style')

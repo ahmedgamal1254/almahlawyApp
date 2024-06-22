@@ -27,7 +27,7 @@ class StoreLessonRequest extends FormRequest
             "description" => "required",
             "img" => "required|image|mimes:png,jpg",
             'school_grade_id' => 'required|numeric|exists:school_grades,id',
-            "subject_id" => "required|numeric|exists:units,id",
+            "unit_id" => "required|numeric|exists:units,id",
         ];
     }
 

@@ -16,58 +16,68 @@ use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\PaperExamStudentResource;
 use App\Http\Resources\ProfileUserResource;
 use App\Http\Resources\ExamStudentResource;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
     use Upload;
 
     public function login(Request $request){
-    	$validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|string|min:6',
-        ]);
+    	try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email',
+                'password' => 'required|string|min:6',
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
+            }
 
-        if (! $token = auth("api")->attempt($validator->validated())) {
-            return response()->json(['error' => 'email or password may be or not correct'], 401);
-        }
+            if (! $token = auth("api")->attempt($validator->validated())) {
+                return response()->json(['error' => 'email or password may be or not correct'], 401);
+            }
 
-        $user = auth("api")->user();
-        if (!$user->email_verified_at) {
+            $user = auth("api")->user();
+            if (!$user->email_verified_at) {
+                return response()->json(
+                    [
+                        'error' => 'Email not verified',
+                        "email_verified" => false
+                    ], 403
+                );
+            }
+
+            return $this->createNewToken($token);
+        } catch (\Throwable $th) {
+            Log::error($th);
             return response()->json(
                 [
-                    'error' => 'Email not verified',
-                    "email_verified" => false
-                ], 403
+                    'error' => 'An error occurred, please contact the administrator',
+                ], 500
             );
         }
-
-        return $this->createNewToken($token);
     }
 
     public function register(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255'],
-            'government' => ['required','string'],
-            'school_grade_id' => ['required','integer'],
-            'group_id' => ['required','integer'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required',"string","min:8","max:100"],
-            "password_confirmed" => ["required","string","min:8","max:100",'same:password'],
-            "phonenumber" => ['required','numeric','unique:users,phonenumber'],
-            "phone_parent" => ['required','numeric'],
-        ]);
-
-        if($validator->fails()){
-            return response()->json($validator->errors(), 400);
-        }
-
-        DB::beginTransaction();
-
         try {
+            $validator = Validator::make($request->all(), [
+                'name' => ['required', 'string', 'max:255'],
+                'government' => ['required','string',"exists:governments,governorate_name_ar"],
+                'school_grade_id' => ['required','integer',"exists:school_grades,id"],
+                'group_id' => ['required','integer',"exists:class_studies,id"],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+                'password' => ['required',"string","min:8","max:100"],
+                "password_confirmed" => ["required","string","min:8","max:100",'same:password'],
+                'phonenumber' => ['required','regex:/(01)[0-9]{9}/','digits:11','unique:users,phonenumber'] ,
+                'phone_parent' => ['required','regex:/(01)[0-9]{9}/','digits:11'] ,
+            ]);
+
+            if($validator->fails()){
+                return response()->json($validator->errors(), 400);
+            }
+
+            DB::beginTransaction();
+
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -106,55 +116,91 @@ class AuthController extends Controller
     }
 
     public function logout() {
-        auth("api")->logout();
+        try{
+            auth("api")->logout();
 
-        return response()->json(['message' => 'User successfully signed out']);
+            return response()->json(['message' => 'User successfully signed out']);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json(
+                [
+                    'error' => 'An error occurred, please contact the administrator',
+                ], 500
+            );
+        }
     }
 
     public function refresh() {
-        return $this->createNewToken(auth("api")->refresh());
+        try{
+            return $this->createNewToken(auth("api")->refresh());
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json(
+                [
+                    'error' => 'An error occurred, please contact the administrator',
+                ], 500
+            );
+        }
     }
 
     public function userProfile() {
-        return response()->json(auth("api")->user());
+        try{
+            return response()->json(auth("api")->user());
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json(
+                [
+                    'error' => 'An error occurred, please contact the administrator',
+                ], 500
+            );
+        }
     }
 
     public function update(Request $request){
-        $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255'],
-            'government' => ['required','string'],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['nullable',"min:8","max:100"],
-            "phonenumber" => ['nullable','numeric'],
-            "profile" => "nullable|image"
-        ]);
+        try{
+            $validator = Validator::make($request->all(), [
+                'name' => ['required', 'string', 'max:255'],
+                'government' => ['required','string'],
+                'email' => ['required', 'string', 'email', 'max:255'],
+                'password' => ['nullable',"min:8","max:100"],
+                "phonenumber" => ['nullable','numeric'],
+                "profile" => "nullable|image"
+            ]);
 
-        if($validator->fails()){
-            return response()->json($validator->errors(), 400);
+            if($validator->fails()){
+                return response()->json($validator->errors(), 400);
+            }
+
+            $user = Auth::guard("api")->user();
+
+            // Update user details
+            $user->name = $request->input('name');
+            $user->email = $request->input('email');
+
+            if ($request->input('password')) {
+                $user->password = Hash::make($request->input('password'));
+            }
+
+            $user->government = $request->input('government');
+            $user->phonenumber = $request->input('phonenumber');
+
+            // Handle profile image upload
+            if ($request->hasFile('profile')) {
+                $path = $this->image_upload($request,"users","profile");
+                $user->profile = $path;
+            }
+
+            $user->save();
+
+            return response()->json(['message' => 'Profile updated successfully', 'user' => $user], 200);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json(
+                [
+                    'error' => 'An error occurred, please contact the administrator',
+                ], 500
+            );
         }
-
-        $user = Auth::guard("api")->user();
-
-        // Update user details
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-
-        if ($request->input('password')) {
-            $user->password = Hash::make($request->input('password'));
-        }
-
-        $user->government = $request->input('government');
-        $user->phonenumber = $request->input('phonenumber');
-
-        // Handle profile image upload
-        if ($request->hasFile('profile')) {
-            $path = $this->image_upload($request,"users","profile");
-            $user->profile = $path;
-        }
-
-        $user->save();
-
-        return response()->json(['message' => 'Profile updated successfully', 'user' => $user], 200);
     }
 
     protected function createNewToken($token){
@@ -167,7 +213,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth("api")->factory()->getTTL() * 60 * 24 *30,
+            'expires_in' => auth("api")->factory()->getTTL(),
             'data' => $data
         ]);
     }

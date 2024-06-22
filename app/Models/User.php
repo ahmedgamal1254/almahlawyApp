@@ -61,7 +61,7 @@ class User extends Authenticatable implements JWTSubject,MustVerifyEmail{
     }
     public function exams(){
         return $this->belongsToMany(Exam::class,'exam_student')
-        ->select("exams.id as exam_id","title","description","degree","total");
+        ->select("exams.id as exam_id","title","description","date_exam","degree","total");
     }
 
     public function paper_exams(){
@@ -76,6 +76,6 @@ class User extends Authenticatable implements JWTSubject,MustVerifyEmail{
     }
 
     public function months(){
-        return $this->belongsToMany(Month::class,"month_student");
+        return $this->belongsToMany(Month::class,"month_student")->withPivot("points_paid","created_at");
     }
 }

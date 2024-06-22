@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\PaperExamStudentResource;
 use App\Http\Resources\ProfileUserResource;
 use App\Http\Resources\ExamStudentResource;
-
+use Illuminate\Support\Facades\Log;
 use JWTAuth;
 
 class VerifyEmailController extends Controller
@@ -30,31 +30,39 @@ class VerifyEmailController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $pincode=rand(100000,999999);
+        try {
+            $pincode=rand(100000,999999);
 
-        // user
-        $user=User::where("email",$request->email)->first();
+            // user
+            $user=User::where("email",$request->email)->first();
 
-        if(!$user){
-            return response()->json(["message" => "user not found","status"=>404,"success"=>false],404);
+            if(!$user){
+                return response()->json(["message" => "user not found","status"=>404,"success"=>false],404);
+            }
+
+            // Send verification email
+            RegisterToken::updateOrCreate([
+                "email" => $request->email
+            ],[
+                "email" => $request->email,
+                "pin_code" => $pincode,
+                "expired_at" => Carbon::parse()->addDays(1)
+            ]);
+
+            Mail::to($request->email)->send(new RegisterUser($user,$pincode));
+
+            return response()->json([
+                "message" => "تم ارسال الرمز على البريد الالكترونى بنجاح",
+                "status" => 200,
+                "success" => true
+            ],200);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json([
+                "message" => "An error occurred while sending the reset email. Please try again. ",
+                "success" => false
+            ], 500);
         }
-
-        // Send verification email
-        RegisterToken::updateOrCreate([
-            "email" => $request->email
-        ],[
-            "email" => $request->email,
-            "pin_code" => $pincode,
-            "expired_at" => Carbon::parse()->addDays(1)
-        ]);
-
-        Mail::to($request->email)->send(new RegisterUser($user,$pincode));
-
-        return response()->json([
-            "message" => "تم ارسال الرمز على البريد الالكترونى بنجاح",
-            "status" => 200,
-            "success" => true
-        ],200);
     }
 
     public function verify_email(Request $request){
@@ -67,27 +75,36 @@ class VerifyEmailController extends Controller
             return response()->json(['errors' => $validator->errors(), 'status' => 422], 422);
         }
 
-        $otp = RegisterToken::where('pin_code', $request->pin_code)
+        try {
+            $otp = RegisterToken::where('pin_code', $request->pin_code)
             ->where('email', $request->email)
             ->first();
 
-        if (!$otp) {
-            return response()->json(['error' => 'Invalid OTP or email', 'status' => 404], 404);
+            if (!$otp) {
+                return response()->json(['error' => 'Invalid OTP or email', 'status' => 404], 404);
+            }
+
+            $user = User::where('email', $otp->email)->first();
+
+            // Generate token for the user
+            $token = JWTAuth::fromUser($user);
+
+            if ($user->email_verified_at) {
+                return $this->createNewToken($token, $user,'Email Already verified .');
+            }
+
+            $user->update(['email_verified_at' => now()]);
+            $otp->delete();
+
+            return $this->createNewToken($token, $user,'Email verified successfully.');
+        } catch (\Throwable $th) {
+            Log::error($th);
+
+            return response()->json([
+                "message" => "An error occurred while sending the reset email. Please try again. ",
+                "success" => false
+            ], 500);
         }
-
-        $user = User::where('email', $otp->email)->first();
-
-        // Generate token for the user
-        $token = JWTAuth::fromUser($user);
-
-        if ($user->email_verified_at) {
-            return $this->createNewToken($token, $user,'Email Already verified .');
-        }
-
-        $user->update(['email_verified_at' => now()]);
-        $otp->delete();
-
-        return $this->createNewToken($token, $user,'Email verified successfully.');
     }
 
     protected function createNewToken($token, $user,$message)
@@ -102,7 +119,7 @@ class VerifyEmailController extends Controller
             'success' => true,
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => JWTAuth::factory()->getTTL() * 60 * 24 * 30,
+            'expires_in' => JWTAuth::factory()->getTTL(),
             'data' => [
                 'profile' => $profile,
                 'paper_exams' => $paper_exams,

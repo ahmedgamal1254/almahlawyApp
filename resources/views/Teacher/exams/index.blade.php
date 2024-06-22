@@ -15,6 +15,7 @@
                 <thead>
                     <tr>
                         <th>اسم الامتحان</th>
+                        <th>عدد الاسئلة</th>
                         <th>ميعاد الامتحان</th>
                         <th>مدة الامتحان</th>
                         <th>المرحلة الدراسية</th>
@@ -25,11 +26,13 @@
                     @forelse ($exams as $item)
                     <tr>
                         <td>{{ $item->title }}</td>
+                        <td>{{ $item->questions_count }}</td>
+
                         <td>{{ $item->date_exam }}</td>
                         <td>
                            {{ $item->duration }}
                         </td>
-                        <td>{{ $item->school_grade }}</td>
+                        <td>{{ $item->stage->name }}</td>
                         <td>
                             <x-operation
                                 :edit="route('exam.edit',['id'=>$item->id])"
@@ -39,6 +42,7 @@
                                 >
                             </x-operation>
                             <a href="{{ route("exam.print",["id" => $item->id]) }}" class="btn btn-info"><i class="fa fa-file"></i></a>
+                            <a href="{{ route("exam.students",["id" => $item->id]) }}" class="btn btn-info"><i class="fa fa-users"></i></a>
                         </td>
                     </tr>
                     @empty

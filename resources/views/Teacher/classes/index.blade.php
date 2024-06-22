@@ -23,7 +23,7 @@
                     @forelse ($classes as $class)
                     <tr>
                         <td>{{ $class->group_name }}</td>
-=                        <td>
+                        <td>
                             <span>{{ $class->students_count }}</span>
                             | <a href="{{ route("group.students",["group_id"=>$class->id]) }}">
                                 <i class="fa fa-eye"></i>

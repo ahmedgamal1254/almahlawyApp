@@ -384,7 +384,9 @@
 
                 let  barChartEx = $('#governments')
 
-                console.log(barChartEx)
+                const maxValueOfY = Math.max(...d.governments.map(o => o.total), 0);
+
+                console.log(d.governments)
 
                 d.governments.forEach(ele => {
                     labels_barchart.push(ele.government)
@@ -446,7 +448,7 @@
                             ticks: {
                                 stepSize: 100,
                                 min: 0,
-                                max: 400,
+                                max: maxValueOfY,
                                 fontColor: "4BB543"
                             }
                             }

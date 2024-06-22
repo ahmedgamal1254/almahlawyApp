@@ -26,7 +26,6 @@
                         <td>
                             <x-operation
                                 :edit="route('unit.edit',['id'=>$unit->id])"
-                                :view="route('unit.show',['id'=>$unit->id])"
                                 :delete="route('unit.destroy',['id'=>$unit->id])"
                                 :id="$unit->id"
                                 >

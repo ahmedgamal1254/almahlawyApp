@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\BookResource;
 use Illuminate\Support\Facades\DB;
 use App\Traits\ResponseRequest;
+use App\Traits\ViewerTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 
 class MediaController extends Controller
 {
-    use ResponseRequest;
+    use ResponseRequest,ViewerTrait;
     public function index(){
         $user = Auth::guard("api")->user();
 
@@ -53,6 +54,9 @@ class MediaController extends Controller
                 "success" => false
             ],404);
         }
+
+        // book view
+        $this->view_book($book->id,"api");
 
         return $this->make_response(new BookResource($book),200);
     }

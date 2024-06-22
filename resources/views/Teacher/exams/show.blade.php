@@ -38,7 +38,7 @@
         </div>
         @forelse ($questions as $question)
         <div class="row align-items-start" style="flex-direction: column;width:100%;">
-            <div class="card" style="padding: 40px;font-size: 18px;">
+            <div class="card" style="padding: 40px;font-size: 18px;width:100%;">
                 <p class="card-text">{{ $question->name }}</p>
                 @if ($question->img)
                     <img src="{{ asset("public/app/" . $question->img) }}" class="rounded" alt="">

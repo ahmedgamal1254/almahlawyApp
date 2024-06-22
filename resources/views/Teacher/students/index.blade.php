@@ -67,7 +67,6 @@
                 </tbody>
             </table>
 
-
             <div class="row">
                 <a href="{{ route("students.add") }}" class="btn btn-primary"><i class="fa fa-plus"></i> اضافة طالب جديد</a>
             </div>

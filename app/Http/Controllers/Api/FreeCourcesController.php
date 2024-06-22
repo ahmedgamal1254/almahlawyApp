@@ -16,9 +16,9 @@ class FreeCourcesController extends Controller
     public function index(){
         $free_videos=DB::table("free_videos")->select("id","title","description","video_url","image_caption as cover")
         ->where("school_grade_id","=",Auth::guard("api")->user()->school_grade_id)
-        ->get();
+       ->get();
 
-        return $this->make_response(LessonResource::collection($free_videos),200);
+        return $this->make_response($free_videos,200);
     }
 
     public function show($id){
@@ -34,7 +34,7 @@ class FreeCourcesController extends Controller
         }
 
         return response()->json([
-            "data" => new LessonResource($free_video),
+            "data" => $free_video,
             "success" => true,
             "status" => 200
         ],200);

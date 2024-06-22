@@ -23,8 +23,8 @@ class UpdateVrSessionRequest extends FormRequest
     {
         return [
             "name" => "required|string",
-            "school_grade_id"=> "required|exists:school_grades,id",
-            "unit_id"=> "nullable|exists:units,id",
+            "school_grade_id"=> "required|numeric|exists:school_grades,id",
+            "unit_id"=> "nullable|nullable|exists:units,id",
             "serviceName"=> "required|exists:vr_services,name",
             "link" => "required|url"
         ];

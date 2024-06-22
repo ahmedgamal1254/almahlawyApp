@@ -19,9 +19,11 @@ use App\Http\Controllers\{
     QuestionSearchController,
     RegisterFilterController,
     StaticExamController,
+    StudentExamsController,
     UnitController,
     VrSessionController
 };
+
 use App\Http\Controllers\PaperExamController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Teacher\Auth\AuthenticatedSessionController;
@@ -32,7 +34,6 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Video\UploadController;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -51,14 +52,6 @@ Route::middleware('auth')->group(function () {
 Route::get("/",function (){
     return view("welcome");
 })->name("home");
-
-require __DIR__.'/auth.php';
-
-// // Auth Socilaite App Twitter and Google, facebook
-// Route::name('socilaite.')->controller(SocilaiteController::class)->group(function (){
-//     Route::get("auth/{provider}/login",'login')->name('social_login');
-//     Route::get("{provider}/redirect",'redirect')->name('redirect');
-// });
 
 Route::middleware(['guest:teacher','guest'])->group(function () {
     Route::get("teacher/login",[AuthenticatedSessionController::class,'create'])->name("teacher.login");
@@ -252,6 +245,7 @@ Route::middleware(['teacher'])->group(function () {
     Route::post("teacher/exam/store",[ExamController::class,'store'])->name("exam.store");
     Route::get("teacher/exam/delete/{id}",[ExamController::class,'destroy'])->name("exam.destroy");
     Route::get("teacher/exam/print/{id}",[ExamController::class,'printExam'])->name("exam.print");
+    Route::get("teacher/exam/{id}/studetns",[ExamController::class,'students'])->name("exam.students");
 });
 
 
@@ -296,11 +290,16 @@ Route::middleware(['teacher'])->group(function () {
     Route::post("teacher/student/store",[StudentTeacherController::class,'save_student'])->name("students.store");
     Route::get("teacher/student/edit/{id}",[StudentTeacherController::class,'edit_student'])->name("students.edit");
     Route::post("teacher/student/update",[StudentTeacherController::class,'update_student'])->name("students.update");
+    Route::get("teachers/student/delete/{id}",[StudentTeacherController::class,'destroy'])->name("students.destroy");
     Route::get("teacher/students",[StudentTeacherController::class,'index'])->name("students");
     Route::get("teacher/students/search",[StudentTeacherController::class,'search'])->name("students.search");
     Route::get("teacher/students/filter",[StudentTeacherController::class,'filter'])->name("students.filter");
     Route::get("teacher/students/points",[StudentTeacherController::class,'students_points'])->name("students.points");
     Route::post("teacher/student/point",[StudentTeacherController::class,'update_points'])->name("update.points");
+
+    Route::get("student/{id}/exams",[StudentExamsController::class,'index'])->name("students.show_exams");
+    Route::get("student/{user_id}/exam/{exam_id}",[StudentExamsController::class,'show'])->name("students.show_exam");
+
 });
 
 // public profile

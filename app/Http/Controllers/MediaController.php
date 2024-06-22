@@ -100,7 +100,8 @@ class MediaController extends Controller
 
             return response()->json(["ok"=>$data["ok"],"info"=>$data["info"]]);
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+            return $th->getMessage();
+            // return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
     }
 

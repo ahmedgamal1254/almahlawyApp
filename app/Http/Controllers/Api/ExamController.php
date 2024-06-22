@@ -23,7 +23,12 @@ class ExamController extends Controller
         $schoolGradeId = $user->school_grade_id;
 
         $exams=DB::table('exams')
-        ->select("id","title","description","code","duration","start_time","end_time","date_exam")
+        ->leftJoin("exam_student",function ($join) use ($user) {
+            $join->on("exams.id","=","exam_student.exam_id")
+            ->where("exam_student.user_id","=",$user->id);
+        })
+        ->select("exams.id","title","description","code","duration","start_time",
+        "end_time","date_exam",'exam_student.degree','exam_student.total')
         ->where(function ($query) use ($months) {
             foreach ($months as $month) {
                 $year = date('Y', strtotime($month->month_date));
@@ -34,15 +39,14 @@ class ExamController extends Controller
                 });
             }
         })
-        ->where("school_grade_id","=",$schoolGradeId)->get();
+        ->where("school_grade_id","=",$schoolGradeId)->orderByDesc("id")->get();
 
         return $this->make_response($exams,200);
     }
 
     public function show($id){
         $userId = Auth::guard('api')->id();
-        $student_degree=DB::table('exam_student')->where("user_id","=",Auth::guard('api')->user()->id)
-        ->where("exam_id","=",$id)->first();
+        $student_degree=DB::table('exam_student')->where("user_id","=",$userId)->where("exam_id","=",$id)->first();
 
         if ($student_degree) {
             $questions = $this->getExamQuestionsWithStudentAnswers($id, $userId);
@@ -50,10 +54,11 @@ class ExamController extends Controller
             $questions = $this->getExamQuestionsWithoutStudentAnswers($id);
         }
 
-
+        $data["exam_id"]=$id;
+        $data["degree"]=$student_degree?$student_degree->degree:NULL;
+        $data["total"]=$student_degree?$student_degree->total:NULL;
         $data["count"]=count($questions);
         $data["questions"]=$questions;
-        $data["exam_id"]=$id;
 
         return response()->json(
             [
@@ -71,7 +76,7 @@ class ExamController extends Controller
             'exam_id' => 'required|integer|exists:exams,id',
             'questions' => 'required|array',
             'questions.*.id' => 'required|integer|exists:questions,id',
-            'questions.*.answer' => 'required|string',
+            'questions.*.answer' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -162,7 +167,6 @@ class ExamController extends Controller
         }
     }
 
-
     public function show_exam_results($id){
         $userId=Auth::guard("api")->id();
 
@@ -182,6 +186,7 @@ class ExamController extends Controller
             ->select('questions.id', 'question_exam_students.student_answer',
                 'question_exam_students.exam_id', 'questions.name', 'questions.img', 'questions.answer', 'questions.chooses')
             ->where('question_exams.exam_id', $examId)
+            ->groupBy("questions.id")
             ->get();
 
         return $questions->map(function ($question) {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Teacher;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UpdateStudentRequest;
+use App\Models\Exam;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Auth;
@@ -247,11 +248,33 @@ class StudentTeacherController extends Controller
                 return redirect()->back()->with('error', 'هذا الطالب غير موجود '. $id);
             }
 
-            $exams=DB::table('exam_student')->join("exams","exams.id","=","exam_student.exam_id")
-            ->select("exams.code","exam_student.degree","exam_student.total")->where("exam_student.user_id","=",$id)->get();
-            return view("Teacher.students.show",compact("student","exams"));
+            $exams = DB::table('exams')
+            ->join('exam_student', 'exam_student.exam_id', '=', 'exams.id')
+            ->join('question_exams', 'question_exams.exam_id', '=', 'exams.id')
+            ->leftJoin('question_exam_students', function ($join) use($id) {
+                $join->on('question_exam_students.exam_id', '=', 'exams.id')
+                ->where("question_exam_students.user_id","=",$id);
+            })
+            ->select(
+                'exams.id',
+                "exams.title",
+                "exam_student.created_at",
+                "degree",
+                "total",
+                DB::raw('COUNT(DISTINCT question_exams.id) as question_exams_count'),
+                DB::raw('COUNT(DISTINCT question_exam_students.id) as question_exam_students_count')
+            )
+            ->where("exam_student.user_id",$id)
+            ->groupBy('exam_student.exam_id')
+            ->orderByDesc("exam_student.exam_id")
+            ->paginate(25);
+
+            // all months
+            $months=User::find($id)->months;
+
+            return view("Teacher.students.show",compact("student","months","exams"));
         } catch (\Throwable $th) {
-            //throw $th;
+            return redirect()->back()->with('error', 'عفوا حدث خطا ما');
         }
     }
 
@@ -269,6 +292,18 @@ class StudentTeacherController extends Controller
             return $this->make_response([
                 "data"=>"لم يتم ادخال بيانات"
             ],200);
+        }
+    }
+
+    public function destroy($id){
+        try{
+            $user=User::findOrFail($id);
+
+            $user->delete();
+
+            return redirect()->back()->with("success","تم  حذف الطالب بنجاح");
+        }catch(\Exception $th){
+            return redirect()->back()->with("error","عفوا حدث خطا ما");
         }
     }
 }

@@ -46,7 +46,7 @@
                                         <label for="desc">أدخل وصف الدرس</label>
                                         <textarea type="text" name="description" id="desc" cols="30" rows="10"
                                             class="form-control form-control-lg input-lg"
-                                            id="email" placeholder="أدخل وصف الدرس">{{ old("desc") }}</textarea>
+                                            id="email" placeholder="أدخل وصف الدرس">{{ old("description") }}</textarea>
                                         @error("description")
                                             <span class="text-error">{{ $message }}</span>
                                         @enderror

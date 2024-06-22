@@ -22,14 +22,16 @@ class StoreExamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "title" => ["required","string","unique:exams,title"],
-            "count_question" => ["required","numeric"],
-            'duration' => ['required',"numeric"],
-            "date_exam" => ["required","date"],
-            'time_start' => ['required'],
-            'time_end' => ['required'],
-            'school_grade_id' => ["required","numeric","exists:school_grades,id"],
-            "units" => ["required","array"]
+            "title" => ["required", "string", "unique:exams,title"],
+            "count_question" => ["required", "numeric"],
+            "duration" => ["required", "numeric"],
+            "date_exam" => ["required", "date"],
+            "time_start" => ["required"],
+            "time_end" => ["required"],
+            "school_grade_id" => ["required", "numeric", "exists:school_grades,id"],
+            "units" => ["required", "array","min:1"],
+            "units.*.name" => ["required", "string", "exists:units,id"],
+            "units.*.number" => ["required", "numeric"]
         ];
     }
 
@@ -40,6 +42,7 @@ class StoreExamRequest extends FormRequest
             'time_start.required' => 'من فضلك أدحل ميعاد عرض الامتحان',
             'time_end.required' => 'من فضلك أدخل ميعاد انتهاء الامتحان',
             'school_grade_id.required'=> 'من فضلك ادخل السنة الدراسية',
+            "units.*.number" => "يجب عليك ادخال عدد الاسئلة"
         ];
     }
 }

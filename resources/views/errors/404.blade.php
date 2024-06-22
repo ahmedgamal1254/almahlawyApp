@@ -5497,9 +5497,9 @@ body {
             <div class="col-xl-6 col-lg-6 order-1 order-lg-2">
                 <div class="register-content">
                     <span class="wow bounceIn"></span>
-                    <h1><a href="{{ route("home") }}">فى أى مكان ... تعليمك مرن</a></h1>
+                    <h1><a href="{{ route("home") }}">أكاديمية المحلاوى</a></h1>
                     <p>
-                        ربما تكون دحلت العنوان الخطا من فضلك تأكد من العنوان
+                        عفوا هذه الصفحة غير موجودة
                     </p>
                     <div class="register-links">
                         <a href="{{ route("home") }}" class="register-home">العودة للرئيسية</a>

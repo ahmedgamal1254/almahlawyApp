@@ -5,7 +5,6 @@ use App\Http\Controllers\Api\LessonController as ApiLessonController;
 use App\Http\Controllers\Api\PostController as ApiPostController;
 use App\Http\Controllers\Api\{
     TeacherController,
-    TeacherAuthMobileController,
     SchoolGradeController,
     MonthController,
     MediaController,
@@ -16,6 +15,7 @@ use App\Http\Controllers\Api\{
     FreeCourcesController,
     NotificationController,
     RechargeWalletController,
+    CurrentTimeVideoController
 };
 
 use App\Http\Controllers\APi\Auth\{
@@ -25,7 +25,6 @@ use App\Http\Controllers\APi\Auth\{
     ProfileController,
     AuthController
 };
-use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,6 +88,7 @@ Route::group([
 ], function ($router) {
     Route::get('/lessons', [ApiLessonController::class, 'index']);
     Route::get('/lesson/{id}', [ApiLessonController::class, 'show']);
+    Route::get("/lessons/current-time",[CurrentTimeVideoController::class,"index"]);
 });
 
 // all books
@@ -138,25 +138,6 @@ Route::group([
 
     Route::get("free-books",[FreeBookController::class,'index']);
     Route::get("free-book/{id}",[FreeBookController::class,'show']);
-});
-
-// teacher dashboard
-Route::group([
-    'middleware' => 'auth:api_teacher',
-    'prefix' => 'auth-teacher'
-
-], function ($router) {
-    Route::post('/login', [TeacherAuthMobileController::class, 'login']);
-    Route::post('/logout', [TeacherAuthMobileController::class, 'logout']);
-    Route::post('/refresh', [TeacherAuthMobileController::class, 'refresh']);
-    Route::get('/user-profile', [TeacherAuthMobileController::class, 'userProfile']);
-});
-
-Route::group([
-    'middleware' =>'guest:api_teacher',
-    'prefix' => 'auth-teacher'
-],function ($router) {
-    Route::post('/login', [TeacherAuthMobileController::class, 'login']);
 });
 
 // recharge wallet

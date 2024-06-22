@@ -37,11 +37,10 @@ class QuestionExamController extends Controller
             // split units sring to array to use it in query
             $units=explode(',',$exam->units_id);
 
-            $unit_codes=DB::table("units")->where("teacher_id","=",Auth::guard("teacher")->user()->id)
+            $unit_codes=DB::table("units")
             ->whereIn('id',$units)->get();
 
-            $questions=Question::where("teacher_id","=",Auth::guard("teacher")->user()->id)
-            ->whereIn('unit_id',$units)->orderBy('id', 'DESC')->paginate(10);
+            $questions=Question::whereIn('unit_id',$units)->orderBy('id', 'DESC')->paginate(10);
             $school_grades=SchoolGrade::get();
 
             return view("Teacher.exams.questions",compact("questions","exam_id","school_grades","unit_codes","exam"));
@@ -70,7 +69,7 @@ class QuestionExamController extends Controller
     public function store_ajax(StoreQuestion_ExamRequest $request){
 
         $question_exam=Question_Exam::where('exam_id',"=",$request->exam_id)
-        ->where('question_id','=',$request->question_id)->where("teacher_id","=",Auth::guard("teacher")->user()->id)->count();
+        ->where('question_id','=',$request->question_id)->count();
 
         if($question_exam > 0){
             return response([

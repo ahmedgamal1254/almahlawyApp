@@ -31,4 +31,8 @@ class Exam extends Model
     public function questions(){
         return $this->belongsToMany(Question::class,"question_exams");
     }
+
+    public function student_questions(){
+        return $this->belongsToMany(Question::class,"question_exam_students");
+    }
 }

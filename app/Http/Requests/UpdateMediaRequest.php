@@ -27,7 +27,8 @@ class UpdateMediaRequest extends FormRequest
             "description" => "required",
             "img" => "nullable|image|mimes:png,jpg",
             'school_grade_id' => 'required|numeric|exists:school_grades,id',
-            'date_show' => 'required'
+            'date_show' => 'required',
+            "unit_id" => "nullable|numeric|exists:units,id",
         ];
     }
 

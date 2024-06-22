@@ -21,12 +21,7 @@ class ExamController extends Controller
     public function index()
     {
         try {
-            $exams=DB::table('exams')
-            ->join('school_grades', 'exams.school_grade_id', '=', 'school_grades.id')
-            ->join('subjects', 'exams.subject_id', '=', 'subjects.id')
-            ->select('exams.*', 'subjects.title as subject_name', 'school_grades.name as school_grade')
-            ->where("exams.teacher_id","=",Auth::guard('teacher')->user()->id)
-            ->whereNull("exams.deleted_at")
+            $exams=Exam::with("stage")->withCount("questions")
             ->orderByDesc("created_at")
             ->paginate(10);
 
@@ -53,9 +48,11 @@ class ExamController extends Controller
         try {
             $data='';
             foreach ($request->units as $unit) {
-                $data.=$unit;
+                $data.=$unit["name"];
                 $data.=',';
             }
+
+            DB::beginTransaction();
 
             $exam=new Exam();
             $exam->code=rand(1000000,999999999);
@@ -73,12 +70,10 @@ class ExamController extends Controller
 
             $questions = [];
 
-            // questions per unit  ==> count q / count unit ==> 3 ==> 2 2
-
             foreach ($request->units as $unit) {
                 $unitQuestions = Question::whereHas('unit', function ($query) use ($unit) {
-                    $query->where('id', $unit);
-                })->inRandomOrder()->take($request->count_question/count($request->units))->pluck('id')->toArray();
+                    $query->where('id', $unit["name"]);
+                })->inRandomOrder()->take($unit["number"])->pluck('id')->toArray();
 
                 $questions = array_merge($questions, $unitQuestions);
             }
@@ -88,8 +83,12 @@ class ExamController extends Controller
             $users=User::where("school_grade_id","=",$request->school_grade_id)->get();
             NotificationExamJob::dispatch($users,$exam);
 
+            DB::commit();
+
             return redirect()->route("exams")->with('message','تم اضافة الامتحان بنجاح');
         } catch (\Throwable $th) {
+            DB::rollBack();
+
             echo $th->getMessage();
             // return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
@@ -119,7 +118,7 @@ class ExamController extends Controller
             ->join('questions', 'question_exams.question_id', '=', 'questions.id')
             ->select('questions.*','exams.id','exams.code')
             ->where('exams.id','=',$id)
-            ->paginate(5);
+            ->paginate(15);
 
             return view("Teacher.exams.show",compact("exam","questions"));
         } catch (\Exception $e) {
@@ -141,10 +140,7 @@ class ExamController extends Controller
                 return back()->with('error', 'هذا الامتحان غير موجود' . $id);
             }
 
-            $units_in_exam=DB::table("units")->whereIn("id",explode(",",$exam->units_id))->get();
-            $units=DB::table("units")->get();
-
-            return view("Teacher.exams.edit",compact("school_grades","units","units_in_exam","exam"));
+            return view("Teacher.exams.edit",compact("school_grades","exam"));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
@@ -153,23 +149,13 @@ class ExamController extends Controller
     public function update(UpdateExamRequest $request, Exam $exam)
     {
         try {
-            // return $request->all();
-            $data='';
-            foreach ($request->units as $unit) {
-                $data.=$unit;
-                $data.=',';
-            }
-
             $exam=Exam::find($request->id);
-            $exam->code=$request->code;
             $exam->title=$request->title;
             $exam->description=$request->description;
             $exam->duration=$request->duration;
             $exam->date_exam=$this->make_date($request->date_exam);
             $exam->start_time=$request->start_time;
-            $exam->units_id=substr($data,0,strlen($data)-1);
             $exam->end_time=$request->end_time;
-            $exam->school_grade_id=$request->school_grade_id;
             $exam->subject_id=Auth::guard('teacher')->user()->subject_id;
             $exam->teacher_id=Auth::guard('teacher')->user()->id;
             $exam->save();
@@ -195,7 +181,9 @@ class ExamController extends Controller
     public function printExam($id)
     {
         try {
-            $exam = Exam::with('questions',"stage")->findOrFail($id);
+            $exam = Exam::with(['questions'  => function($query) {
+                $query->inRandomOrder();
+            },"stage"])->findOrFail($id);
 
             $alphabet=["a","b","c","d","e","f"];
 
@@ -203,6 +191,35 @@ class ExamController extends Controller
 
             return $pdf->stream('document.pdf');
         } catch (\Throwable $th) {
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+        }
+    }
+
+    public function students($id){
+        try{
+            $students=DB::table('users')
+            ->join('exam_student', 'exam_student.user_id', '=', 'users.id')
+            ->join('exams', 'exam_student.exam_id', '=', 'exams.id')
+            ->leftJoin('question_exam_students', function ($join) use($id){
+                $join->on('question_exam_students.user_id', '=', 'users.id')
+                ->on('question_exam_students.exam_id', '=', 'exams.id')
+                ->where("question_exam_students.exam_id",$id);
+            })
+            ->select(
+                'users.id',
+                "exams.id as exam_id",
+                "users.name",
+                "exam_student.created_at",
+                "degree",
+                "total",
+                DB::raw('COUNT(DISTINCT question_exam_students.question_id) as question_exam_students_count')
+            )
+            ->where("exams.id",$id)
+            ->groupBy('users.id', 'exam_student.created_at', 'degree', 'total', 'exams.id', 'users.name')
+            ->paginate(20);
+
+            return view("Teacher.exams.students",compact("students"));
+        }catch (\Throwable $th) {
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
     }

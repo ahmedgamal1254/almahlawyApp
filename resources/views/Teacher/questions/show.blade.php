@@ -15,11 +15,17 @@
 
         <div class="card" style="width: 100%">
             <div class="card-body">
-              <h5 class="card-title">عنوان السؤال :- {{ $question->name }}</h5>
-              <p class="card-text">وصف السؤال :- {{ $question->description }}</p>
-              <p class="card-text">اسم المرحلة الدراسية :- {{ $question->school_grade }}</p>
-              <p class="card-text">اسم الوحدة الدراسية :- {{ $question->unit_name }}</p>
                 <h5 class="card-title">عنوان السؤال :- {{ $question->name }}</h5>
+                <p class="card-text">وصف السؤال :- {{ $question->description }}</p>
+                <p class="card-text">اسم المرحلة الدراسية :- {{ $question->school_grade }}</p>
+                <p class="card-text">اسم الوحدة الدراسية :- {{ $question->unit_name }}</p>
+                @if ($question->name)
+                    <h5 class="card-title">عنوان السؤال :- {{ $question->name }}</h5>
+                @endif
+                
+                @if ($question->img)
+                    <img src="{{ asset("public/app/" . $question->img) }}" alt="">
+                @endif
                 <p class="card-text">اجابات السؤال</p>
                 @if (is_array(json_decode($question->chooses, true)))
                     @forelse (json_decode($question->chooses, true) as $item)

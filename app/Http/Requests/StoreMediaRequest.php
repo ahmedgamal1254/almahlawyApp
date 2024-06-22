@@ -24,8 +24,9 @@ class StoreMediaRequest extends FormRequest
         return [
             'title' => "required|unique:media,title",
             "description" => "required",
-            "img" => "required|image|mimes:png,jpg",
+            "img" => "nullable|image|mimes:png,jpg",
             'school_grade_id' => 'required|numeric|exists:school_grades,id',
+            "unit_id" => "nullable|numeric|exists:units,id",
             'date_show' => 'required'
         ];
     }

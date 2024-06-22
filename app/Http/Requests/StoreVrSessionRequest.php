@@ -23,7 +23,8 @@ class StoreVrSessionRequest extends FormRequest
     {
         return [
             "name" => "required|string|unique:sessionslive,name",
-            "school_grade_id"=> "required|exists:school_grades,id",
+            "school_grade_id"=> "required|nullable|exists:school_grades,id",
+            "unit_id"=> "nullable|nullable|exists:units,id",
             "serviceName"=> "required|exists:vr_services,name",
             "link" => "required|url"
         ];

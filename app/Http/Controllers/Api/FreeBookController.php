@@ -14,7 +14,7 @@ class FreeBookController extends Controller
 {
     use ResponseRequest;
     public function index(){
-        $free_books=DB::table("free_books")
+        $free_books=DB::table("free_books")->select("id as book_id","title","description","media_url","cover")
         ->where("school_grade_id","=",Auth::guard("api")->user()->school_grade_id)
         ->get();
 
@@ -22,7 +22,7 @@ class FreeBookController extends Controller
     }
 
     public function show($id){
-        $free_book=FreeBooks::where("id",$id)
+        $free_book=FreeBooks::where("id",$id)->select("id as book_id","title","description","media_url","cover")
         ->where("school_grade_id","=",Auth::guard("api")->user()->school_grade_id)->first();
 
         if(!$free_book){
@@ -34,7 +34,7 @@ class FreeBookController extends Controller
         }
 
         return response()->json([
-            "message" => new BookResource($free_book),
+            "data" => $free_book,
             "success" => true,
             "status" => 200
         ],200);

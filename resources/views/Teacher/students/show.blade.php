@@ -7,7 +7,7 @@
 @section("content")
 <div class="app-content content">
 <!-- Main -->
-<div class="main">
+<div class="main" style="width: 100%;margin-left:2%;margin-bottom:100px;">
     {{-- <h2 style="text-align: right;"> الملف الشخصى :- {{ $student->name }} </h2> --}}
     <div class="card">
         <div class="card-body">
@@ -72,17 +72,105 @@
         </div>
     </div>
 
-    <div class="card" style="padding: 25px;">
-        <p>امتحانات الطالب اللتى تم تأديتها</p>
-        <div class="row">
-            @forelse ($exams as $exam)
-                <button type="button" style="margin-right: 5px;" class="btn btn-secondary" data-toggle="tooltip" data-placement="top"
-                title="{{ round($exam->degree/$exam->total,2)*100 }}%">
-                    {{$exam->code}}
-                </button>
-            @empty
+    <div class="card">
 
-            @endforelse
+        <div class="row">
+            <a href="{{ route("students.show_exams",$student->id) }}" class="btn btn-primary">
+                <i class="fa fa-eye"></i>
+                جميع الامتحانات
+            </a>
+            <table class="table table-de mb-0 table-striped table-hover">
+                <thead>
+                    <tr>
+                        <td>الامتحان</td>
+                        <td>تاريخ اجراء الامتحان</td>
+                        <td>الدرجة</td>
+                        <td>الدرجة الكلية</td>
+                        <td>عدد الاسئلة الكلية</td>
+                        <td>عدد الاسئلة المحلولة</td>
+                        <td>عمليات</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($exams as $exam)
+                        <tr>
+                            <td>{{ $exam->title }}</td>
+                            <td>
+                                {{ \Carbon\Carbon::parse($exam->created_at)->format("D d F Y") }}
+                            </td>
+                            <td>
+                                {{ $exam->degree }}
+                            </td>
+                            <td>
+                                {{ $exam->total }}
+                            </td>
+                            <td>
+                                {{ $exam->question_exams_count }}
+                            </td>
+                            <td>
+                                {{ $exam->question_exam_students_count }}
+                            </td>
+                            <td>
+                                <a href="{{ route("students.show_exam",["user_id" => $student->id,"exam_id" => $exam->id]) }}" class="btn btn-success">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7">
+                                <span class="text-center">لم يتم اجراء امتحانات بعد</span>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="card">
+        <div class="">
+            <div class="row">
+                <table class="table table-de mb-0 table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <td>الشهر</td>
+                            <td>القيمة</td>
+                            <td>تاريخ الشراء</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($months as $month)
+                            <tr>
+                                <td>{{ $month->month_description }} - {{ $month->month_date }}</td>
+                                <td>
+                                    {{ $month->cost }}
+                                </td>
+                                <td>
+                                    {{ \Carbon\Carbon::parse($month->pivot->created_at)->format("D d F Y") }}
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8">
+                                    <span class="text-center">لم يتم شراء شهور بعد</span>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

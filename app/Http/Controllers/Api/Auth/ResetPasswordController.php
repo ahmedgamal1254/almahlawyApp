@@ -15,26 +15,26 @@ use Illuminate\Support\Facades\Validator;
 class ResetPasswordController extends Controller
 {
     public function store(Request $request){
-        $validator=Validator::make($request->all(),[
-            'email' => ['required', 'email'],
-        ]);
-
-        if($validator->fails()){
-            return response()->json($validator->errors(), 422);
-        }
-
-        $user=User::where("email",$request->email)->first();
-
-        if(!$user){
-            return response()->json([
-                "message"=>"user not found , please singup",
-                "success" => "false"
-            ],404);
-        }
-
-        $pincode=rand(100000,999999);
-
         try {
+            $validator=Validator::make($request->all(),[
+                'email' => ['required', 'email'],
+            ]);
+
+            if($validator->fails()){
+                return response()->json($validator->errors(), 422);
+            }
+
+            $user=User::where("email",$request->email)->first();
+
+            if(!$user){
+                return response()->json([
+                    "message"=>"user not found , please singup",
+                    "success" => "false"
+                ],404);
+            }
+
+            $pincode=rand(100000,999999);
+
             // Create pin code
             DB::beginTransaction();
 

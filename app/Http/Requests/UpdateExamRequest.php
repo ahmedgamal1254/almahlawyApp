@@ -26,8 +26,6 @@ class UpdateExamRequest extends FormRequest
             'start_time' => ['required'],
             'end_time' => ['required'],
             'title' => ['required'],
-            'school_grade_id'=> ['required'],
-
         ];
     }
 

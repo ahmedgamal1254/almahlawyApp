@@ -19,7 +19,7 @@
               <p class="card-text">اسم الوحدة الدراسية :- {{ $lesson->unit_name }}</p>
 
               <div class="container">
-                <video src="{{ asset("public/app/vidoes/".$lesson->video_url) }}"
+                <video src="{{ asset("public/app/videos/".$lesson->video_url) }}"
                     style="width:500px;height:500px;"
                     controls poster="{{ asset("public/app/".$lesson->image_caption) }}"></video>
               </div>

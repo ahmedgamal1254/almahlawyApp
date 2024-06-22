@@ -19,7 +19,7 @@ class UploadController extends Controller
 
     public function upload(Request $request) {
         try{
-            $data=$this->upload_larage_file($request,'app/vidoes');
+            $data=$this->upload_larage_file($request,'app/videos');
 
             $lesson=Lesson::find($request->id);
             $lesson->video_url=$data["fileName"];

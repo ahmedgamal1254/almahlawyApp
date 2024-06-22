@@ -22,8 +22,8 @@ class FreeBooksController extends Controller
         try {
             $books=DB::table('free_books')
             ->join('school_grades', 'free_books.school_grade_id', '=', 'school_grades.id')
-            ->join('subjects', 'free_books.subject_id', '=', 'subjects.id')
-            ->select('free_books.*', 'subjects.title as subject_name', 'school_grades.name as school_grade')
+            ->leftJoin('units', 'free_books.unit_id', '=', 'units.id')
+            ->select('free_books.*', 'units.title as subject_name', 'school_grades.name as school_grade')
             ->where("free_books.teacher_id","=",Auth::guard('teacher')->user()->id)
             ->whereNull("free_books.deleted_at")
             ->orderByDesc("created_at")
@@ -144,6 +144,7 @@ class FreeBooksController extends Controller
             $book->title=$request->title;
             $book->description=$request->description;
             $book->school_grade_id=$request->school_grade_id;
+            $book->unit_id=$request->unit_id;
             $book->subject_id=Auth::guard('teacher')->user()->subject_id;
             $book->cover=$caption == null ? $request->book_caption : $caption;
             $book->teacher_id=Auth::guard('teacher')->user()->id;

@@ -5497,7 +5497,7 @@ body {
             <div class="col-xl-6 col-lg-6 order-1 order-lg-2">
                 <div class="register-content">
                     <span class="wow bounceIn"></span>
-                    <h1><a href="{{ route("home") }}">فى أى مكان ... تعليمك مرن</a></h1>
+                    <h1><a href="{{ route("home") }}">أكاديمية المحلاوى</a></h1>
                     <p>
                         حدث خطا ما اثناء محاولتك الدخول من فضلك حاول مرة أخرى فى وقت لاحق
                     </p>

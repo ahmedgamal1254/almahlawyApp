@@ -3,7 +3,7 @@
 @section("content")
 <div class="app-content content">
     <div class="container">
-        <div class="alert alert-primary">الطلاب</div>
+        <div class="alert alert-primary p-2">الطلاب</div>
         <div class="card" style="margin:50px 25px;">
             <input type="text" name="" class="form-control" id="search_students" placeholder="البحث عن الطلاب بالاسم">
         </div>
@@ -25,7 +25,7 @@
                     <tr>
                         <td>{{ $student->name }}</td>
                         <td>{{ $student->phonenumber }}</td>
-                        <td>{{ $student->group ?$student->group->title:"" }}</td>
+                        <td>{{ $student->group ?$student->group->group_name:"" }}</td>
                         <td>{{ $diff = Carbon\Carbon::parse($student->created_at)->diffForHumans(Carbon\Carbon::now()) }}</td>
                         <td>{{ $student->all_points }}</td>
                         <td>{{ $student->active_points }}</td>
@@ -33,7 +33,7 @@
                             <x-operation
                                 :edit="route('students.edit',['id'=>$student->id])"
                                 :view="route('students.show',['id'=>$student->id])"
-                                :delete="route('subject.destroy',['id'=>$student->id])"
+                                :delete="route('students.destroy',['id'=>$student->id])"
                                 >
                             </x-operation>
                         </td>
