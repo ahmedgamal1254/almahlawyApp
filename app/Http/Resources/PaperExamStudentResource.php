@@ -20,7 +20,7 @@ class PaperExamStudentResource extends JsonResource
             "description" => $this->description,
             "student_degree" => $this->student_degree,
             "total_degree" => $this->total_degree,
-            "exam" => $this->exam
+            "exam" => env("APP_URL") . "/public/app/".$this->exam
         ];
     }
 }

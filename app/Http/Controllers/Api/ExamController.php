@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\QuestionIfStudentExamedResource;
+use App\Http\Resources\QuestionResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Traits\ResponseRequest;
@@ -189,16 +191,7 @@ class ExamController extends Controller
             ->groupBy("questions.id")
             ->get();
 
-        return $questions->map(function ($question) {
-            return [
-                'question_id' => $question->id,
-                'question_title' => $question->name ?? null,
-                'question_image' => $question->img ?? null,
-                'question_answers' => json_decode($question->chooses, true),
-                'student_answer' => $question->student_answer ?? null,
-                'correct_answer' => $question->answer
-            ];
-        });
+        return QuestionIfStudentExamedResource::collection($questions);
     }
 
     private function getExamQuestionsWithoutStudentAnswers($examId)
@@ -210,13 +203,6 @@ class ExamController extends Controller
             ->where('question_exams.exam_id', $examId)
             ->get();
 
-        return $questions->map(function ($question) {
-            return [
-                'question_id' => $question->id,
-                'question_title' => $question->name ?? null,
-                'question_image' => $question->img ?? null,
-                'question_answers' => json_decode($question->chooses, true),
-            ];
-        });
+        return QuestionResource::collection($questions);
     }
 }

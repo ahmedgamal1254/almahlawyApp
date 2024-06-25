@@ -23,7 +23,7 @@ class ProfileUserResource extends JsonResource
             "government" => $this->government,
             "total_balance" => $this->all_points,
             "current_balance" => $this->active_points,
-            "img_profile" => $this->profile
+            "img_profile" => env("APP_URL") . "/public/app/".$this->profile
         ];
     }
 }

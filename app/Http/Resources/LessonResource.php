@@ -18,8 +18,8 @@ class LessonResource extends JsonResource
             "id" => $this->id,
             "title"=> $this->title,
             "description" => $this->description,
-            "cover" => $this->img_caption,
-            "video_url"=> $this->video_url,
+            "cover" => env("APP_URL") . "/public/app/".$this->img_caption,
+            "video_url"=> env("APP_URL") . "/public/app/videos/" . $this->video_url,
             "duration" => $this->duration,
             "created_at"=> $this->created_at,
             "updated_at"=> $this->updated_at

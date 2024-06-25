@@ -14,7 +14,7 @@ class PostController extends Controller
 {
     use ResponseRequest;
     public function index(Request $request){
-        $posts = Post::select('id as post_id', 'title', 'description',"image_url","created_at")
+        $posts = Post::select('id', 'title', 'description',"image_url","created_at")
         ->where("school_grade_id","=",Auth::guard('api')->user()->school_grade_id)->orderByDesc("created_at")->paginate(10);
 
 
@@ -25,7 +25,7 @@ class PostController extends Controller
             ],404);
         }
 
-        return $this->make_response($posts,200);
+        return $this->make_response(PostResource::collection($posts),200);
     }
 
     public function show($id){

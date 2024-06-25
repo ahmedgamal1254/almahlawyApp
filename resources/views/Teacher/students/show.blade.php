@@ -67,6 +67,33 @@
                         <td>:</td>
                         <td>{{ $diff = Carbon\Carbon::parse($student->created_at)->diffForHumans(Carbon\Carbon::now()) }}</td>
                     </tr>
+                    <tr>
+                        <td>
+                            تحديث الرصيد
+                        </td>
+                        <td>
+                            :
+                        </td>
+                        <td>
+                            <form action="" method="post" class="points">
+                                @csrf
+                                <input type="hidden" name="user_id" value="{{ $student->id }}">
+                                <div class="d-flex flex-column justify-content-start align-items-start">
+                                    <div class="col-lg-9">
+                                        <div class="mb-3">
+                                            <input type="number" name="point" class="form-control" id="number" placeholder="تعديل نقاط الطالب">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <button type="submit" class="btn btn-success">
+                                            حفظ
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="qloader" class="loader"></div>
+                            </form>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -176,4 +203,11 @@
 </div>
 <!-- End -->
 </div>
+@endsection
+
+@section("script")
+    <script>
+        let url="{{ env("APP_URL") }}"
+    </script>
+    <script src="{{ asset("assets/landing_assets/js/ajax_student.js") }}"></script>
 @endsection

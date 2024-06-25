@@ -202,7 +202,6 @@ class ExamController extends Controller
             ->join('exams', 'exam_student.exam_id', '=', 'exams.id')
             ->leftJoin('question_exam_students', function ($join) use($id){
                 $join->on('question_exam_students.user_id', '=', 'users.id')
-                ->on('question_exam_students.exam_id', '=', 'exams.id')
                 ->where("question_exam_students.exam_id",$id);
             })
             ->select(
@@ -215,7 +214,7 @@ class ExamController extends Controller
                 DB::raw('COUNT(DISTINCT question_exam_students.question_id) as question_exam_students_count')
             )
             ->where("exams.id",$id)
-            ->groupBy('users.id', 'exam_student.created_at', 'degree', 'total', 'exams.id', 'users.name')
+            ->groupBy('users.id', 'exam_student.created_at', 'degree', 'total', 'exams.id')
             ->paginate(20);
 
             return view("Teacher.exams.students",compact("students"));

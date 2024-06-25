@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\FreeLessonResource;
 use App\Http\Resources\LessonResource;
 use App\Models\FreeVideos;
 use Illuminate\Http\Request;
@@ -14,15 +15,15 @@ class FreeCourcesController extends Controller
 {
     use ResponseRequest;
     public function index(){
-        $free_videos=DB::table("free_videos")->select("id","title","description","video_url","image_caption as cover")
+        $free_videos=DB::table("free_videos")->select("id","title","description","video_url","image_caption as img_caption")
         ->where("school_grade_id","=",Auth::guard("api")->user()->school_grade_id)
        ->get();
 
-        return $this->make_response($free_videos,200);
+        return $this->make_response(FreeLessonResource::collection($free_videos),200);
     }
 
     public function show($id){
-        $free_video=FreeVideos::where("id",$id)->select("id","title","description","video_url","image_caption as cover")
+        $free_video=FreeVideos::where("id",$id)->select("id","title","description","video_url","image_caption as img_caption")
         ->where("school_grade_id","=",Auth::guard("api")->user()->school_grade_id)->first();
 
         if(!$free_video){
@@ -34,7 +35,7 @@ class FreeCourcesController extends Controller
         }
 
         return response()->json([
-            "data" => $free_video,
+            "data" => new FreeLessonResource($free_video),
             "success" => true,
             "status" => 200
         ],200);
