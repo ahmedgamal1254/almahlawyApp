@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\User;
 use App\Notifications\NotificationExam;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -18,11 +19,11 @@ class NotificationExamJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    protected $users;
+    protected $school_grade_id;
     protected $exam;
-    public function __construct($users,$exam)
+    public function __construct($school_grade_id,$exam)
     {
-        $this->users=$users;
+        $this->school_grade_id=$school_grade_id;
         $this->exam=$exam;
     }
 
@@ -31,13 +32,15 @@ class NotificationExamJob implements ShouldQueue
      */
     public function handle(): void
     {
+        $title=$this->exam->title;
         $dateShow = Carbon::parse($this->exam->date_exam);
-        $monthName = $dateShow->format('F'); // Full month name
-        $year = $dateShow->format('Y'); // Year in 4 digits
+        $monthName = $dateShow->translatedFormat('F'); // Full month name
 
         $message["success"]=true;
-        $message["msg"]="تم رفع امتحان جديد لشهر $monthName";
+        $message["msg"]="تم رفع امتحان $title لشهر $monthName";
 
-        Notification::send($this->users,new NotificationExam($message));
+        $users=User::where("school_grade_id",$this->school_grade_id)->get();
+
+        Notification::send($users,new NotificationExam($message));
     }
 }

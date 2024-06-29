@@ -10,14 +10,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\ResponseRequest;
+use Illuminate\Support\Facades\Cache;
 
 class FreeBookController extends Controller
 {
     use ResponseRequest;
     public function index(){
-        $free_books=DB::table("free_books")->select("id","title","description","media_url","cover")
-        ->where("school_grade_id","=",Auth::guard("api")->user()->school_grade_id)
-        ->get();
+        $school_grade=Auth::guard("api")->user()->school_grade_id;
+        $free_books=Cache::get("free_books_{$school_grade}",function () use($school_grade){
+            return DB::table("free_books")->select("id","title","description","media_url","cover")
+            ->where("school_grade_id","=",$school_grade)
+            ->get();
+        });
 
         return $this->make_response(FreeBookResource::collection($free_books),200);
     }

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\ClassStudy;
 use App\Http\Requests\StoreClassStudyRequest;
 use App\Http\Requests\UpdateClassStudyRequest;
+use App\Models\Group;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class GroupController extends Controller
 {
@@ -66,20 +68,18 @@ class GroupController extends Controller
         try {
             ClassStudy::updateOrCreate([
                 "group_name" => $request->name,
-                "school_grade_id" => $request->school_grade_id
             ],[
                 "group_name" => $request->name,
-                "group_time" => $request->start_time,
                 "description" => $request->description,
-                "school_grade_id" => $request->school_grade_id,
                 "subject_id" => Auth::guard('teacher')->user()->subject_id,
                 "teacher_id" => Auth::guard('teacher')->user()->id,
             ]);
 
+            Cache::put("groups",Group::select("class_studies.id","group_name")->get());
+
             return redirect()->route('class')->with('message','تم اضافة مجموعة جديدة بنجاح');
         } catch (\Throwable $th) {
-            echo $th->getMessage();
-            // return redirect()->back()->with('error',"عفوا حدث خطأ ما")->withInput();
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما")->withInput();
         }
     }
 
@@ -131,6 +131,8 @@ class GroupController extends Controller
             $class_study->description=$request->description;
             $class_study->subject_id=Auth::guard('teacher')->user()->subject_id;
             $class_study->save();
+
+            Cache::put("groups",Group::select("class_studies.id","group_name")->get());
 
             return redirect()->route('class');
         } catch (\Throwable $th) {

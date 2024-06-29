@@ -10,20 +10,24 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\ResponseRequest;
+use Illuminate\Support\Facades\Cache;
 
 class FreeCourcesController extends Controller
 {
     use ResponseRequest;
     public function index(){
-        $free_videos=DB::table("free_videos")->select("id","title","description","video_url","image_caption as img_caption")
-        ->where("school_grade_id","=",Auth::guard("api")->user()->school_grade_id)
-       ->get();
+        $schoolgrade=Auth::guard("api")->user()->school_grade_id;
+        $free_videos=Cache::get("free_videos_{$schoolgrade}", function () use($schoolgrade){
+            return DB::table("free_videos")->select("id","title","description","source","video_url","image_caption as img_caption")
+            ->where("school_grade_id","=",$schoolgrade)
+           ->get();
+        });
 
         return $this->make_response(FreeLessonResource::collection($free_videos),200);
     }
 
     public function show($id){
-        $free_video=FreeVideos::where("id",$id)->select("id","title","description","video_url","image_caption as img_caption")
+        $free_video=FreeVideos::where("id",$id)->select("id","title","description","video_url","source","image_caption as img_caption")
         ->where("school_grade_id","=",Auth::guard("api")->user()->school_grade_id)->first();
 
         if(!$free_video){

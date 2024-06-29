@@ -18,8 +18,7 @@ use App\Traits\{
 use App\Models\User;
 use App\Models\Teacher;
 use App\Jobs\UploadVideoNotificationJob;
-use App\Notifications\UploadVideoNotification;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Cache;
 
 class FreeVideosController extends Controller
 {
@@ -59,7 +58,6 @@ class FreeVideosController extends Controller
         try {
             $file=Null;
             if($request->file("img")){
-                // image upload name must img
                 $file=$this->image_upload($request,'captions');
             }
 
@@ -69,6 +67,8 @@ class FreeVideosController extends Controller
             $lesson->school_grade_id=$request->school_grade_id;
             $lesson->unit_id=$request->unit_id;
             $lesson->image_caption=$file;
+            $lesson->source=$request->source;
+            $lesson->video_url=$request->video_url;
             $lesson->subject_id=Auth::guard('teacher')->user()->subject_id;
             $lesson->teacher_id=Auth::guard('teacher')->user()->id;
             $lesson->duration=$request->duration;
@@ -80,6 +80,11 @@ class FreeVideosController extends Controller
 
             $users=User::where("school_grade_id","=",$request->school_grade_id)->get();
             UploadVideoNotificationJob::dispatch($users,$video_id,$teacher->name);
+
+            $school_grade=$request->school_grade_id;
+            Cache::put("free_videos_{$school_grade}",DB::table("free_videos")->select("id","title","description","video_url","source","image_caption as img_caption")
+            ->where("school_grade_id","=",$school_grade)
+           ->get());
 
             return redirect()->route("free-lessons")->with('message','تم اضافة الدرس بنجاح من فضلك قم برفع الغيديو للدرس');
         } catch (\Throwable $th) {
@@ -135,6 +140,8 @@ class FreeVideosController extends Controller
                 $lesson->title=$request->title;
                 $lesson->description=$request->description;
                 $lesson->image_caption=$file;
+                $lesson->source=$request->source;
+                $lesson->video_url=$request->video_url;
                 $lesson->school_grade_id=$request->school_grade_id;
                 $lesson->unit_id=$request->unit_id;
                 $lesson->subject_id=Auth::guard('teacher')->user()->subject_id;
@@ -146,11 +153,18 @@ class FreeVideosController extends Controller
                 $lesson->title=$request->title;
                 $lesson->description=$request->description;
                 $lesson->school_grade_id=$request->school_grade_id;
+                $lesson->source=$request->source;
+                $lesson->video_url=$request->video_url;
                 $lesson->unit_id=$request->unit_id;
                 $lesson->subject_id=Auth::guard('teacher')->user()->subject_id;
                 $lesson->duration=$request->duration;
                 $lesson->save();
             }
+
+            $school_grade=$request->school_grade_id;
+            Cache::put("free_videos_{$school_grade}",DB::table("free_videos")->select("id","title","description","source","video_url","image_caption as img_caption")
+            ->where("school_grade_id","=",$school_grade)
+           ->get());
 
             return redirect()->route("free-lessons")->with('message','تم التعديل على الدرس بنجاح');
         } catch (\Throwable $th) {
@@ -189,7 +203,7 @@ class FreeVideosController extends Controller
             $data=$this->upload_larage_file($request,'app/videos');
 
             $lesson=FreeVideos::find($request->id);
-            $lesson->video_url=$data["fileName"];
+            $lesson->video_url=env("APP_URL") . "/public/app/videos/" . $data["fileName"];
             $lesson->save();
 
             return response()->json(["ok"=>$data["ok"],"info"=>$data["info"]]);

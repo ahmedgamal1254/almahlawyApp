@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Month;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 use function PHPSTORM_META\type;
 
@@ -171,6 +172,15 @@ class MonthController extends Controller
             $month->teacher_id=Auth::guard("teacher")->user()->id;
             $month->save();
 
+            $cacheKeyList = "months_data_keys";
+
+            $keys = Cache::get($cacheKeyList, []);
+            foreach ($keys as $key) {
+                Cache::forget($key);
+            }
+
+            Cache::forget("month_{$request->id}");
+
             return redirect()->route("show_months");
         }catch (\Throwable $th) {
             return redirect()->route("show_months")->with("error","عفوا لم يتم اضافة الشهر");
@@ -205,6 +215,13 @@ class MonthController extends Controller
                 $month->orderValue=$request->orderValue;
                 $month->teacher_id=Auth::guard("teacher")->user()->id;
                 $month->save();
+
+                $cacheKeyList = "months_data_keys";
+
+                $keys = Cache::get($cacheKeyList, []);
+                foreach ($keys as $key) {
+                    Cache::forget($key);
+                }
 
                 return redirect()->route("show_months");
             }else{

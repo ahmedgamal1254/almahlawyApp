@@ -12,6 +12,8 @@ use App\Traits\{Upload,MakeDate};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\UploadLarageFile;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -66,8 +68,17 @@ class MediaController extends Controller
             $book->date_show=$this->make_date($request->date_show);
             $book->save();
 
-            $users=User::where("school_grade_id","=",$request->school_grade_id)->get();
-            NotificationBookJob::dispatch($users,$book);
+            $school_grade=$request->school_grade_id;
+            NotificationBookJob::dispatch($school_grade,$book);
+
+            // forget cache
+            $cacheKeyBooks = "books_data_{$request->school_grade_id}";
+            Cache::forget($cacheKeyBooks);
+
+            $dateShow = Carbon::parse($book->date_show);
+            $cache_month_book="books_per_month_{$dateShow->format("m")}_for_{$dateShow->format("Y")}_school_grade_{$request->school_grade_id}";
+            Cache::forget($cache_month_book);
+
 
             return redirect()->route("books")->with('message','تم اضافة الكتاب بنجاح');
         } catch (\Throwable $th) {
@@ -154,6 +165,14 @@ class MediaController extends Controller
             $book->caption=$caption == null ? $request->book_caption : $caption;
             $book->teacher_id=Auth::guard('teacher')->user()->id;
             $book->save();
+
+            // forget cache
+            $cacheKeyBooks = "books_data_{$request->school_grade_id}";
+            Cache::forget($cacheKeyBooks);
+
+            $dateShow = Carbon::parse($book->date_show);
+            $cache_month_book="books_per_month_{$dateShow->format("m")}_for_{$dateShow->format("Y")}_school_grade_{$request->school_grade_id}";
+            Cache::forget($cache_month_book);
 
             return redirect()->route("books")->with('message','تم الحفظ بنجاح');
         } catch (\Throwable $th) {

@@ -19,7 +19,8 @@ class FreeLessonResource extends JsonResource
             "title"=> $this->title,
             "description" => $this->description,
             "cover" => env("APP_URL") . "/public/app/".$this->img_caption,
-            "video_url"=> env("APP_URL") . "/public/app/videos/" . $this->video_url
+            "video_url"=> $this->video_url,
+            "source" => $this->source
         ];
     }
 }

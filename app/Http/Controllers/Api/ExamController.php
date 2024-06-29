@@ -11,6 +11,8 @@ use App\Traits\ResponseRequest;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\{Exam, ExamStudent,Question_Exam_Student};
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class ExamController extends Controller
@@ -47,11 +49,34 @@ class ExamController extends Controller
     }
 
     public function show($id){
-        $userId = Auth::guard('api')->id();
-        $student_degree=DB::table('exam_student')->where("user_id","=",$userId)->where("exam_id","=",$id)->first();
+        $user = Auth::guard('api')->user();
+        $months = $user->months;
+
+        // check if user has this exam
+        $exam=Exam::where("school_grade_id",$user->school_grade_id)
+        ->where(function ($query) use ($months) {
+            foreach ($months as $month) {
+                $year = date('Y', strtotime($month->month_date));
+                $month = date('m', strtotime($month->month_date));
+                $query->orWhere(function ($query) use ($year, $month) {
+                    $query->whereYear('date_exam', '=', $year)
+                        ->whereMonth('date_exam', '=', $month);
+                });
+            }
+        })
+        ->where("id","=",$id)->first();
+
+        if(!$exam){
+            return response()->json([
+                "message" => "not found book",
+                "success" => false
+            ],404);
+        }
+
+        $student_degree=DB::table('exam_student')->where("user_id","=",$user->id)->where("exam_id","=",$id)->first();
 
         if ($student_degree) {
-            $questions = $this->getExamQuestionsWithStudentAnswers($id, $userId);
+            $questions = $this->getExamQuestionsWithStudentAnswers($id, $user->id);
         } else {
             $questions = $this->getExamQuestionsWithoutStudentAnswers($id);
         }
@@ -85,9 +110,10 @@ class ExamController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $userId = Auth::guard('api')->id();
+        $user=Auth::guard('api')->user();
+        $userId = $user->id;
         $examId = $request->exam_id;
-        $schoolGradeId = Auth::guard('api')->user()->school_grade_id;
+        $schoolGradeId = $user->school_grade_id;
 
         try {
             DB::beginTransaction();
@@ -137,6 +163,13 @@ class ExamController extends Controller
                 $exam->total=$total;
                 $exam->save();
             }
+
+            $exam=Exam::find($request->exam_id);
+
+            $date_exam=Carbon::parse($exam->date_exam);
+
+            $exams_key="exams_per_month_{$date_exam->month}_for_{$date_exam->year}_school_grade_{$schoolGradeId}_user_{$userId}";
+            Cache::forget($exams_key);
 
             DB::commit();
 

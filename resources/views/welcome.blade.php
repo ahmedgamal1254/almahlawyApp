@@ -28,6 +28,45 @@
             background-repeat: no-repeat;
             background-size: cover;
         }
+
+        .row-hero{
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lds-dual-ring {
+  /* change color here */
+  color: #ffffff
+}
+.lds-dual-ring,
+.lds-dual-ring:after {
+  box-sizing: border-box;
+}
+.lds-dual-ring {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  display: none;
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 25px;
+  height: 25px;
+  margin: 3px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-color: currentColor currentColor currentColor transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
     </style>
 </head>
 <body>
@@ -83,7 +122,7 @@
         <div class="d-table">
             <div class="d-table-cell">
                 <div class="container">
-                    <div class="row">
+                    <div class="row row-hero">
                         <div class="col-lg-6 col-md-12 reveal-left-fade">
                             <div class="hero-content">
                                 <h1>
@@ -100,7 +139,7 @@
                         <div class="col-lg-6 col-md-12 reveal-right-fade">
                             <div class="hero-video">
                                 <img class="site-owner"
-                                src="{{ asset("assets/landing_assets/img/teacher.webp")}}" alt="">
+                                src="{{ asset("assets/landing_assets/img/journalist_online_3.webp")}}" alt="">
                             </div>
                         </div>
                     </div>
@@ -371,17 +410,18 @@
 
                 <div class="col-lg-8 col-md-12 wow rotateIn" data-wow-offset="10" data-wow-duration="1.5s">
                     <!-- <form id="contactForm"> -->
-                    <form method="post" action="" class="contactForm" id="ajax-contact">
+                    <form method="post" action="{{ route("contact_us") }}" class="contactForm" id="ajax-contact">
+                        @csrf
                         <div class="row">
                             <div class="col-lg-6 col-md-6">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" name="الاسم" id="name" placeholder="Your name">
+                                    <input type="text" class="form-control" name="name" id="name" placeholder="Your name">
                                 </div>
                             </div>
 
                             <div class="col-lg-6 col-md-6">
                                 <div class="form-group">
-                                    <input type="email" class="form-control" name="البريد الالكترونى" id="email" placeholder="Email address" autocomplete="off">
+                                    <input type="email" class="form-control" name="email" id="email" placeholder="Email address" autocomplete="off">
                                 </div>
                             </div>
 
@@ -392,7 +432,10 @@
                             </div>
 
                             <div class="col-lg-12 col-md-12">
-                                <button type="submit" class="contact-btn btn">Send Message</button>
+                                <button type="submit" class="contact-btn btn">
+                                    Send Message
+                                    <div class="lds-dual-ring" id="load"></div>
+                                </button>
                                 <!--Result notification -->
                                 <div id="error-message" class="text-center"></div>
                                 <div id="form-messages"></div>

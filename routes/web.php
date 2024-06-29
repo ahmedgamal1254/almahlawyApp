@@ -21,7 +21,8 @@ use App\Http\Controllers\{
     StaticExamController,
     StudentExamsController,
     UnitController,
-    VrSessionController
+    VrSessionController,
+    ContactUsController
 };
 
 use App\Http\Controllers\PaperExamController;
@@ -32,8 +33,12 @@ use App\Http\Controllers\Student\StudentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Video\UploadController;
+use App\Models\Group;
+use App\Models\Post;
+use App\Models\SchoolGrade;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,9 +93,9 @@ Route::middleware(['teacher'])->group(function () {
     Route::get("teachers/school_grade/delete/{id}",[SchoolGradeController::class,'destroy'])->name("school_grade.destroy");
 });
 
-Route::get('/drop', function () {
-    DB::statement('DROP DATABASE `t`');
-});
+// Route::get('/drop', function () {
+//     DB::statement('DROP DATABASE `t`');
+// });
 
 // Subject
 Route::middleware(['teacher'])->group(function () {
@@ -331,3 +336,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get("/filter_data",[RegisterFilterController::class,'index']);
+
+// contact us
+Route::post("/contact-us",[ContactUsController::class, "contact_us"])->name("contact_us");

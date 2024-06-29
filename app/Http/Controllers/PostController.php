@@ -11,6 +11,7 @@ use App\Notifications\NotificationPost;
 use App\Traits\Upload;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
@@ -68,6 +69,11 @@ class PostController extends Controller
                 "تم نشر  $post->title"
             );
 
+            // cache posts per school_grade
+            $schoolgrade=$request->school_grade_id;
+            Cache::put("posts_by_{$schoolgrade}",Post::select('id', 'title', 'description',"image_url","created_at")
+            ->where("school_grade_id","=",$schoolgrade)->orderByDesc("created_at")->paginate(10));
+
             return redirect()->route("posts")->with('message','تم اضافة المنشور بنجاح');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
@@ -91,8 +97,7 @@ class PostController extends Controller
 
             return view("Teacher.posts.show",compact("post"));
         } catch (\Throwable $th) {
-            echo $th->getMessage();
-            // return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
     }
 
@@ -140,6 +145,11 @@ class PostController extends Controller
                 $post->teacher_id=Auth::guard('teacher')->user()->id;
                 $post->save();
             }
+
+            // cache posts per school_grade
+            $schoolgrade=$request->school_grade_id;
+            Cache::put("posts_by_{$schoolgrade}",Post::select('id', 'title', 'description',"image_url","created_at")
+            ->where("school_grade_id","=",$schoolgrade)->orderByDesc("created_at")->paginate(10));
 
             return redirect()->route("posts")->with('message','تم الحفظ بنجاح');
         } catch (\Throwable $th) {

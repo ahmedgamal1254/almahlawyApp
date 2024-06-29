@@ -13,9 +13,8 @@ class GovernmnetController extends Controller
     public function index(){
 
         $cacheKey = 'governments_all';
-        $cacheDuration = now()->addDays(30);
-
-        $governments = Cache::remember($cacheKey, $cacheDuration, function () {
+        
+        $governments = Cache::get($cacheKey,function () {
             return DB::table('governments')->get();
         });
 

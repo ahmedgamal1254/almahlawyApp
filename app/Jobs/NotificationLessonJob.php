@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\User;
 use App\Notifications\NotificationLesson;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,14 +15,11 @@ class NotificationLessonJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Create a new job instance.
-     */
-    protected $users;
+    protected $school_grade_id;
     protected $message;
-    public function __construct($users,$message)
+    public function __construct($school_grade_id,$message)
     {
-        $this->users=$users;
+        $this->school_grade_id=$school_grade_id;
         $this->message=$message;
     }
 
@@ -30,6 +28,8 @@ class NotificationLessonJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Notification::send($this->users,new NotificationLesson($this->message));
+        $users=User::where("school_grade_id",$this->school_grade_id)->get();
+
+        Notification::send($users,new NotificationLesson($this->message));
     }
 }

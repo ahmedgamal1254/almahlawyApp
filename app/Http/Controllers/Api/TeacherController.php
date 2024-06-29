@@ -11,16 +11,19 @@ use Illuminate\Support\Facades\Log;
 use App\Traits\Viewer;
 use App\Traits\ResponseRequest;
 use Exception;
+use Illuminate\Support\Facades\Cache;
 
 class TeacherController extends Controller
 {
     use ResponseRequest;
     public function index(){
         try{
-            $teacher=DB::table("teachers")->join("teacher_settings","teacher_settings.teacher_id","=","teachers.id")
-            ->select("name","email","phonenumber","whatsapp","avater","img_url","bio","subject","address","city","state",
-            "facebook","instagram","linkedin","telegram")
-            ->first();
+            $teacher=Cache::get("teacher",function (){
+                return DB::table("teachers")->join("teacher_settings","teacher_settings.teacher_id","=","teachers.id")
+                ->select("name","email","phonenumber","whatsapp","avater","img_url","bio","subject","address","city","state",
+                "facebook","instagram","linkedin","telegram")
+                ->first();
+            });
 
             if(!$teacher){
                 return response()->json([
@@ -29,10 +32,8 @@ class TeacherController extends Controller
             }
             return $this->make_response($teacher,200);
         }catch(Exception $th){
-            // Log the exception
             Log::error('Error fetching teacher details: ' . $th->getMessage());
 
-            // Return error response
             return response()->json([
                 'message' => 'An error occurred, please contact the administrator'
             ], 500);

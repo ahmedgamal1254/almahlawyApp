@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Traits\ResponseRequest;
 use App\Services\{
     Month,
+    MonthService,
     UnLockMonth,
 };
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class MonthController extends Controller
@@ -21,46 +23,71 @@ class MonthController extends Controller
     protected $month;
     protected $unlockmonth;
 
-    public function __construct(Month $month){
+    public function __construct(MonthService $month){
         $this->month=$month;
         $this->unlockmonth=new UnLockMonth();
     }
     public function index(){
         $user = Auth::guard("api")->user();
 
-        $months=DB::table("months")
-        ->leftJoin("month_student",function ($join) use($user){
-            $join->on("months.id","=","month_student.month_id")
-            ->where("month_student.user_id",$user->id);
-        })->select("months.id","months.month_date as date","months.month_name as name","months.month_description as description",
-        "year","month",
-        "month_student.lock", "month_student.points_paid",
-        "month_student.user_id")
-        ->orderByDesc("month_student.points_paid")
-        ->get();
+        $cacheKey = "months_data_{$user->id}";
+        $cacheDuration = 60 * 60 * 24; // Cache duration in seconds (e.g., 24 hour / 1 day)
 
-        // return $months;
-        $books=DB::table("months")->select("months.month_date",DB::raw('Count(DISTINCT media.id) as book_count'),"status")
-        ->leftJoin("media","months.month_date","=",DB::raw("DATE_FORMAT(media.date_show, '%Y-%m')"))
-        ->leftJoin("users","users.school_grade_id","=","media.school_grade_id")
-        ->groupBy("months.month_date")
-        ->where("months.status","=",0)
-        ->where("media.school_grade_id","=",$user->school_grade_id)->orWhereNull("media.id")
-        ->get();
+        // store user id key in months cache
+        function storeCacheKey($key) {
+            $cacheKeyList = "months_data_keys";
 
-        $lessons=DB::table("months")->select("months.month_date",DB::raw('Count(DISTINCT lessons.id) as lesson_count'),"status")
-        ->leftJoin("lessons","months.month_date","=",DB::raw("DATE_FORMAT(lessons.date_show, '%Y-%m')"))
-        ->leftJoin("users","users.school_grade_id","=","lessons.school_grade_id")
-        ->groupBy("months.month_date")
-        ->where("lessons.school_grade_id","=",$user->school_grade_id)->orWhereNull("lessons.id")
-        ->get();
+            $keys = Cache::get($cacheKeyList, []);
+            $keys[] = $key;
+            Cache::put($cacheKeyList, $keys, 60*60);
+        }
 
-        $exams=DB::table("months")->select("months.month_date",DB::raw('Count(DISTINCT exams.id) as exam_count'),"status")
-        ->leftJoin("exams","months.month_date","=",DB::raw("DATE_FORMAT(exams.date_exam, '%Y-%m')"))
-        ->leftJoin("users","users.school_grade_id","=","exams.school_grade_id")
-        ->groupBy("months.month_date")
-        ->where("exams.school_grade_id","=",$user->school_grade_id)->orWhereNull("exams.id")
-        ->get();
+        $months = Cache::remember($cacheKey, $cacheDuration, function () use ($user) {
+            return DB::table("months")
+            ->leftJoin("month_student", function ($join) use ($user) {
+                $join->on("months.id", "=", "month_student.month_id")
+                ->where("month_student.user_id", $user->id);
+            })
+            ->select("months.id", "months.month_date as date", "months.month_name as name",
+            "months.month_description as description",
+            "year", "month", "month_student.lock", "month_student.points_paid", "month_student.user_id")
+            ->orderByDesc("month_student.points_paid")
+            ->get();
+        });
+
+        storeCacheKey($cacheKey);
+
+        $cacheKeyBooks = "books_data_{$user->school_grade_id}";
+        $cacheKeyLessons = "lessons_data_{$user->school_grade_id}";
+        $cacheKeyExams = "exams_data_{$user->school_grade_id}";
+
+        $books = Cache::remember($cacheKeyBooks, $cacheDuration, function () use ($user) {
+            return DB::table("months")
+            ->select("months.month_date", DB::raw('Count(DISTINCT media.id) as book_count'), "status")
+            ->leftJoin("media", "months.month_date", "=", DB::raw("DATE_FORMAT(media.date_show, '%Y-%m')"))
+            ->groupBy("months.month_date")
+            ->where("months.status", "=", 0)
+            ->where("media.school_grade_id", "=", $user->school_grade_id)
+            ->get();
+        });
+
+        $lessons = Cache::remember($cacheKeyLessons, $cacheDuration, function () use ($user) {
+            return DB::table("months")
+                ->select("months.month_date", DB::raw('Count(DISTINCT lessons.id) as lesson_count'), "status")
+                ->leftJoin("lessons", "months.month_date", "=", DB::raw("DATE_FORMAT(lessons.date_show, '%Y-%m')"))
+                ->groupBy("months.month_date")
+                ->where("lessons.school_grade_id", "=", $user->school_grade_id)
+                ->get();
+        });
+
+        $exams = Cache::remember($cacheKeyExams, $cacheDuration, function () use ($user) {
+            return DB::table("months")
+                ->select("months.month_date", DB::raw('Count(DISTINCT exams.id) as exam_count'), "status")
+                ->leftJoin("exams", "months.month_date", "=", DB::raw("DATE_FORMAT(exams.date_exam, '%Y-%m')"))
+                ->groupBy("months.month_date")
+                ->where("exams.school_grade_id", "=", $user->school_grade_id)
+                ->get();
+        });
 
         $months = collect($months)->map(function ($month) use ($lessons, $exams, $books) {
             $lesson = $lessons->where('month_date', $month->date)->first();
@@ -84,10 +111,12 @@ class MonthController extends Controller
     }
 
     public function show($id){
-        $value=$this->month->check_student_month($id,"api");
+        $user=Auth::guard("api")->user();
+
+        $value=$this->month->check_student_month($id,$user);
 
         if($value > 0){
-            $data=$this->month->get_data($id,"api");
+            $data=$this->month->get_data($id,$user);
 
             return $this->make_response($data,200);
         }else{
@@ -123,14 +152,20 @@ class MonthController extends Controller
             }
 
             if(!is_null($monthId)){
+                // user id
+                $user=Auth::guard('api')->user();
                 // check if points greater than 100
-                if(Auth::guard('api')->user()->active_points >= $month->cost){
+                if($user->active_points >= $month->cost){
                     $months=$this->unlockmonth->check_if_user_get_month($request,"api");
 
                     if($months<=0){
                         $this->unlockmonth->update_user($month,"api");
 
                         $this->unlockmonth->register_month_for_student($request,$month,"api");
+
+                        // forget cache
+                        $cacheKey = "months_data_{$user->id}";
+                        Cache::forget($cacheKey);
 
                         return response([
                             "status" => 200,

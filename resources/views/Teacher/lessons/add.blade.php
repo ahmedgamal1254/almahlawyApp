@@ -69,6 +69,31 @@
                                         @enderror
                                     </fieldset>
 
+                                    <fieldset class="form-group position-relative has-icon-left mb-0">
+                                        <label for="desc">أدخل مصدر الفيديو</label>
+                                        <select name="source" class="form-control form-control-lg">
+                                            <option value="">أدخل مصدر الفيديو</option>
+                                            @forelse (App\Models\Source::get() as $source)
+                                                <option
+                                                @if(old("source") == $source->title) selected @endif
+                                                value="{{ $source->title }}">{{ $source->title }}</option>
+                                            @empty
+                                                <option value="0">لا توجد بيانات بعد</option>
+                                            @endforelse
+                                        </select>
+                                        @error("source")
+                                            <span class="text-error">{{ $message }}</span>
+                                        @enderror
+                                    </fieldset>
+
+                                    <fieldset class="form-group position-relative has-icon-left mb-0">
+                                        <input type="text" name="video_url"
+                                               class="form-control form-control-lg input-lg"
+                                               value="{{ old("video_url") }}" placeholder="أدخل رابط الفيديو فى حالة مصدر خارجى">
+                                        @error("video_url")
+                                            <span class="text-error">{{ $message }}</span>
+                                        @enderror
+                                    </fieldset>
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="date_exam">وقت عرض الفيديو/الدرس</label>

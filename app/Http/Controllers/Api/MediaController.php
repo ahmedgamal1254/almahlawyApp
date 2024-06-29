@@ -45,8 +45,24 @@ class MediaController extends Controller
     }
 
     public function show($id){
-        $book=DB::table("media")->select("*")->
-        where("school_grade_id","=",Auth::guard('api')->user()->school_grade_id)->where("id","=",$id)->first();
+        $user = Auth::guard("api")->user();
+
+        $months = $user->months;
+        $schoolGradeId = $user->school_grade_id;
+
+        $book=DB::table("media")->select("*")
+        ->where("school_grade_id","=",$schoolGradeId)
+        ->where(function ($query) use ($months) {
+            foreach ($months as $month) {
+                $year = date('Y', strtotime($month->month_date));
+                $month = date('m', strtotime($month->month_date));
+                $query->orWhere(function ($query) use ($year, $month) {
+                    $query->whereYear('date_show', '=', $year)
+                          ->whereMonth('date_show', '=', $month);
+                });
+            }
+        })
+        ->where("id","=",$id)->first();
 
         if(!$book){
             return response()->json([

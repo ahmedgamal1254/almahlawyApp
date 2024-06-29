@@ -18,6 +18,7 @@ use App\Jobs\UploadVideoNotificationJob;
 use App\Notifications\NotificationLesson;
 use App\Notifications\UploadVideoNotification;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
 
 class LessonController extends Controller
@@ -68,6 +69,8 @@ class LessonController extends Controller
             $lesson->school_grade_id=$request->school_grade_id;
             $lesson->unit_id=$request->unit_id;
             $lesson->img_caption=$file;
+            $lesson->source=$request->source;
+            $lesson->video_url=$request->video_url;
             $lesson->subject_id=Auth::guard('teacher')->user()->subject_id;
             $lesson->teacher_id=Auth::guard('teacher')->user()->id;
             $lesson->date_show=$this->make_date($request->date_show);
@@ -76,14 +79,21 @@ class LessonController extends Controller
 
             $dateShow = Carbon::parse($lesson->date_show);
             Carbon::setLocale("ar");
-            $monthName = $dateShow->format('F'); // Full month name
-            $message="تم رفع فيديو جديد لشهر $monthName";
+            $monthName = $dateShow->translatedFormat('F'); // Full month name
+            $message="تم رفع درس $lesson->title لشهر $monthName";
 
             // send users where show this video to job to send notification
             NotificationLessonJob::dispatch(
-                User::where("school_grade_id",$request->school_grade_id)->get(),
+                $request->school_grade_id,
                 $message
             );
+
+            // forget cache
+            $cacheKeyLessons = "lessons_data_{$request->school_grade_id}";
+            Cache::forget($cacheKeyLessons);
+
+            $cache_month_lesson="lessons_per_month_{$dateShow->format("m")}_for_{$dateShow->format("Y")}_school_grade_{$request->school_grade_id}";
+            Cache::forget($cache_month_lesson);
 
             return redirect()->route("lessons")->with('message','تم اضافة الدرس بنجاح من فضلك قم برفع الغيديو للدرس');
         } catch (\Throwable $th) {
@@ -139,6 +149,8 @@ class LessonController extends Controller
                 $lesson->title=$request->title;
                 $lesson->description=$request->description;
                 $lesson->img_caption=$file;
+                $lesson->source=$request->source;
+                $lesson->video_url=$request->video_url;
                 $lesson->school_grade_id=$request->school_grade_id;
                 $lesson->unit_id=$request->unit_id;
                 $lesson->subject_id=Auth::guard('teacher')->user()->subject_id;
@@ -152,11 +164,21 @@ class LessonController extends Controller
                 $lesson->description=$request->description;
                 $lesson->school_grade_id=$request->school_grade_id;
                 $lesson->unit_id=$request->unit_id;
+                $lesson->source=$request->source;
+                $lesson->video_url=$request->video_url;
                 $lesson->subject_id=Auth::guard('teacher')->user()->subject_id;
                 $lesson->date_show=$this->make_date($request->date_show);
                 $lesson->duration=$request->duration;
                 $lesson->save();
             }
+
+            // forget cache
+            $cacheKeyLessons = "lessons_data_{$request->school_grade_id}";
+            Cache::forget($cacheKeyLessons);
+
+            $dateShow = Carbon::parse($lesson->date_show);
+            $cache_month_lesson="lessons_per_month_{$dateShow->format("m")}_for_{$dateShow->format("Y")}_school_grade_{$request->school_grade_id}";
+            Cache::forget($cache_month_lesson);
 
             return redirect()->route("lessons")->with('message','تم التعديل على الدرس بنجاح');
         } catch (\Throwable $th) {

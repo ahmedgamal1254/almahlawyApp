@@ -72,6 +72,32 @@
                                     </fieldset>
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
+                                        <label for="desc">أدخل مصدر الفيديو</label>
+                                        <select name="source" class="form-control form-control-lg">
+                                            <option value="">أدخل مصدر الفيديو</option>
+                                            @forelse (App\Models\Source::get() as $source)
+                                                <option
+                                                @if($lesson->source == $source->title) selected @endif
+                                                value="{{ $source->title }}">{{ $source->title }}</option>
+                                            @empty
+                                                <option value="0">لا توجد بيانات بعد</option>
+                                            @endforelse
+                                        </select>
+                                        @error("source")
+                                            <span class="text-error">{{ $message }}</span>
+                                        @enderror
+                                    </fieldset>
+
+                                    <fieldset class="form-group position-relative has-icon-left mb-0">
+                                        <input type="text" name="video_url"
+                                               class="form-control form-control-lg input-lg"
+                                               value="{{ $lesson->video_url }}" placeholder="أدخل رابط الفيديو فى حالة مصدر خارجى">
+                                        @error("video_url")
+                                            <span class="text-error">{{ $message }}</span>
+                                        @enderror
+                                    </fieldset>
+
+                                    <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="desc">أدخل اسم المرحلة الدراسية</label>
                                         <select name="school_grade_id" id="school_grades" class="form-control form-control-lg">
                                             <option value="">أدخل اسم المرحلة الدراسية</option>

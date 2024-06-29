@@ -11,7 +11,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\MakeDate;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Cache;
 use PDF;
 
 class ExamController extends Controller
@@ -80,8 +82,12 @@ class ExamController extends Controller
 
             $exam->questions()->attach($questions);
 
-            $users=User::where("school_grade_id","=",$request->school_grade_id)->get();
-            NotificationExamJob::dispatch($users,$exam);
+            $school_grade=$request->school_grade_id;
+            NotificationExamJob::dispatch($school_grade,$exam);
+
+            // forget cache
+            $cacheKeyExams = "exams_data_{$request->school_grade_id}";
+            Cache::forget($cacheKeyExams);
 
             DB::commit();
 
@@ -159,6 +165,10 @@ class ExamController extends Controller
             $exam->subject_id=Auth::guard('teacher')->user()->subject_id;
             $exam->teacher_id=Auth::guard('teacher')->user()->id;
             $exam->save();
+
+            // forget cache
+            $cacheKeyExams = "exams_data_{$request->school_grade_id}";
+            Cache::forget($cacheKeyExams);
 
             return redirect()->route("exams")->with('message','تم الحفظ بنجاح');
         } catch (\Throwable $th) {

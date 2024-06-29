@@ -22,7 +22,7 @@ class UploadController extends Controller
             $data=$this->upload_larage_file($request,'app/videos');
 
             $lesson=Lesson::find($request->id);
-            $lesson->video_url=$data["fileName"];
+            $lesson->video_url=env("APP_URL") . "/public/app/videos/" . $data["fileName"];
             $lesson->save();
 
             return response()->json(["ok"=>$data["ok"],"info"=>$data["info"]]);

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\User;
 use App\Notifications\NotificationBook;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -18,11 +19,11 @@ class NotificationBookJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    protected $users;
+    protected $school_grade;
     protected $book;
-    public function __construct($users,$book)
+    public function __construct($school_grade,$book)
     {
-        $this->users=$users;
+        $this->school_grade=$school_grade;
         $this->book=$book;
     }
 
@@ -31,14 +32,15 @@ class NotificationBookJob implements ShouldQueue
      */
     public function handle(): void
     {
+        $title=$this->book->title;
         $dateShow = Carbon::parse($this->book->date_show);
         Carbon::setLocale("ar");
-        $monthName = $dateShow->format('F'); // Full month name
-        $year = $dateShow->format('Y'); // Year in 4 digits
+        $monthName = $dateShow->translatedFormat('F'); // Full month name
 
         $message["success"]=true;
-        $message["msg"]="تم رفع كتاب جديد لشهر $monthName";
+        $message["msg"]="تم رفع كتاب $title لشهر $monthName";
 
-        Notification::send($this->users,new NotificationBook($message));
+        $users=User::where("school_grade_id",$this->school_grade)->get();
+        Notification::send($users,new NotificationBook($message));
     }
 }

@@ -6,6 +6,8 @@ use App\Models\ProfileTeacher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\Upload;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class ProfileTeacherController extends Controller
 {
@@ -51,6 +53,11 @@ class ProfileTeacherController extends Controller
             ["teacher_id" => $data['teacher_id']],
             $data
         );
+
+        Cache::put("teacher",DB::table("teachers")->join("teacher_settings","teacher_settings.teacher_id","=","teachers.id")
+        ->select("name","email","phonenumber","whatsapp","avater","img_url","bio","subject","address","city","state",
+        "facebook","instagram","linkedin","telegram")
+        ->first());
 
         return redirect()->route('teacher.edit')->with('success', 'Profile updated successfully.');
     }

@@ -18,7 +18,7 @@ use App\Http\Controllers\Api\{
     CurrentTimeVideoController
 };
 
-use App\Http\Controllers\APi\Auth\{
+use App\Http\Controllers\Api\Auth\{
     VerifyEmailController,
     ResetPasswordController,
     UpdatePasswordController,

@@ -1,6 +1,9 @@
 
 jQuery(document).ready(function () {
 
+    $(document).ajaxStop(function(){
+        $("#load").hide;
+    });
     //GET THE FORM
     var form = $('#ajax-contact');
 
@@ -19,14 +22,13 @@ jQuery(document).ready(function () {
             url: $(form).attr('action'),
             data: formData
         })
-
         .done(function(response) {
             // Make sure that the formMessages div has the 'success' class.
             $(formMessages).removeClass('alert alert-danger');
             $(formMessages).addClass('alert alert-success');
 
             // Set the message text.
-            $(formMessages).text(response);
+            $(formMessages).text(response.data);
 
             // Clear the form.
             $('#name').val('');

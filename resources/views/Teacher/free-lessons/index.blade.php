@@ -41,7 +41,10 @@
                                 :id="$lesson->id"
                                 >
                             </x-operation>
-                            <a href="{{ route("free-lesson.upload",["id"=>$lesson->id]) }}" class="btn btn-primary"><i class="fa fa-video"></i></a>
+                            @if($lesson->source == "main_server")
+                            <a href="{{ route("free-lesson.upload",["id"=>$lesson->id]) }}"
+                                class="btn btn-primary"><i class="fa fa-video"></i></a>
+                            @endif
                         </td>
                     </tr>
                     @empty

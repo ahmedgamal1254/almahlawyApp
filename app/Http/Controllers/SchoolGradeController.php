@@ -20,14 +20,6 @@ class SchoolGradeController extends Controller
     public function index()
     {
         try {
-            $school_grades='';
-
-            // if (Cache::has('school_grades')) {
-            //     $school_grades = Cache::get('school_grades');
-            // }else{
-            //     Cache::put('school_grades', $school_grades,6000);
-            // }
-
             $school_grades=SchoolGrade::with('users','exams','lessons','books')->paginate(10);
 
             return view("Teacher.school_grade.index",compact("school_grades"));
@@ -93,11 +85,11 @@ class SchoolGradeController extends Controller
                 "teacher_id" => Auth::guard('teacher')->user()->id
             ]);
 
+            Cache::put("schoolgrade",SchoolGrade::select("id","name")->get());
+
             return redirect()->route("school_grade")->with('message','تم اضافة صف دراسى بنجاح');
         } catch (\Throwable $th) {
-
-            echo $th->getMessage();
-            // return redirect()->back()->with('error',"عفوا حدث خطأ ما");
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
     }
 
@@ -145,6 +137,8 @@ class SchoolGradeController extends Controller
             $school_grade->description=$request->description;
             $school_grade->teacher_id=Auth::guard('teacher')->user()->id;
             $school_grade->save();
+
+            Cache::put("schoolgrade",SchoolGrade::select("id","name")->get());
 
             return redirect()->route("school_grade")->with('message','تم حفظ الصف الدراسى بنجاح');
         } catch (\Throwable $th) {

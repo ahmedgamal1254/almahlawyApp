@@ -9,13 +9,18 @@ use Illuminate\Support\Facades\DB;
 use App\Traits\ResponseRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class PostController extends Controller
 {
     use ResponseRequest;
     public function index(Request $request){
-        $posts = Post::select('id', 'title', 'description',"image_url","created_at")
-        ->where("school_grade_id","=",Auth::guard('api')->user()->school_grade_id)->orderByDesc("created_at")->paginate(10);
+        $schoolgrade=Auth::guard('api')->user()->school_grade_id;
+
+        $posts = Cache::get("posts_by_{$schoolgrade}",function () use($schoolgrade){
+            return Post::select('id', 'title', 'description',"image_url","created_at")
+            ->where("school_grade_id","=",$schoolgrade)->orderByDesc("created_at")->paginate(10);
+        });
 
 
         if(!$posts){
@@ -25,12 +30,20 @@ class PostController extends Controller
             ],404);
         }
 
-        return $this->make_response(PostResource::collection($posts),200);
+        return $this->make_response([
+            "data" => PostResource::collection($posts),
+            'current_page' => $posts->currentPage(),
+            'per_page' => $posts->perPage(),
+            'total' => $posts->total(),
+            'total_pages' => $posts->lastPage()
+        ],200);
     }
 
     public function show($id){
-        $post=DB::table("posts")->select("*")->
-        where("school_grade_id","=",Auth::guard('api')->user()->school_grade_id)->where("id","=",$id)->first();
+        $schoolgrade=Auth::guard('api')->user()->school_grade_id;
+
+        $post =DB::table("posts")->select("*")
+            ->where("school_grade_id","=",$schoolgrade)->where("id","=",$id)->first();
 
         if(!$post){
             return response()->json([

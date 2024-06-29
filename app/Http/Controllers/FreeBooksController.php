@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\UploadLarageFile;
 use Exception;
+use Illuminate\Support\Facades\Cache;
 
 class FreeBooksController extends Controller
 {
@@ -67,10 +68,14 @@ class FreeBooksController extends Controller
             $book->teacher_id=Auth::guard('teacher')->user()->id;
             $book->save();
 
+            $school_grade=$request->school_grade_id;
+            Cache::put("free_books_{$school_grade}", DB::table("free_books")->select("id","title","description","media_url","cover")
+            ->where("school_grade_id","=",$school_grade)
+            ->get());
+
             return redirect()->route("free-books")->with('message','تم اضافة الكتاب بنجاح');
         } catch (\Throwable $th) {
-            return $th->getMessage();
-            // return redirect()->back()->with('error',"عفوا حدث خطأ ما")->withInput();
+            return redirect()->back()->with('error',"عفوا حدث خطأ ما")->withInput();
         }
     }
 
@@ -149,6 +154,11 @@ class FreeBooksController extends Controller
             $book->cover=$caption == null ? $request->book_caption : $caption;
             $book->teacher_id=Auth::guard('teacher')->user()->id;
             $book->save();
+
+            $school_grade=$request->school_grade_id;
+            Cache::put("free_books_{$school_grade}",DB::table("free_books")->select("id","title","description","media_url","cover")
+            ->where("school_grade_id","=",$school_grade)
+            ->get());
 
             return redirect()->route("free-books")->with('message','تم الحفظ بنجاح');
         } catch (\Throwable $th) {
