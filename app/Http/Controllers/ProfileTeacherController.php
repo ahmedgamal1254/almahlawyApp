@@ -54,10 +54,7 @@ class ProfileTeacherController extends Controller
             $data
         );
 
-        Cache::put("teacher",DB::table("teachers")->join("teacher_settings","teacher_settings.teacher_id","=","teachers.id")
-        ->select("name","email","phonenumber","whatsapp","avater","img_url","bio","subject","address","city","state",
-        "facebook","instagram","linkedin","telegram")
-        ->first());
+        Cache::forget("teacher");
 
         return redirect()->route('teacher.edit')->with('success', 'Profile updated successfully.');
     }

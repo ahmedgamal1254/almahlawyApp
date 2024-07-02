@@ -35,31 +35,31 @@
 /* ==========================================================================
    01. General & Basic Styles
    ========================================================================== */
-   .almarai-light {
+.almarai-light {
     font-family: "Almarai", sans-serif;
     font-weight: 300;
     font-style: normal;
-  }
+}
 
-  .almarai-regular {
+.almarai-regular {
     font-family: "Almarai", sans-serif;
     font-weight: 400;
     font-style: normal;
-  }
+}
 
-  .almarai-bold {
+.almarai-bold {
     font-family: "Almarai", sans-serif;
     font-weight: 700;
     font-style: normal;
-  }
+}
 
-  .almarai-extrabold {
+.almarai-extrabold {
     font-family: "Almarai", sans-serif;
     font-weight: 800;
     font-style: normal;
-  }
+}
 
-   body {
+body {
     font-family: "Almarai", sans-serif;
 	font-size: 110%;
     line-height: 1.9;
@@ -301,7 +301,7 @@ h1,h2{
 	box-shadow: unset;
 }
 .contactForm .form-control::placeholder {
-	color: #fff !important;
+	color: #000 !important;
 }
 
 /* Section Title */
@@ -1412,6 +1412,51 @@ h1,h2{
     margin-top: 20px;
 }
 
+
+.contact_us{
+    margin: 50px 0;
+    padding: 100px 15px;
+}
+
+.form-control {
+    height: 59px;
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #f0e7e7;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+.form-control input{
+    color: black;
+}
+
+.wp-block-uagb-container.uagb-block-d443ce5a {
+    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.1);
+    padding-top: 25px;
+    padding-bottom: 25px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: !important;
+    margin-bottom: !important;
+    overflow: visible;
+    border-color: inherit;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    row-gap: 20px;
+    column-gap: 20px;
+}
+
+.wp-block-uagb-container.uagb-block-d443ce5a strong{
+    color: #000;
+    text-align: right;
+}
+
+
+
 /* ==========================================================================
    13. Footer style
 ========================================================================== */
@@ -1509,6 +1554,12 @@ h1,h2{
 
 .form-control:-ms-input-placeholder {
     color: #3b566e;
+}
+
+label{
+    text-align: right;
+    text-decoration: rtl;
+    float: right;
 }
 
 .footer ul {

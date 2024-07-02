@@ -69,9 +69,7 @@ class FreeBooksController extends Controller
             $book->save();
 
             $school_grade=$request->school_grade_id;
-            Cache::put("free_books_{$school_grade}", DB::table("free_books")->select("id","title","description","media_url","cover")
-            ->where("school_grade_id","=",$school_grade)
-            ->get());
+            Cache::forget("free_books_{$school_grade}");
 
             return redirect()->route("free-books")->with('message','تم اضافة الكتاب بنجاح');
         } catch (\Throwable $th) {
@@ -156,9 +154,7 @@ class FreeBooksController extends Controller
             $book->save();
 
             $school_grade=$request->school_grade_id;
-            Cache::put("free_books_{$school_grade}",DB::table("free_books")->select("id","title","description","media_url","cover")
-            ->where("school_grade_id","=",$school_grade)
-            ->get());
+            Cache::forget("free_books_{$school_grade}");
 
             return redirect()->route("free-books")->with('message','تم الحفظ بنجاح');
         } catch (\Throwable $th) {

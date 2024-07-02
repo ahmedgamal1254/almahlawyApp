@@ -459,14 +459,12 @@ h2 {
     color: #ffffff;
     cursor: pointer;
     margin-left: 5px;
-    position: absolute;
     top: 5px;
     left: 0px;
     font-size: 16px;
     background: red;
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
+    border-radius: 4px;
+    padding: 5px;
 }
 
 .form-data{
@@ -476,13 +474,13 @@ h2 {
     padding: 10px 2px;
     width: 100%;
     background: transparent;
-    color: white;
+    color: #000;
     box-shadow: 1px 0px 2px #000;
     transition: all 1s ease-in-out;
 }
 
 .form-data::placeholder {
-  color: #ffffff;
+  color: #000;
 }
 
 .loader {

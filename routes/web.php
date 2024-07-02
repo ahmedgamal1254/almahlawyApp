@@ -50,15 +50,11 @@ use Illuminate\Support\Facades\Cache;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::middleware('auth')->group(function () {
-    Route::get('/student',[StudentController::class,'index']);
-});
-
 Route::get("/",function (){
     return view("welcome");
 })->name("home");
 
-Route::middleware(['guest:teacher','guest'])->group(function () {
+Route::middleware(['guest:teacher','guest','throttle:40,2'])->group(function () {
     Route::get("teacher/login",[AuthenticatedSessionController::class,'create'])->name("teacher.login");
     Route::post("teacher/store",[AuthenticatedSessionController::class,'store'])->name("teacher.store");
 });

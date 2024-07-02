@@ -71,8 +71,7 @@ class PostController extends Controller
 
             // cache posts per school_grade
             $schoolgrade=$request->school_grade_id;
-            Cache::put("posts_by_{$schoolgrade}",Post::select('id', 'title', 'description',"image_url","created_at")
-            ->where("school_grade_id","=",$schoolgrade)->orderByDesc("created_at")->paginate(10));
+            Cache::forget("posts_by_{$schoolgrade}");
 
             return redirect()->route("posts")->with('message','تم اضافة المنشور بنجاح');
         } catch (\Throwable $th) {
@@ -148,8 +147,7 @@ class PostController extends Controller
 
             // cache posts per school_grade
             $schoolgrade=$request->school_grade_id;
-            Cache::put("posts_by_{$schoolgrade}",Post::select('id', 'title', 'description',"image_url","created_at")
-            ->where("school_grade_id","=",$schoolgrade)->orderByDesc("created_at")->paginate(10));
+            Cache::forget("posts_by_{$schoolgrade}");
 
             return redirect()->route("posts")->with('message','تم الحفظ بنجاح');
         } catch (\Throwable $th) {

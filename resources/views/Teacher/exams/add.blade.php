@@ -122,32 +122,51 @@
 
                                     <div class="mb-1">
                                         <div class="tags-input">
-                                            <ul id="tags">
-                                                @if (is_array(old("units")))
-                                                    @foreach (old("units") as $index => $unit)
-                                                        @if(!empty($unit))
-                                                            <li>
-                                                                {{ \App\Models\Unit::find($unit["name"])->title }}
-                                                                <input type="number"
-                                                                    class="form-data"
-                                                                    placeholder="عدد الاسئلة" name="units[{{ $index }}][number]"
-                                                                    value="{{ $unit["number"] }}">
-                                                                <input type="hidden"
-                                                                    name="units[{{ $index }}][name]"
-                                                                    value="{{ $unit["name"] }}">
-                                                                <button class="delete-button">X</button>
-                                                                @error("units.$index.name")
-                                                                    <span class="text-error" style="color: #ffffff;">{{ $message }}</span>
-                                                                @enderror
+                                            <table class="table table-de mb-0 table-striped table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>رقم الفصل</th>
+                                                        <th>اسم الفصل</th>
+                                                        <th>عدد الاسئلة</th>
+                                                        <th>العمليات</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tags">
+                                                    @if (is_array(old("units")))
+                                                        @foreach (old("units") as $index => $unit)
+                                                            @if(!empty($unit))
+                                                            <tr>
+                                                                <td>{{ $index }}</td>
+                                                                <td> {{ \App\Models\Unit::find($unit["name"])->title }}
+                                                                    @error("units.$index.name")
+                                                                        <span class="text-error">{{ $message }}</span>
+                                                                    @enderror
 
-                                                                @error("units.$index.number")
-                                                                    <span class="text-error" style="color: #ffffff;">{{ $message }}</span>
-                                                                @enderror
-                                                            </li>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            </ul>
+                                                                </td>
+                                                                <td>
+                                                                    <input type="number"
+                                                                        class="form-control form-control-lg input-lg"
+                                                                        placeholder="عدد الاسئلة" name="units[{{ $index }}][number]"
+                                                                        value="{{ $unit["number"] }}">
+
+                                                                    <input type="hidden"
+                                                                        name="units[{{ $index }}][name]"
+                                                                        value="{{ $unit["name"] }}">
+                                                                    @error("units.$index.number")
+                                                                        <span class="text-error">{{ $message }}</span>
+                                                                    @enderror
+                                                                </td>
+                                                                <td>
+                                                                    <button class="delete-button"><i class="fa fa-trash"></i></button>
+                                                                </td>
+                                                            </tr>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
+                                                </tbody>
+                                            </table>
+
+
                                             <input type="hidden" name="unit" />
                                             <input type="text" id="input-tag" placeholder="ابحص باسم الوحدة" />
                                         </div>
@@ -197,26 +216,37 @@
 
     select.addEventListener('input', function (event) {
         // Create a new list item element for the tag
-        const tag = document.createElement('li');
+        const tag = document.getElementById("tags");
 
         const tagContent = select.value.trim();
 
-        tag.innerText = tagContent;
-        tag.innerHTML += `<input type="hidden"
-        value="${this.options[this.selectedIndex].getAttribute("data-id")}"
-         name="units[${i}][name]" />`;
+        i+=1
 
-        tag.innerHTML +=`<input type="number" class="form-data" placeholder="عدد الاسئلة" name="units[${i}][number]">`
-        // Add a delete button to the tag
-        tag.innerHTML += '<button class="delete-button">X</button>';
+        tag.innerHTML +=`
+        <tr>
+            <td>
+                ${i}
+            </td>
+            <td>
+                ${tagContent}
+            </td>
+            <td>
+                <input type="number"
+                    class="form-control form-control-lg input-lg"
+                    placeholder="عدد الاسئلة" name="units[${i}][number]"
+                    value="">
 
-        // Append the tag to the tags list
-        tags.appendChild(tag);
-
+                <input type="hidden"
+                    name="units[${i}][name]"
+                    value="${this.options[this.selectedIndex].getAttribute("data-id")}">
+            </td>
+            <td>
+                <span class="delete-button"><i class="fa fa-trash"></i></span>
+            </td>
+        </tr>
+        `
         // Clear the input element's value
         input.value = '';
-
-        i+=1
     });
 
     // Add an event listener for click on the tags list
@@ -226,7 +256,15 @@
         if (event.target.classList.contains('delete-button')) {
 
             // Remove the parent element (the tag)
-            event.target.parentNode.remove();
+            parent=event.target.parentNode;
+            parent.parentNode.remove()
+        }
+
+        if (event.target.classList.contains('fa-trash')) {
+
+            // Remove the parent element (the tag)
+            parent=event.target.parentNode;
+            parent.parentNode.parentNode.remove()
         }
     });
 

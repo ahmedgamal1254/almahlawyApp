@@ -42,8 +42,8 @@ class PostController extends Controller
     public function show($id){
         $schoolgrade=Auth::guard('api')->user()->school_grade_id;
 
-        $post =DB::table("posts")->select("*")
-            ->where("school_grade_id","=",$schoolgrade)->where("id","=",$id)->first();
+        $post =DB::table("posts")->select("*")->where("school_grade_id","=",$schoolgrade)
+        ->where("id","=",$id)->first();
 
         if(!$post){
             return response()->json([

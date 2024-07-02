@@ -72,16 +72,16 @@ class MonthService{
 
         $exams=Cache::remember($exams_key,60*60,function () use($year,$month,$user){
             return DB::table('exams')->leftJoin('exam_student', function ($join) use ($user) {
-                    $join->on('exams.id', '=', 'exam_student.exam_id')
-                    ->where('exam_student.user_id', '=', $user->id);
-                })
-                ->join('question_exams', 'question_exams.exam_id', '=', 'exams.id')
-                ->select('exams.*', 'exam_student.total', 'exam_student.degree', DB::raw('COUNT(question_exams.id) as cnt'))
-                ->where('exams.school_grade_id', '=', $user->school_grade_id)
-                ->whereMonth('exams.date_exam', '=', $month)
-                ->whereYear('exams.date_exam', '=', $year)
-                ->groupBy('exams.id')
-                ->get();
+                $join->on('exams.id', '=', 'exam_student.exam_id')
+                ->where('exam_student.user_id', '=', $user->id);
+            })
+            ->leftJoin('question_exams', 'question_exams.exam_id', '=', 'exams.id')
+            ->select('exams.*', 'exam_student.total', 'exam_student.degree', DB::raw('COUNT(question_exams.id) as cnt'))
+            ->where('exams.school_grade_id', '=', $user->school_grade_id)
+            ->whereMonth('exams.date_exam', '=', $month)
+            ->whereYear('exams.date_exam', '=', $year)
+            ->groupBy('exams.id')
+            ->get();
         });
 
         return $exams;
@@ -98,7 +98,7 @@ class MonthService{
         $questions_key="questions_per_month_{$month}_for_{$year}_school_grade_{$user->school_grade_id}";
 
         // all questions belong month and year
-        $all_questions=Cache::remember($questions_key,60*60*24,function () use($year,$month,$user){
+        $all_questions=Cache::remember($questions_key,60*60,function () use($year,$month,$user){
             return DB::table('exams')->join("question_exams","question_exams.exam_id","=","exams.id")
             ->select("exams.id","question_exams.id as question_id")
             ->where("exams.school_grade_id","=",$user->school_grade_id)

@@ -35,38 +35,39 @@
         }
 
         .lds-dual-ring {
-  /* change color here */
-  color: #ffffff
-}
-.lds-dual-ring,
-.lds-dual-ring:after {
-  box-sizing: border-box;
-}
-.lds-dual-ring {
-  display: inline-block;
-  width: 30px;
-  height: 30px;
-  display: none;
-}
-.lds-dual-ring:after {
-  content: " ";
-  display: block;
-  width: 25px;
-  height: 25px;
-  margin: 3px;
-  border-radius: 50%;
-  border: 2px solid currentColor;
-  border-color: currentColor currentColor currentColor transparent;
-  animation: lds-dual-ring 1.2s linear infinite;
-}
-@keyframes lds-dual-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
+            color: #ffffff
+        }
+        .lds-dual-ring,
+        .lds-dual-ring:after {
+            box-sizing: border-box;
+        }
+
+        .lds-dual-ring {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            display: none;
+        }
+
+        .lds-dual-ring:after {
+            content: " ";
+            display: block;
+            width: 25px;
+            height: 25px;
+            margin: 3px;
+            border-radius: 50%;
+            border: 2px solid currentColor;
+            border-color: currentColor currentColor currentColor transparent;
+            animation: lds-dual-ring 1.2s linear infinite;
+        }
+        @keyframes lds-dual-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
@@ -324,124 +325,86 @@
     <!-- END WHY CHOOSE US -->
 
     <!--=================================================================================
-                                Start Fun Facts Area
-    ==================================================================================-->
-    <section id="eduservices-fun-facts" class="fun-facts-area ptb-100">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 col-md-6 col-6 wow fadeInUp" data-wow-delay=".2s">
-                    <div class="funFact">
-                        <i class="icofont-users-alt-2"></i>
-                        <div>
-                            <h3 class="count">+1500</h3>
-                            <span>طلاب</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 col-6 wow fadeInUp" data-wow-delay=".4s">
-                    <div class="funFact">
-                        <i class="icofont-teacher"></i>
-                        <div>
-                            <h3 class="count">+10</h3>
-                            <span>خبرة</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 col-6 wow fadeInUp" data-wow-delay=".s">
-                    <div class="funFact">
-                        <i class="icofont-live-support"></i>
-                        <div>
-                            <h3 class="count">+150</h3>
-                            <span>حصص تفاعلية</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- End Fun Facts Area -->
-
-
-    <!--=================================================================================
                                 Start Contact Area
     ==================================================================================-->
-    <section id="eduservices-contact" class="contact-area ptb-100">
+    <section class="contact_us">
         <div class="container">
-            <div class="section-title">
-                <h2>تواصل معنا</h2>
-                <span style="text-align: right;">هل لديك أى أسئلة ؟</span>
-            </div>
-
             <div class="row">
-                <div class="col-lg-4 col-md-6">
-                    <div class="contact-box">
-                        <h3><i class="icofont-google-map"></i> العنوان</h3>
-                        <p><a href="https://maps.app.goo.gl/vNP77e6QYGruTEvJ8"
-                            target="_blank"> <br>‏شبين الكوم </a></p>
+                <div class="col-lg-6 col-md-12">
+                    <div class="">
+                        <h3>
+                            ابقى على تواصل معنا
+                        </h3>
+                        <ul>
+                            <li>
+                                <div class="wp-block-uagb-container uagb-block-d443ce5a">
+                                    <div class="wp-block-uagb-icon-list uagb-block-708e07bb"><div class="uagb-icon-list__wrap">
+                                        <div class="wp-block-uagb-icon-list-child uagb-block-e92cf94e">
+                                            <span class="uagb-icon-list__label"><strong>فرع المنصورة: حى الجامعة اعلى توكيل سكودا للسيارات الدور الأول</strong></span>
+                                        </div>
+
+                                        <div class="wp-block-uagb-icon-list-child uagb-block-3b221f05">
+                                            <span class="uagb-icon-list__label"><strong>رقم الهاتف: 01060000805</strong></span>
+                                        </div>
+                                        <div class="wp-block-uagb-icon-list-child uagb-block-b5b2d3ff">
+                                            <span class="uagb-icon-list__label"><strong>مواعيد العمل: يوميًا&nbsp; من الساعة 10 صباحًا إلى الساعة 11 مساءًا</strong>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="form">
+                        <form method="post" action="{{ route("contact_us") }}" class="contactForm" id="ajax-contact">
+                            @csrf
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="form-group">
+                                        <label for="name" class="label">الاسم*</label>
+                                        <input type="text" class="form-control" name="name" id="name"
+                                        placeholder="اكتب اسمك">
+                                    </div>
+                                </div>
 
-                <div class="col-lg-4 col-md-6">
-                    <div class="contact-box">
-                        <h3><i class="icofont-envelope"></i> البريد الالكترونى</h3>
-                        <p><a href="#">info@business.com</a></p>
-                        <p><a href="#">support@business.com</a></p>
-                    </div>
-                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="form-group">
+                                        <label for="name" class="label">الاسم*</label>
+                                        <input type="email" class="form-control" name="email" id="email"
+                                        placeholder="اكتب البريد الالكترونى" autocomplete="off">
+                                    </div>
+                                </div>
 
-                <div class="col-lg-4 col-md-6 offset-lg-0 offset-md-3">
-                    <div class="contact-box">
-                        <h3><i class="icofont-phone"></i> رقم الهاتف</h3>
-                        <p><a href="#">01091536978</a></p>
-                        <p><a href="#">01091536978</a></p>
-                    </div>
-                </div>
+                                <div class="col-lg-12 col-md-12">
+                                    <div class="form-group">
+                                        <label for="name" class="label">الاسم*</label>
+                                        <input type="email" class="form-control" name="phone" id="phone"
+                                        placeholder="رقم الهاتف" autocomplete="off">
+                                    </div>
+                                </div>
 
-                <div class="col-lg-4 col-md-12">
-                    <div class="get-in-touch">
-                        <h3>ابقى على تواصل</h3>
-                        <p>
-                            مدرس فيزياء مختص في تقديم دروس الفيزياء لطلبة الثانوية العامة. بخبرة تتجاوز الـ10 سنوات في تدريس الفيزياء، أكرس جهودي لمساعدة الطلاب على فهم المفاهيم العلمية بطرق سهلة ومبسطة، تضمن تحقيق أفضل النتائج الأكاديمية.
-                        </p>
-                    </div>
-                </div>
+                                <div class="col-lg-12 col-md-12">
+                                    <div class="form-group">
+                                        <label for="name" class="label">الاسم*</label>
+                                        <textarea name="message" class="form-control" cols="30" rows="4"
+                                        name="message" id="message" placeholder="رسالتك" autocomplete="off"></textarea>
+                                    </div>
+                                </div>
 
-                <div class="col-lg-8 col-md-12 wow rotateIn" data-wow-offset="10" data-wow-duration="1.5s">
-                    <!-- <form id="contactForm"> -->
-                    <form method="post" action="{{ route("contact_us") }}" class="contactForm" id="ajax-contact">
-                        @csrf
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" name="name" id="name" placeholder="Your name">
+                                <div class="col-lg-12 col-md-12">
+                                    <button type="submit" class="contact-btn btn">
+                                        ارسال
+                                        <div class="lds-dual-ring" id="load"></div>
+                                    </button>
+                                    <!--Result notification -->
+                                    <div id="error-message" class="text-center"></div>
+                                    <div id="form-messages"></div>
                                 </div>
                             </div>
-
-                            <div class="col-lg-6 col-md-6">
-                                <div class="form-group">
-                                    <input type="email" class="form-control" name="email" id="email" placeholder="Email address" autocomplete="off">
-                                </div>
-                            </div>
-
-                            <div class="col-lg-12 col-md-12">
-                                <div class="form-group">
-                                    <textarea name="message" class="form-control" cols="30" rows="4" name="message" id="message" placeholder="رسالتك" autocomplete="off"></textarea>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-12 col-md-12">
-                                <button type="submit" class="contact-btn btn">
-                                    Send Message
-                                    <div class="lds-dual-ring" id="load"></div>
-                                </button>
-                                <!--Result notification -->
-                                <div id="error-message" class="text-center"></div>
-                                <div id="form-messages"></div>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -479,7 +442,7 @@
 
     <!--=================================================================================
          START FOOTER
-  ==================================================================================-->
+    ==================================================================================-->
     <footer id="eduservices-footer" class="footer">
         <div class="container text-center">
             <div class="row">

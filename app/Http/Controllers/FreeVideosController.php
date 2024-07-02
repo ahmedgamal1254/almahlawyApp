@@ -82,9 +82,7 @@ class FreeVideosController extends Controller
             UploadVideoNotificationJob::dispatch($users,$video_id,$teacher->name);
 
             $school_grade=$request->school_grade_id;
-            Cache::put("free_videos_{$school_grade}",DB::table("free_videos")->select("id","title","description","video_url","source","image_caption as img_caption")
-            ->where("school_grade_id","=",$school_grade)
-           ->get());
+            Cache::forget("free_videos_{$school_grade}");
 
             return redirect()->route("free-lessons")->with('message','تم اضافة الدرس بنجاح من فضلك قم برفع الغيديو للدرس');
         } catch (\Throwable $th) {
@@ -162,9 +160,7 @@ class FreeVideosController extends Controller
             }
 
             $school_grade=$request->school_grade_id;
-            Cache::put("free_videos_{$school_grade}",DB::table("free_videos")->select("id","title","description","source","video_url","image_caption as img_caption")
-            ->where("school_grade_id","=",$school_grade)
-           ->get());
+            Cache::forget("free_videos_{$school_grade}");
 
             return redirect()->route("free-lessons")->with('message','تم التعديل على الدرس بنجاح');
         } catch (\Throwable $th) {

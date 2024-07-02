@@ -41,7 +41,7 @@ class RegisterUser extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'auth.verify-email',
+            view: 'emails.verify-email',
             with: [
                 "user" => $this->user,
                 "token" => $this->token
