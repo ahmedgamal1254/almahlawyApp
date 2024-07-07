@@ -54,7 +54,7 @@
                                             <input type="file" class="form-control" onchange="loadFile(event)" name="img">
                                             <input type="hidden" name="old_image" value="{{ $question->img }}">
                                         </div>
-                                        <img src="{{ asset("public/app/" . $question->img) }}" id="img_display" class="img-thumbnail img-fluid" alt="">
+                                        <img src="{{ asset("app/" . $question->img) }}" id="img_display" class="img-thumbnail img-fluid" alt="">
                                         @error("img")
                                             <span class="text-error">{{ $message }}</span>
                                         @enderror

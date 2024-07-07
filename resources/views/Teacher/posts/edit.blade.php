@@ -57,7 +57,7 @@
 
                                     <fieldset class="form-group position-relative has-icon-left mb-0" style="margin:50px 0px;">
                                         @if ($post->image_url)
-                                        <img src="{{ asset("public/app/". $post->image_url) }}" width="200" height="200" alt="" srcset="">
+                                        <img src="{{ asset("app/". $post->image_url) }}" width="200" height="200" alt="" srcset="">
                                         @endif
                                         <br>
                                         <label for="img">تعديل صورة للبوست</label>

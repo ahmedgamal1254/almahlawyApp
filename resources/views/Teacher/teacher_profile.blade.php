@@ -22,7 +22,7 @@
                         <tr>
                             <td>
                                 @if (Auth::guard('teacher')->user()->img_url)
-                                    <img src="{{ asset("public/app/". Auth::guard('teacher')->user()->img_url) }}" alt="" class="img-fluid rounded img-thumbnail">
+                                    <img src="{{ asset("app/". Auth::guard('teacher')->user()->img_url) }}" alt="" class="img-fluid rounded img-thumbnail">
                                 @else
                                     <img src="{{ asset("assets/imgs/img/people.png") }}" alt="" class="img-fluid rounded img-thumbnail">
                                 @endif

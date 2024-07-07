@@ -15,7 +15,8 @@ class RechargeWalletController extends Controller
     use Upload;
     public function recharge(Request $request){
         $validator = Validator::make($request->all(), [
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            "month_id" => "nullable|integer|exists:months,id"
         ]);
 
         if ($validator->fails()) {
@@ -30,6 +31,7 @@ class RechargeWalletController extends Controller
             // Assuming image_upload is a method to handle the file upload
             $data["image_url"] = $this->image_upload($request, "payments", "image");
             $data["user_id"] = Auth::guard("api")->id();
+            $data["month_id"] = $request->month_id;
 
             $payment = Payment::create($data);
 

@@ -28,7 +28,7 @@
                         <td>{{ $item->title }}</td>
                         <td>{{ $item->description }}</td>
                         <td>
-                            <a href="{{ url("public/app/books/".$item->media_url) }}" frameborder="0">رابط الكتاب</a>
+                            <a href="{{ url("app/books/".$item->media_url) }}" frameborder="0">رابط الكتاب</a>
                         </td>
                         <td>{{ $item->subject_name ? $item->subject_name:"المنهج بالكامل" }}</td>
                         <td>{{ $item->school_grade }}</td>

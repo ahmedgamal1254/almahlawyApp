@@ -2,73 +2,36 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Month;
+use App\Models\Month_User;
 use App\Notifications\UpdatePoints;
 use Illuminate\Http\Request;
 use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Notifications\MonthNotification;
 use App\Traits\Upload;
 use Illuminate\Support\Facades\Notification;
 
 class PaymentController extends Controller
 {
     use Upload;
+
     public function index(){
         try {
-            $payments=DB::table("payments")->join("teachers","teachers.id","=","payments.teacher_id")
-            ->select("payments.*","teachers.name as teacher_name")
-            ->where("user_id","=",Auth::user()->id)->orderByDesc("created_at")->limit(25)->get();
+            $payments=Payment::with("user:id,name")->whereNull("status")->paginate(50);
 
-            $months=DB::table("month_student")->select("month_student.*","months.year","months.month_name_ar",
-            "teachers.name as teacher_name","months.month as month_num","months.cost")
-            ->join('months','months.id',"=","month_student.month_id")
-            ->join("teachers","teachers.id","=","month_student.teacher_id")
-            ->where("month_student.user_id",Auth::user()->id)
-            ->orderByDesc("created_at")->get();
-
-            return view("student.payments.index",compact("payments","months"));
+            return view("Teacher.payments.index",compact("payments"));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
-        }
-    }
-    public function create()
-    {
-        $teachers=DB::table("teachers")->get();
-        return view("student.payments.add",compact("teachers"));
-    }
-
-    public function store(Request $request)
-    {
-        try {
-            $file=Null;
-
-            if($request->file("img")){
-                // image upload name must img
-                $file=$this->image_upload($request,'payments');
-            }
-
-            $payment=new Payment();
-            $payment->image_url=$file;
-            $payment->teacher_id=$request->teacher_id;
-            $payment->user_id=Auth::user()->id;
-            $payment->status=1;
-            $payment->save();
-
-            return response([
-                "message" =>'تم رفع الايصال بنجاح'
-            ]);
-        } catch (\Throwable $th) {
-            return response([
-                "error" =>'لم يتم رفع الايصال بنجاح'
-            ]);
         }
     }
 
     public function show($id)
     {
         try {
-            $payment=Payment::with("user")->find($id);
+            $payment=Payment::with("user","month")->find($id);
 
             if(!$payment){
                 return redirect()->back()->with('error', 'هذا الطلب غير موجود' . $id);
@@ -82,53 +45,5 @@ class PaymentController extends Controller
         } catch (\Throwable $th) {
             return redirect()->back()->with('error',"عفوا حدث خطأ ما");
         }
-    }
-
-    public function all_payments(){
-        try {
-            $payments=Payment::with("user:id,name")->whereNull("status")->paginate(50);
-
-            return view("Teacher.payments.index",compact("payments"));
-        } catch (\Throwable $th) {
-            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
-        }
-    }
-
-    public function points_update(Request $request)
-    {
-        try {
-            if($request->points != null){
-                $user=User::find($request->user_id);
-                $user->active_points+=$request->points;
-                $user->all_points+=$request->points;
-                $user->save();
-
-                $payment=Payment::find($request->payment_id);
-                $payment->status=$request->cost == 0 ? 2:0;
-                $payment->value=$request->cost;
-                $payment->save();
-
-                // notification to selected user
-                $user=User::find($request->user_id);
-
-                $message["success"]=true;
-                $message["msg"]="تم اضافة $request->points جنيه رصيد لك";
-                $message["points"]=$request->points;
-                $message["teacher_name"]=Auth::guard("teacher")->user()->name;
-
-                Notification::send($user,new UpdatePoints($message));
-
-                return redirect()->route("all_payments")->with("data","تم التعديل بنجاح");
-            }else{
-                return redirect()->route("all_payments")->with("data","لم يتم ادخال بيانات");
-            }
-        } catch (\Throwable $th) {
-            return redirect()->back()->with('error',"عفوا حدث خطأ ما");
-        }
-    }
-
-    public function destroy(Payment $payment)
-    {
-        return redirect()->back()->with("message","تمت العملية بنجاح");
     }
 }

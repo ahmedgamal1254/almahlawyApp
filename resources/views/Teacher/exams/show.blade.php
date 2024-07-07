@@ -41,7 +41,7 @@
             <div class="card" style="padding: 40px;font-size: 18px;width:100%;">
                 <p class="card-text">{{ $question->name }}</p>
                 @if ($question->img)
-                    <img src="{{ asset("public/app/" . $question->img) }}" class="rounded" alt="">
+                    <img src="{{ asset("app/" . $question->img) }}" class="rounded" alt="">
                 @endif
                 <div class="form-group row align-items-start" style="flex-direction: column;padding:10px 0;width:100%!important;">
                     @if (!empty($question->chooses))

@@ -19,7 +19,7 @@
                         <div class="col-lg-3 col-md-6 col-sm-12 box-shadow-1 ml-2">
                             <div class="card">
                                 <div class="card" style="width: 18rem;" class="text-center">
-                                    <img class="card-img-top img-thumbnail" style="width: 100%;height:200px;" src="{{ asset("public/app/".$item->img_caption) }}"
+                                    <img class="card-img-top img-thumbnail" style="width: 100%;height:200px;" src="{{ asset("app/".$item->img_caption) }}"
                                     alt="Card image cap">
                                     <div class="card-body">
                                       <h5 class="card-title">{{ $item->title }}</h5>
@@ -44,7 +44,7 @@
                         <div class="col-lg-3 col-md-6 col-sm-12 box-shadow-1 ml-75">
                             <div class="card">
                                 <div class="card" style="width: 18rem;">
-                                    <img class="card-img-top img-thumbnail" style="width: 250px;height:200px;" src="{{ asset("public/app/".$item->caption) }}"
+                                    <img class="card-img-top img-thumbnail" style="width: 250px;height:200px;" src="{{ asset("app/".$item->caption) }}"
                                     alt="Card image cap">
                                     <div class="card-body">
                                       <h5 class="card-title">{{ $item->title }}</h5>

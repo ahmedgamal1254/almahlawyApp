@@ -49,7 +49,7 @@
                     <fieldset class="form-group position-relative has-icon-left mb-1">
                         <label for="">الامتحان فى صيغة pdf</label>
                         <input type="file" name="exam" class="form-control" id="pdf" onchange="loadFile(event)">
-                        <embed src="{{ asset("public/app/" . $exam->exam) }}" style="width: 100%;height: 600px;" id="pdf_display">
+                        <embed src="{{ asset("app/" . $exam->exam) }}" style="width: 100%;height: 600px;" id="pdf_display">
                         @error("exam")
                             <span class="text-danger">{{ $message }}</span>
                         @enderror

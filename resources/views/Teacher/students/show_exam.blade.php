@@ -105,7 +105,7 @@
                                                             </span>
 
                                                             @if ($question->img)
-                                                                <img class="image-question" src="{{ asset("public/app/" . $question->img) }}" alt="">
+                                                                <img class="image-question" src="{{ asset("app/" . $question->img) }}" alt="">
                                                             @endif
                                                         </div>
                                                     </p>

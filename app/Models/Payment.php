@@ -15,4 +15,8 @@ class Payment extends Model
     public function user(){
         return $this->belongsTo(User::class,"user_id");
     }
+
+    public function month(){
+        return $this->belongsTo(Month::class,"month_id");
+    }
 }

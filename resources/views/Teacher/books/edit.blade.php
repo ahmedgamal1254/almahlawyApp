@@ -57,7 +57,7 @@
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="pdf">أرفع صورة مصغرة الكتاب</label>
                                         <input class="form-control form-control-lg" id="img" name="img" type="file">
-                                        <img src="{{ asset("public/app/" . $book->caption) }}" alt="">
+                                        <img src="{{ asset("app/" . $book->caption) }}" alt="">
                                         @error("img")
                                             <span class="text-errpr">{{ $message }}</span>
                                         @enderror

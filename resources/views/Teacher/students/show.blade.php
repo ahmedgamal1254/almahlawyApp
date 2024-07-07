@@ -26,7 +26,7 @@
                         <td>:</td>
                         <td>
                             @if ($student->profile)
-                                <img src="{{ asset("public/app/". $student->profile) }}" alt="" class="img-fluid rounded img-thumbnail">
+                                <img src="{{ asset("app/". $student->profile) }}" alt="" class="img-fluid rounded img-thumbnail">
                             @else
                                 <img src="{{ asset("assets/imgs/img/people.png") }}" alt="" class="img-fluid rounded img-thumbnail">
                             @endif

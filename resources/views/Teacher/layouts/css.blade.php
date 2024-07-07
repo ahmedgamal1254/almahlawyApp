@@ -607,5 +607,11 @@ span.text-error {
     margin-top: 4px;
 }
 
+
+img{
+    max-width: 500px;
+    max-height: 500px;
+    object-fit: cover;
+}
 </style>
 @yield('style')

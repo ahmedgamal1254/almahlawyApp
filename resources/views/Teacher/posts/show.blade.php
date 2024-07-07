@@ -14,7 +14,7 @@
               <h5 class="card-title">عنوان المنشور :- {{ $post->title }}</h5>
               <p class="card-text">اسم المرحلة الدراسية :- {{ $post->school_grade }}</p>
               <p class="card-text">اسم المادة الدراسية :- {{ $post->subject_name }}</p>
-              <img src="{{ asset("public/app/". $post->image_url) }}" class="img-thumbnail img-container" alt="">
+              <img src="{{ asset("app/". $post->image_url) }}" class="img-thumbnail img-container" alt="">
 
                 <p class="card-text">وصف المنشور :- {!! $post->description !!}</p>
             </div>

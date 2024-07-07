@@ -75,7 +75,7 @@
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <label for="">أرفع صورة مصغرة للفيديو</label>
                                         <input class="form-control form-control-lg" id="img" name="img" type="file">
-                                        <img src="{{ asset("public/app/" . $lesson->img_caption) }}" alt="">
+                                        <img src="{{ asset("app/" . $lesson->img_caption) }}" alt="">
                                         @error("img")
                                             <span class="text-error">{{ $message }}</span>
                                         @enderror

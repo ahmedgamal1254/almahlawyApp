@@ -40,7 +40,7 @@
                                         <div class="media">
                                             <a href="javascript:void(0);" class="mr-25">
                                                 <img
-                                                    src="{{ $student->profile?asset("public/app/".$student->profile):"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" }}"
+                                                    src="{{ $student->profile?asset("app/".$student->profile):"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" }}"
                                                     id="account-upload-img"
                                                     class="rounded mr-50"
                                                     alt="profile image"

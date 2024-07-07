@@ -30,7 +30,7 @@
         </div>
 
         <div class="card">
-            <embed src="{{ asset("public/app/books/" . $book->media_url) }}" style="width:100%;max-width:1092px;margin:auto;height:100vh;" type="">
+            <embed src="{{ asset("app/books/" . $book->media_url) }}" style="width:100%;max-width:1092px;margin:auto;height:100vh;" type="">
         </div>
 
         <a href="{{ route("books") }}" class="btn btn-primary">Show All <i class="fa fa-eye"></i></a>

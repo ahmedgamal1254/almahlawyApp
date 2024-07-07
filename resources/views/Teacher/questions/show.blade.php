@@ -22,9 +22,9 @@
                 @if ($question->name)
                     <h5 class="card-title">عنوان السؤال :- {{ $question->name }}</h5>
                 @endif
-                
+
                 @if ($question->img)
-                    <img src="{{ asset("public/app/" . $question->img) }}" alt="">
+                    <img src="{{ asset("app/" . $question->img) }}" alt="">
                 @endif
                 <p class="card-text">اجابات السؤال</p>
                 @if (is_array(json_decode($question->chooses, true)))

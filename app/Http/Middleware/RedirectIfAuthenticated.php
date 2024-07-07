@@ -17,12 +17,8 @@ class RedirectIfAuthenticated
      */
     public function handle(Request $request, Closure $next,$guard=null): Response
     {
-        if(Auth::guard($guard)->check() && $request->route()->named('login') ) {
+        if(Auth::guard($guard)->check()) {
             return redirect()->route("teacher");
-        }
-
-        if(Auth::guard("web")->check()) {
-            return redirect()->route("student_dashboard");
         }
 
         return $next($request);

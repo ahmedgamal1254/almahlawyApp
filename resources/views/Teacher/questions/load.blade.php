@@ -5,7 +5,7 @@
     </td>
     <td>
         @if ($item->img)
-            <img src="{{ asset("public/app/" . $item->img) }}" style="width:150px;height:150px;" alt="">
+            <img src="{{ asset("app/" . $item->img) }}" style="width:150px;height:150px;" alt="">
         @endif
     </td>
     <td>

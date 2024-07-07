@@ -42,7 +42,7 @@
 
             <li class="nav-item dropdown dropdown-user">
                 <a class="nav-link dropdown-toggle dropdown-user-link" id="dropdown-user" href="javascript:void(0);" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="avatar"><img class="round" src="{{ asset("public/app/".Auth::guard('teacher')->user()->img_url)}}" alt="avatar" height="35" width="35"></span>
+                    <span class="avatar"><img class="round" src="{{ asset("app/".Auth::guard('teacher')->user()->img_url)}}" alt="avatar" height="35" width="35"></span>
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-right row d-none" aria-labelledby="dropdown-user">

@@ -22,7 +22,8 @@ use App\Http\Controllers\{
     StudentExamsController,
     UnitController,
     VrSessionController,
-    ContactUsController
+    ContactUsController,
+    UpdateWalletUserController
 };
 
 use App\Http\Controllers\PaperExamController;
@@ -54,7 +55,7 @@ Route::get("/",function (){
     return view("welcome");
 })->name("home");
 
-Route::middleware(['guest:teacher','guest','throttle:40,2'])->group(function () {
+Route::middleware(['guest:teacher','throttle:40,2'])->group(function () {
     Route::get("teacher/login",[AuthenticatedSessionController::class,'create'])->name("teacher.login");
     Route::post("teacher/store",[AuthenticatedSessionController::class,'store'])->name("teacher.store");
 });
@@ -271,17 +272,10 @@ Route::middleware(['teacher'])->group(function () {
     Route::get("teacher/{id}/month/{school_grade_id}",[MonthController::class,'filter'])->name("filter_month");
 });
 
-// payments
-Route::middleware(['auth'])->group(function (){
-    Route::get("dashboar/student/teacher/{id}/profile/payments",[PaymentController::class,'index'])->name("payments");
-    Route::get('dashboar/student/teacher/{id}',[PaymentController::class,'create'])->name("payment.add");
-    Route::post('/student/payment/store',[PaymentController::class,'store'])->name("payments.store");
-});
-
 Route::middleware(['teacher'])->group(function () {
     Route::get("teacher/payments/all",[PaymentController::class,'all_payments'])->name("all_payments");
     Route::get("teacher/payments/show/{id}",[PaymentController::class,'show'])->name("single_payment");
-    Route::post("teacher/student/payment/store",[PaymentController::class,'points_update'])->name("points_update");
+    Route::post("teacher/student/payment/store",[UpdateWalletUserController::class,'points_update'])->name("points_update");
 });
 
 

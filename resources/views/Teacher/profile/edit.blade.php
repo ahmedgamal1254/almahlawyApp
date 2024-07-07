@@ -52,7 +52,7 @@
                                         <label for="avatar">الصورة الشخصية</label>
                                         <input class="form-control form-control-lg" id="avatar" name="img" type="file">
                                         @isset($profile->avater)
-                                            <img src="{{ asset("public/app/" . $profile->avater) }}" alt="">
+                                            <img src="{{ asset("app/" . $profile->avater) }}" alt="">
                                         @endisset
                                         @error('img')
                                             <span class="text-danger">{{ $message }}</span>

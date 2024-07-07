@@ -4,12 +4,12 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Eduserve - Educational Landing Page</title>
+    <title>المحلاوى لمادة الفيزياء</title>
     <!-- Favicon -->
     <link rel="shortcut icon" href="assets/img/icons/favicon.html" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset("assets/landing_assets/css/bootstrap.min.css")}}">
     <link rel="stylesheet" href="{{ asset("assets/landing_assets/css/jquery-ui.css")}}">
     <link rel="stylesheet" href="{{ asset("assets/landing_assets/css/icofont.min.css")}}">
@@ -20,6 +20,17 @@
     <link rel="stylesheet" href="{{ asset("assets/landing_assets/css/style.css")}}">
     <link rel="stylesheet" href="{{ asset("assets/landing_assets/css/responsive.css")}}">
     <style>
+        body {
+    font-family: "IBM Plex Sans Arabic", sans-serif;
+	font-size: 110%;
+    line-height: 1.9;
+    background: #ffffff;
+    color: #777777;
+}
+
+    h1,h2,h3,h4,h5,h6,span,strong,p,a{
+        font-family: "IBM Plex Sans Arabic", sans-serif;
+    }
         .why-choose-us {
             color: #fff;
             padding: 120px 0px 73px;
@@ -68,19 +79,110 @@
                 transform: rotate(360deg);
             }
         }
+
+        .wp-block-uagb-icon-list-child {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .wp-block-uagb-icon-list{
+            margin: 20px 0px 0px 0px;
+            padding: 20px 20px 20px 20px;
+            background-color: #FFFCFC;
+            border-style: solid;
+            border-color: #0201012B;
+            border-radius: 8px 8px 8px 8px;
+            box-shadow: 0px 4px 1px 0px rgba(0, 0, 0, 0.16);
+        }
+
+        .form-control {
+            height: 59px;
+            padding: 10px;
+            font-size: 16px;
+            color: #000;
+            background-color: #f0e7e7;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+
+        .main-banner{
+            background:url({{ asset("assets/landing_assets/img/background.webp")}});
+            background-position: bottom;
+            background-origin: border-box;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .navbar-dark .navbar-nav .nav-link {
+            color: #ffffff;
+            border-radius: 12px;
+            padding: 4px 14px;
+            font-size: 16px;
+        }
+
+        .col-lg-12.col-md-12.reveal-left-fade {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-content h1 {
+            color: #fff;
+            margin-bottom: 22px;
+            text-align: center;
+        }
+
+        .hero-content p {
+            margin-bottom: 33px;
+            color: #fff;
+            font-size: 18px;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-content a{
+            width: 20%;
+            margin: auto;
+        }
+
+        .wp-block-uagb-container{
+            box-shadow: 0 0 38px rgba(0, 0, 0, 0.11);
+        }
+
+
+        @media only screen and (max-width: 600px) {
+            .hero-content {
+                /* padding-top: 20px; */
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+        }
+
+        @media only screen and (max-width: 991px) {
+            .main-banner {
+                height: 100vh;
+            }
+        }
     </style>
 </head>
 <body>
     <!--=================================================================================
                                 START PRELOADER
     ==================================================================================-->
-    {{--  <div class="book_preload">
+    <!--  <div class="book_preload">
         <div class="book">
            <div class="book__page"></div>
            <div class="book__page"></div>
            <div class="book__page"></div>
         </div>
-    </div>  --}}
+    </div>  -->
     <!-- END PRELOADER -->
     <!--=================================================================================
                                 Start Navbar Area
@@ -93,24 +195,24 @@
                        <a class="nav-link js-scroll-trigger" href="#eduservices-home">الرئيسية</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="#eduservices-course">من نحن</a>
+                        <a class="nav-link js-scroll-trigger" href="#eduservices-about-us">من نحن</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="#eduservices-why-choose-us">الخدمات</a>
+                        <a class="nav-link js-scroll-trigger" href="#services">الخدمات</a>
                     </li>
 
                     <li class="nav-item">
-                         <a class="nav-link js-scroll-trigger" href="#eduservices-testimonial">لماذا نحن</a>
+                         <a class="nav-link js-scroll-trigger" href="#why_us">لماذا نحن</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="#eduservices-teacher">تواصل معنا</a>
+                        <a class="nav-link js-scroll-trigger" href="#contact_us">تواصل معنا</a>
                     </li>
                 </ul>
             </div>
 
-            <a class="navbar-brand js-scroll-trigger" href="#page-top">
+            <!-- <a class="navbar-brand js-scroll-trigger" href="#page-top">
                 <img src="{{ asset("assets/landing_assets/img/logo-al.png")}}" alt="logo">
-            </a>
+            </a> -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                <span class="navbar-toggler-icon"></span>
             </button>
@@ -124,7 +226,7 @@
             <div class="d-table-cell">
                 <div class="container">
                     <div class="row row-hero">
-                        <div class="col-lg-6 col-md-12 reveal-left-fade">
+                        <div class="col-lg-12 col-md-12 reveal-left-fade">
                             <div class="hero-content">
                                 <h1>
                                     أحمد المحلاوي،
@@ -134,13 +236,6 @@
                                 </p>
                                 <a href="#eduservices-contact" class="btn">ابدا التعلم</a>
 
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6 col-md-12 reveal-right-fade">
-                            <div class="hero-video">
-                                <img class="site-owner"
-                                src="{{ asset("assets/landing_assets/img/journalist_online_3.webp")}}" alt="">
                             </div>
                         </div>
                     </div>
@@ -186,7 +281,7 @@
     <!--=================================================================================
                                 Start Courses Area
     ==================================================================================-->
-    <section id="eduservices-course" class="courses-area ptb-100 bg-f9faff">
+    <section id="services" class="courses-area ptb-100 bg-f9faff">
         <div class="container">
             <div class="section-title">
                 <h2>ماذا نقدم</h2>
@@ -247,7 +342,7 @@
     <!--=================================================================================
             START WHY CHOOSE US
     ==================================================================================-->
-    <section  class="why-choose-us">
+    <section id="why_us"  class="why-choose-us">
         <div class="why-choose-us-wrapper-top">
             <div class="container">
                 <div class="">
@@ -327,7 +422,7 @@
     <!--=================================================================================
                                 Start Contact Area
     ==================================================================================-->
-    <section class="contact_us">
+    <section id="contact_us"  class="contact_us">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 col-md-12">
@@ -338,17 +433,33 @@
                         <ul>
                             <li>
                                 <div class="wp-block-uagb-container uagb-block-d443ce5a">
-                                    <div class="wp-block-uagb-icon-list uagb-block-708e07bb"><div class="uagb-icon-list__wrap">
-                                        <div class="wp-block-uagb-icon-list-child uagb-block-e92cf94e">
-                                            <span class="uagb-icon-list__label"><strong>فرع المنصورة: حى الجامعة اعلى توكيل سكودا للسيارات الدور الأول</strong></span>
+                                    <div class="wp-block-uagb-icon-list uagb-block-708e07bb">
+                                        <div class="uagb-icon-list__wrap">
+                                            <div class="wp-block-uagb-icon-list-child uagb-block-e92cf94e">
+                                                <span class="uagb-icon-list__label">
+                                                    <strong>البريد الالكترونى :-  engahmedgamal086@gmail.com</strong>
+                                                </span>
+                                            </div>
                                         </div>
+                                    </div>
 
-                                        <div class="wp-block-uagb-icon-list-child uagb-block-3b221f05">
-                                            <span class="uagb-icon-list__label"><strong>رقم الهاتف: 01060000805</strong></span>
+                                    <div class="wp-block-uagb-icon-list uagb-block-708e07bB">
+                                        <div class="uagb-icon-list__wrap">
+                                            <div class="wp-block-uagb-icon-list-child uagb-block-3b221f05">
+                                                <a href="https://wa.link/0lyliv">
+                                                    <span class="uagb-icon-list__label"><strong>رقم الهاتف: 01120126413</strong></span>
+                                                </a>
+                                            </div>
                                         </div>
-                                        <div class="wp-block-uagb-icon-list-child uagb-block-b5b2d3ff">
-                                            <span class="uagb-icon-list__label"><strong>مواعيد العمل: يوميًا&nbsp; من الساعة 10 صباحًا إلى الساعة 11 مساءًا</strong>
-                                            </span>
+                                    </div>
+
+                                    <div class="wp-block-uagb-icon-list uagb-block-708e07bB">
+                                        <div class="uagb-icon-list__wrap">
+                                            <div class="wp-block-uagb-icon-list-child uagb-block-b5b2d3ff">
+                                                <span class="uagb-icon-list__label">
+                                                    <strong> دناصور، مركز الشهداء، محافظة المنوفية </strong>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -356,55 +467,10 @@
                         </ul>
                     </div>
                 </div>
+
                 <div class="col-lg-6 col-md-12">
-                    <div class="form">
-                        <form method="post" action="{{ route("contact_us") }}" class="contactForm" id="ajax-contact">
-                            @csrf
-                            <div class="row">
-                                <div class="col-lg-6 col-md-6">
-                                    <div class="form-group">
-                                        <label for="name" class="label">الاسم*</label>
-                                        <input type="text" class="form-control" name="name" id="name"
-                                        placeholder="اكتب اسمك">
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6 col-md-6">
-                                    <div class="form-group">
-                                        <label for="name" class="label">الاسم*</label>
-                                        <input type="email" class="form-control" name="email" id="email"
-                                        placeholder="اكتب البريد الالكترونى" autocomplete="off">
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-12 col-md-12">
-                                    <div class="form-group">
-                                        <label for="name" class="label">الاسم*</label>
-                                        <input type="email" class="form-control" name="phone" id="phone"
-                                        placeholder="رقم الهاتف" autocomplete="off">
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-12 col-md-12">
-                                    <div class="form-group">
-                                        <label for="name" class="label">الاسم*</label>
-                                        <textarea name="message" class="form-control" cols="30" rows="4"
-                                        name="message" id="message" placeholder="رسالتك" autocomplete="off"></textarea>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-12 col-md-12">
-                                    <button type="submit" class="contact-btn btn">
-                                        ارسال
-                                        <div class="lds-dual-ring" id="load"></div>
-                                    </button>
-                                    <!--Result notification -->
-                                    <div id="error-message" class="text-center"></div>
-                                    <div id="form-messages"></div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13735.82800943035!2d30.818954!3d30.606976!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14f62bcccffe9c5f%3A0x5cd3a1ee42e5d4f9!2z2Kcg2KfYrdmF2K8g2KfZhNmF2K3ZhNin2YjZiQ!5e0!3m2!1sar!2seg!4v1720186285804!5m2!1sar!2seg"
+                    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
             </div>
         </div>
@@ -469,7 +535,8 @@
                             </ul>
                             <!-- End Social icons -->
                             <div class="copyright">
-                                <p style="text-align: center;">Copyright © 2024 <a href="http://ahmedgamal.eb2a.com/?i=1"> تم التصميم والتطوير بواسطة  أحمد جمال</a></p>
+                                <p style="text-align: center;">
+                                    Copyright © 2024 <a href="http://ahmedgamal.eb2a.com/?i=1"> تم التصميم والتطوير بواسطة  Dev3Solutions</a></p>
                             </div>""
                         </div>
                     </div>

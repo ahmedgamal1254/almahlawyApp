@@ -25,7 +25,7 @@
                         <td>{{ $post->title }}</td>
                         <td>
                             @if ($post->image_url)
-                            <img src="{{ asset("public/app/". $post->image_url) }}" width="100" height="100" alt="">
+                            <img src="{{ asset("app/". $post->image_url) }}" width="100" height="100" alt="">
                             @else
                             <img src="" alt="">
                             @endif

@@ -25,7 +25,7 @@
                         <td>
                             @if ($lesson->video_url and $lesson->img_caption)
                                 <a href="{{ route("lesson.show",['id'=>$lesson->id]) }}" >
-                                    <img class="img-thumbnail" style="width: 150px;height:150px;" src="{{ asset("public/app/".$lesson->img_caption) }}" alt=""></a>
+                                    <img class="img-thumbnail" style="width: 150px;height:150px;" src="{{ asset("app/".$lesson->img_caption) }}" alt=""></a>
                             @endif
                         </td>
                         <td>{{ $lesson->unit_name }}</td>

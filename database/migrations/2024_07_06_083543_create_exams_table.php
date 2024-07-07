@@ -1,0 +1,40 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('exams', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('title')->nullable()->unique('title');
+            $table->string('description')->nullable();
+            $table->string('code');
+            $table->string('duration');
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
+            $table->date('date_exam')->nullable();
+            $table->unsignedBigInteger('subject_id')->index('exams_subject_id_foreign');
+            $table->unsignedBigInteger('school_grade_id')->index('exams_school_grade_id_foreign');
+            $table->unsignedBigInteger('teacher_id')->index('exams_teacher_id_foreign');
+            $table->softDeletes();
+            $table->timestamps();
+            $table->string('units_id');
+            $table->tinyInteger('free')->default(0)->comment('0==> not free,1==> free');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('exams');
+    }
+};

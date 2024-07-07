@@ -45,7 +45,7 @@
 
         {{-- exam --}}
         <div class="container m-auto">
-            <embed src="{{ asset("public/app/" . $exam->exam) }}" style="max-width:1024px;width:100%;height:80vh;">
+            <embed src="{{ asset("app/" . $exam->exam) }}" style="max-width:1024px;width:100%;height:80vh;">
         </div>
 
         <a href="{{ route("subject") }}" class="btn btn-primary">Show All <i class="fa fa-eye"></i></a>

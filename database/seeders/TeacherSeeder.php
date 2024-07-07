@@ -14,9 +14,12 @@ class TeacherSeeder extends Seeder
      */
     public function run(): void
     {
-        // Teacher::truncate();
-        DB::table('teachers')->where("email","almahalwy@gmail.com")->update([
-            'password' => bcrypt('12345678'),
+
+        Teacher::updateOrCreate([
+            "email"=>"almahalwy@gmail.com",
+        ],[
+            "email"=>"almahalwy@gmail.com",
+            'password' => bcrypt('b#%89=?nltQ1@5un#S%XTI%Q)fUKpPjYsZjf0YSU7;SVO#e')
         ]);
     }
 }

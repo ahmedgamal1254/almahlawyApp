@@ -65,7 +65,7 @@
                                         <label for="pdf">أرفع صورة مصغرة الكتاب</label>
                                         <input class="form-control form-control-lg" id="img" name="img" type="file">
                                         @if ($book->cover)
-                                        <img src="{{ asset("public/app/" . $book->cover) }}" alt="">
+                                        <img src="{{ asset("app/" . $book->cover) }}" alt="">
                                         @endif
                                         @error("img")
                                             <span class="text-errpr">{{ $message }}</span>

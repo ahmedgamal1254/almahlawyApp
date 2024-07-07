@@ -91,7 +91,7 @@
             <div class="question-text">{{ $question->name }}</div>
             @if (!empty($question->img))
                 <div class="question-image">
-                    <img src="{{ asset("public/app/" . $question->img) }}" alt="Question Image">
+                    <img src="{{ asset("app/" . $question->img) }}" alt="Question Image">
                 </div>
             @endif
             <div class="question-answers">

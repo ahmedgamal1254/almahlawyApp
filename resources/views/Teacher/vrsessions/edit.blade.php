@@ -13,7 +13,7 @@
                     <fieldset class="form-group position-relative has-icon-left mb-0">
                         <input type="text" name="name" class="form-control form-control-lg input-lg"
                         value="{{ $vrsession->name }}" id="name" placeholder="أدخل اسم الحصة">
-                        
+
                         @error("name")
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -70,7 +70,7 @@
                     <fieldset class="form-group position-relative has-icon-left mb-1">
                         <label for="">صورة مصغرة للحصة</label>
                         <input type="file" name="photo" class="form-control" id="photo" onclick="loadFile(event)">
-                        <img src="{{ asset("public/app/" . $vrsession->photo) }}" id="img_display" alt="" srcset="">
+                        <img src="{{ asset("app/" . $vrsession->photo) }}" id="img_display" alt="" srcset="">
                         @error("photo")
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
